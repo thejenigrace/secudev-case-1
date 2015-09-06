@@ -1,0 +1,39 @@
+<section>
+    <div class="page-header">
+        <h1>Edit User</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+			<pre>
+				<code>
+                    {{user | json}}
+                </code>
+			</pre>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <form class="form-horizontal" data-ng-submit="update()" novalidate>
+            <fieldset>
+                <h3>Roles</h3>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" data-ng-model="test" data-ng-checked="user.roles.indexOf('admin') !== -1" ng-true-value="admin" data-ng-change="toggleRole('admin')">
+                        Admin
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" data-ng-model="test1" data-ng-checked="user.roles.indexOf('user') !== -1" ng-true-value="user" data-ng-change="toggleRole('user')">
+                        User
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-default">
+                </div>
+				<div data-ng-show="error" class="text-danger">
+					<strong data-ng-bind="error"></strong>
+				</div>
+            </fieldset>
+        </form>
+    </div>
+</section>

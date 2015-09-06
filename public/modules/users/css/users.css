@@ -1,0 +1,31 @@
+@media (min-width: 992px) {
+	.nav-users {
+		position: fixed;
+	}
+}
+.remove-account-container {
+	display: inline-block;
+	position: relative;
+}
+.btn-remove-account {
+	top: 10px;
+	right: 10px;
+	position: absolute;
+}
+
+/* Created by Jeca */
+.customer-profile {
+    font-size: 200px;
+}
+
+.text-pink {
+    color: #EC407A;
+}
+
+.form-bg {
+	background-color: #FFFFFF;
+	border: 15px solid;
+	border-radius: 15px;
+	border-color: #FFFFFF;
+	margin-top: 50px;
+}

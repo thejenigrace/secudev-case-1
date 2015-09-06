@@ -1,0 +1,22 @@
+<section>
+	<div class="page-header">
+		<h1 data-ng-bind="user.displayName"></h1>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<pre>
+				<code>
+					{{user | json}}
+				</code>
+			</pre>
+		</div>
+	</div>
+	<div class="pull-right">
+		<a class="btn btn-primary" ui-sref="admin-users.edit">
+			<i class="glyphicon glyphicon-edit"></i>
+		</a>
+		<a class="btn btn-primary" data-ng-click="remove();">
+			<i class="glyphicon glyphicon-trash"></i>
+		</a>
+	</div>
+</section>

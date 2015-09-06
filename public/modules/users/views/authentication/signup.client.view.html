@@ -1,0 +1,88 @@
+<section class="row" data-ng-controller="AuthenticationController">
+    <h3 class="col-md-12 text-center">Register</h3>
+    <div class="col-xs-offset-1 col-xs-10 col-md-offset-2 col-md-8 form-bg">
+        <form autocomplete="off" class="signin form-horizontal" data-ng-submit="signup()" name="signupForm" novalidate>
+            <fieldset>
+                <div class="row">
+                    <div class="form-group">
+    					<div data-ng-show="error" class="text-center text-danger">
+    						<div class="alert alert-danger" role="alert">
+    							<strong data-ng-bind="error"></strong>
+    						</div>
+    					</div>
+    				</div>
+                    <div class="col-sm-6 text-center">
+                        <div class="form-group text-center">
+                            <i class="glyphicon glyphicon-user customer-profile"
+                                ng-class="{'text-primary': credentials.gender == 'Male', 'text-pink': credentials.gender == 'Female'}"
+                            ></i>
+                        </div>
+                    </div>
+                    <div class="col-sm-5 col-sm-offset-1">
+                        <div class="form-group">
+                            <label class="control-label" for="firstName">First Name</label>
+                            <input class="form-control" data-ng-model="credentials.firstName" id="firstName" maxlength="50" name="firstName" placeholder="First Name" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input class="form-control" data-ng-model="credentials.lastName" id="lastName" maxlength="50" name="lastName" placeholder="Last Name" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select class="form-control"
+                            data-ng-change="getSalutation()"
+                            data-ng-model="credentials.gender"
+                            data-ng-options="option for option in gender"
+                            name="gender" required>
+                                <option value="">--choose a gender--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Salutation</label>
+                            <select class="form-control"
+                            data-ng-model="credentials.salutation"
+                            name="salutation"
+                            ng-options="option for option in salutation" required>
+                                <option value="">--choose a salutation--</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate</label>
+                            <input class="form-control" data-ng-model="credentials.birthdate" id="birthdate" name="birthdate" type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="aboutMe">About Me</label>
+                            <textarea class="form-control" data-ng-model="credentials.aboutMe" id="aboutMe" name="aboutMe" rows="5" type="text" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-5 col-sm-offset-1">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input class="form-control" data-ng-model="credentials.username" id="username" maxlength="50" name="username" placeholder="Username" type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input class="form-control" data-ng-model="credentials.password" id="password" maxlength="50" name="password" placeholder="Password" type="password" required>
+                        </div>
+                        <div class="form-group text-center">
+                            <button class="btn btn-block btn-success" type="submit"
+                            ng-disabled="signupForm.$invalid">
+                                Sign Up
+                            </button>
+                        </div>
+                        <div class="form-group text-center">
+                            &nbsp; or &nbsp;
+                            <a class="show-signup" href="/#!/signin">Sign In</a>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>
