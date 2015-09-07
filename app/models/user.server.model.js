@@ -31,7 +31,16 @@ var validateLocalStrategyBirthdate = function(birthdate) {
 	return (this.provider !== 'local' || (calculateAge(birthdate) >= 18));
 };
 
+var validateLocalStrategyGender = function(gender) {
+	return (this.provider !== 'local' || (gender == 'Male' || gender == 'Female'));
+};
 
+var validateLocalStrategySalutation = function(salutation) {
+	return (this.provider !== 'local' ||
+	(salutation == 'Mr'|| salutation == 'Sir' || salutation == 'Senior' || salutation == 'Count') ||
+	(salutation == 'Miss'|| salutation == 'Ms' || salutation == 'Mrs' || salutation == 'Madame' ||
+	salutation == 'Majesty'|| salutation == 'Seniora'));
+}
 
 /**
  * User Schema
@@ -57,11 +66,13 @@ var UserSchema = new Schema({
 	},
 	gender: {
 		type: String,
-		required: 'Please indicate your gender',
+		validate: [validateLocalStrategyGender, 'Gender must only be male or female'],
+		required: 'Please indicate your gender'
 	},
 	salutation: {
 		type: String,
-		default: ''
+		validate: [validateLocalStrategyGender, 'Invalid salutation'],
+		required: 'Please indicate your salutation'
 	},
 	birthdate: {
 		type: Date,
@@ -70,7 +81,8 @@ var UserSchema = new Schema({
 	},
 	aboutMe: {
 		type: String,
-		default: ''
+		default: '',
+		required: 'Please fill-up about me section'
 	},
 	username: {
 		type: String,

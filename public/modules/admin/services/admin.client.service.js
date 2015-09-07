@@ -1,7 +1,9 @@
 'use strict';
 
 //Admins service used to communicate Admins REST endpoints
-angular.module('admin').factory('Admin', ['$resource',
+var AdminApp = angular.module('admin');
+
+AdminApp.factory('Admin', ['$resource',
 	function($resource) {
 		return $resource('admin/:type/:id', { type: '@type', id: '@id'}, {
 			update: {
@@ -16,3 +18,14 @@ angular.module('admin').factory('Admin', ['$resource',
 		});
 	}
 ]);
+
+AdminApp.factory('Authorization', ['$resource',
+	function($resource) {
+		return $resource('authorization', {}, {
+			update: {
+				method: 'GET'
+			}
+		});
+	}
+]);
+

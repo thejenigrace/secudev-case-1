@@ -10,25 +10,30 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		console.log($scope.authentication.user.isAdmin);
 
 		var gender = [
-            'Male',
-            'Female'
-        ];
+			'Male',
+			'Female'
+		];
 
-        var salutation = [
-            ['Mr', 'Sir', 'Senior', 'Count'],
-            ['Miss', 'Ms', 'Mrs', 'Madame', 'Majesty', 'Seniora']
-        ];
+		var salutation = [
+			['Mr', 'Sir', 'Senior', 'Count'],
+			['Miss', 'Ms', 'Mrs', 'Madame', 'Majesty', 'Seniora']
+		];
 
 		$scope.gender = gender;
-        $scope.salutation = [];
-        $scope.getSalutation = function() {
-            var key = $scope.gender.indexOf($scope.credentials.gender);
-            var myNewOptions = salutation[key];
-            $scope.salutation = myNewOptions;
+		$scope.salutation = [];
 
-            console.log('Key = ' + key);
-            console.log(myNewOptions);
-        };
+		try {
+			$scope.getSalutation = function () {
+				var key = $scope.gender.indexOf($scope.credentials.gender);
+				var myNewOptions = salutation[key];
+				$scope.salutation = myNewOptions;
+
+				console.log('Key = ' + key);
+			};
+		} catch(e) {
+			Console.log("Invalid Gender");
+		}
+
 
 		// $scope.calculateAge = function calculateAge(birthday) { // birthday is a date
     	// 	var ageDifMs = Date.now() - birthday.getTime();

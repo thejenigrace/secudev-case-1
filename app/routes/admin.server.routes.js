@@ -12,6 +12,8 @@ module.exports = function(app) {
 		.put(users.requiresLogin, admin_users.isAdmin, admin_users.update)
 		.delete(users.requiresLogin, admin_users.isAdmin, admin_users.delete);
 
+	app.route('authorization').get(users.hasAuthorization);
+
 	app.route('/register').post(admin_users.register);
 	/*
 	app.route('/admins/:adminId')

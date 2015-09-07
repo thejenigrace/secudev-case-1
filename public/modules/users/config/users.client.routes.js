@@ -22,11 +22,11 @@ angular.module('users').config(['$stateProvider',
 		// 	templateUrl: 'modules/users/views/settings/social-accounts.client.view.html'
 		// }).
 		state('signup', {
-			url: '/signup',
+			url: '/register',
 			templateUrl: 'modules/users/views/authentication/signup.client.view.html'
 		}).
 		state('signin', {
-			url: '/signin',
+			url: '/login',
 			templateUrl: 'modules/users/views/authentication/signin.client.view.html'
 		});
 		// state('forgot', {
