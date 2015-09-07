@@ -32,15 +32,15 @@ var validateLocalStrategyBirthdate = function(birthdate) {
 };
 
 var validateLocalStrategyGender = function(gender) {
-	return (this.provider !== 'local' || (gender == 'Male' || gender == 'Female'));
+	return (this.provider !== 'local' || (gender === 'Male' || gender === 'Female'));
 };
 
 var validateLocalStrategySalutation = function(salutation) {
 	return (this.provider !== 'local' ||
-	(salutation == 'Mr'|| salutation == 'Sir' || salutation == 'Senior' || salutation == 'Count') ||
-	(salutation == 'Miss'|| salutation == 'Ms' || salutation == 'Mrs' || salutation == 'Madame' ||
-	salutation == 'Majesty'|| salutation == 'Seniora'));
-}
+	(salutation === 'Mr'|| salutation === 'Sir' || salutation === 'Senior' || salutation === 'Count') ||
+	(salutation === 'Miss'|| salutation === 'Ms' || salutation === 'Mrs' || salutation === 'Madame' ||
+	salutation === 'Majesty'|| salutation === 'Seniora'));
+};
 
 /**
  * User Schema

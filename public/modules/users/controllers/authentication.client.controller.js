@@ -31,7 +31,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				console.log('Key = ' + key);
 			};
 		} catch(e) {
-			Console.log("Invalid Gender");
+			console.log('Invalid Gender');
 		}
 
 
