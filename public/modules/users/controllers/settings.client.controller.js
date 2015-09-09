@@ -41,7 +41,7 @@ angular.module('users').controller('SettingsController', ['$scope',
 			console.log('Invalid Gender');
 		}
 
-		$scope.user.birthdate = $filter("date")($scope.user.birthdate, 'yyyy-MM-dd');
+		$scope.user.birthdate = $filter('date')($scope.user.birthdate, 'yyyy-MM-dd');
 
 		// Check if there are additional accounts
 		$scope.hasConnectedAdditionalSocialAccounts = function(provider) {

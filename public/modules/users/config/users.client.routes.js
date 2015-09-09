@@ -11,11 +11,11 @@ angular.module('users').config(['$stateProvider',
 		}).
 		state('edit-profile', {
 			url: '/edit-profile',
-			templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
+			templateUrl: 'modules/users/views/profile/edit-profile.client.view.html'
 		}).
 		state('change-password', {
 			url: '/change-password',
-			templateUrl: 'modules/users/views/settings/change-password.client.view.html'
+			templateUrl: 'modules/users/views/profile/change-password.client.view.html'
 		}).
 		// state('accounts', {
 		// 	url: '/settings/accounts',
