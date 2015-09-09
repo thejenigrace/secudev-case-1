@@ -9,14 +9,14 @@ angular.module('users').config(['$stateProvider',
 			url: '/user-profile',
 			templateUrl: 'modules/users/views/profile/user-profile.client.view.html'
 		}).
-		// state('profile', {
-		// 	url: '/settings/profile',
-		// 	templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
-		// }).
-		// state('password', {
-		// 	url: '/settings/password',
-		// 	templateUrl: 'modules/users/views/settings/change-password.client.view.html'
-		// }).
+		state('edit-profile', {
+			url: '/edit-profile',
+			templateUrl: 'modules/users/views/settings/edit-profile.client.view.html'
+		}).
+		state('change-password', {
+			url: '/change-password',
+			templateUrl: 'modules/users/views/settings/change-password.client.view.html'
+		}).
 		// state('accounts', {
 		// 	url: '/settings/accounts',
 		// 	templateUrl: 'modules/users/views/settings/social-accounts.client.view.html'

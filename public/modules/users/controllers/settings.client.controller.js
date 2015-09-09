@@ -1,13 +1,49 @@
 'use strict';
 
-angular.module('users').controller('SettingsController', ['$scope', '$http', '$location', 'Users', 'Authentication',
-	function($scope, $http, $location, Users, Authentication) {
+angular.module('users').controller('SettingsController', ['$scope',
+	'$http', '$location', 'Users', 'Authentication', '$filter',
+	function($scope, $http, $location, Users, Authentication, $filter) {
 		$scope.user = Authentication.user;
 
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
-		// Check if there are additional accounts 
+		var gender = [
+			'Male',
+			'Female'
+		];
+
+		var salutation = [
+			['Mr', 'Sir', 'Senior', 'Count'],
+			['Miss', 'Ms', 'Mrs', 'Madame', 'Majesty', 'Seniora']
+		];
+
+		$scope.gender = gender;
+		$scope.salutation = [];
+
+		try {
+			$scope.getSalutation = function () {
+				var key;
+				//console.log('Gender ' + $scope.user.gender);
+				if($scope.user.gender === 'Male') {
+					key = 0;
+				}
+				else if($scope.user.gender === 'Female') {
+					key = 1;
+				}
+				//var key = $scope.gender.indexOf($scope.user.gender);
+				var myNewOptions = salutation[key];
+				$scope.salutation = myNewOptions;
+
+				//console.log('Key = ' + key);
+			};
+		} catch(e) {
+			console.log('Invalid Gender');
+		}
+
+		$scope.user.birthdate = $filter("date")($scope.user.birthdate, 'yyyy-MM-dd');
+
+		// Check if there are additional accounts
 		$scope.hasConnectedAdditionalSocialAccounts = function(provider) {
 			for (var i in $scope.user.additionalProvidersData) {
 				return true;
