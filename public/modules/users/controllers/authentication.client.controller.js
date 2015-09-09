@@ -7,7 +7,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		// If user is signed in then redirect back home
 		if ($scope.authentication.user) $location.path('/user-profile');
 
-		console.log($scope.authentication.user.isAdmin);
+		//console.log($scope.authentication.user.isAdmin);
 
 		var gender = [
 			'Male',
@@ -28,7 +28,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				var myNewOptions = salutation[key];
 				$scope.salutation = myNewOptions;
 
-				console.log('Key = ' + key);
+				//console.log('Key = ' + key);
 			};
 		} catch(e) {
 			console.log('Invalid Gender');
@@ -42,6 +42,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		// };
 
 		$scope.signup = function() {
+			console.log('Client-side Gender = ' + $scope.credentials.gender);
 			$http.post('/auth/signup', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model
 				$scope.authentication.user = response;

@@ -147,7 +147,7 @@ angular.module('admin')
             var myNewOptions = salutation[key];
             $scope.salutation = myNewOptions;
 
-            console.log('Key = ' + key);
+            //console.log('Key = ' + key);
         };
 
 		$scope.register = function() {
