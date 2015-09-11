@@ -1,0 +1,49 @@
+<!--<section data-ng-controller="PostsController" data-ng-init="find()">-->
+    <!--<div class="page-header">-->
+        <!--<h1>Posts</h1>-->
+    <!--</div>-->
+    <!--<div class="list-group">-->
+        <!--<a data-ng-repeat="post in posts" data-ng-href="#!/posts/{{post._id}}" class="list-group-item">-->
+			<!--<small class="list-group-item-text">-->
+				<!--Posted on-->
+				<!--<span data-ng-bind="post.created | date:'medium'"></span>-->
+				<!--by-->
+				<!--<span data-ng-bind="post.user.displayName"></span>-->
+			<!--</small>-->
+			<!--<h4 class="list-group-item-heading" data-ng-bind="post.name"></h4>-->
+        <!--</a>-->
+    <!--</div>-->
+    <!--<div class="alert alert-warning text-center" data-ng-hide="!posts.$resolved || posts.length">-->
+    	<!--No Posts yet, why don't you <a href="/#!/posts/create">create one</a>?-->
+    <!--</div>-->
+<!--</section>-->
+
+<section>
+	<div data-ng-include="modules/posts/views/create-post.client.view.html">
+
+	</div>
+</section>
+
+<section data-ng-controller="PostsController" data-ng-init="find()">
+	<div class="jumbotron text-center form-bg">
+
+	</div>
+	<div class="page-header">
+		<h1>Articles</h1>
+	</div>
+	<div class="list-group">
+		<a data-ng-repeat="post in posts" data-ng-href="#!/posts/{{post._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="post.created | date:'mediumDate'"></span>
+				by
+				<span data-ng-bind="post.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="post.title"></h4>
+			<p class="list-group-item-text" data-ng-bind="post.content"></p>
+		</a>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="posts.$resolved && !posts.length">
+		No articles yet, why don't you <a href="/#!/posts/create">create one</a>?
+	</div>
+</section>
