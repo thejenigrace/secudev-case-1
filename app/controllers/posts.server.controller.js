@@ -40,6 +40,7 @@ exports.update = function(req, res) {
 	var post = req.post ;
 
 	post = _.extend(post , req.body);
+	post.updated = Date.now();
 
 	post.save(function(err) {
 		if (err) {
@@ -72,7 +73,7 @@ exports.delete = function(req, res) {
 /**
  * List of Posts
  */
-exports.list = function(req, res) { 
+exports.list = function(req, res) {
 	Post.find().sort('-created').populate('user', 'displayName').exec(function(err, posts) {
 		if (err) {
 			return res.status(400).send({
@@ -87,7 +88,7 @@ exports.list = function(req, res) {
 /**
  * Post middleware
  */
-exports.postByID = function(req, res, next, id) { 
+exports.postByID = function(req, res, next, id) {
 	Post.findById(id).populate('user', 'displayName').exec(function(err, post) {
 		if (err) return next(err);
 		if (! post) return next(new Error('Failed to load Post ' + id));
