@@ -43,6 +43,32 @@ angular.module('users').controller('SettingsController', ['$scope',
 
 		$scope.user.birthdate = $filter('date')($scope.user.birthdate, 'yyyy-MM-dd');
 
+		$scope.editProfile = function(isValid) {
+			var username = $scope.user.username;
+			$http.post('/users/editProfile', $scope.user).success(function(response) {
+				// If successful we assign the response to the global user model
+				if (isValid) {
+					$scope.success = $scope.error = null;
+					var user = new Users($scope.user);
+
+					user.$update(function(response) {
+						$scope.user.username = username;
+						$scope.success = true;
+						Authentication.user = response;
+					}, function(response) {
+						$scope.error = response.data.message;
+					});
+				} else {
+					$scope.submitted = true;
+				}
+
+				// And redirect to the index page
+				$location.path('/user-profile');
+			}).error(function(response) {
+				$scope.error = response.message;
+			});
+		};
+
 		// Check if there are additional accounts
 		$scope.hasConnectedAdditionalSocialAccounts = function(provider) {
 			for (var i in $scope.user.additionalProvidersData) {
