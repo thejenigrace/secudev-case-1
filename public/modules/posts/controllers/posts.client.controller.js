@@ -8,49 +8,18 @@ postsApp.controller('PostsController', ['$scope',
 	'Authentication', 'Posts', 'Notify',
 	function($scope, $http, $stateParams, $location, $filter,
 			 Authentication, Posts, Notify) {
+
 		$scope.authentication = Authentication;
 
 		//// Find a list of Posts
-		//this.posts = Posts.query();
+		this.posts = Posts.query();
 
-		//$scope.currentPage = 1;
-		//$scope.maxSize = 5;]
-
-		//$scope.totalItems = function() {
-		//	var count;
-		//	$http.get('/posts/count').success(
-		//		function(response) {
-		//			count = response.count;
-		//		}
-		//	);
-		//	return count;
-		//};
-
-		//console.log('total items = ' + $scope.totalItems());
-
-		//$scope.setPage = function(pageNo) {
-		//	$scope.currentPage = pageNo;
-		//};
-        //
-		//$scope.pageChanged = function() {
-		//	$scope.loadMessages();
-		//};
-        //
-		//$scope.loadMessages = function() {
-		//	$http.get('/posts/page/' + $scope.currentPage).success(
-		//		function(response) {
-		//			this.posts = response;
-		//		}
-		//	);
-		//};
-
-
-		// Find existing Post
-		//$scope.findOne = function() {
-		//	$scope.post = Posts.get({
-		//		postId: $stateParams.postId
-		//	});
-		//};
+		//Find existing Post
+		$scope.findOne = function() {
+			$scope.post = Posts.get({
+				postId: $stateParams.postId
+			});
+		};
 
 		// Create new Post
 		$scope.create = function() {
@@ -90,27 +59,6 @@ postsApp.controller('PostsController', ['$scope',
 
 				});
 			}
-		};
-
-
-
-		$scope.buildPager = function () {
-			$scope.pagedItems = [];
-			$scope.itemsPerPage = 10;
-			$scope.currentPage = 1;
-			$scope.figureOutItemsToDisplay();
-		};
-
-		$scope.figureOutItemsToDisplay = function () {
-			$scope.filteredItems = $filter('filter')(this.posts, {$: $scope.search});
-			$scope.filterLength = $scope.filteredItems.length;
-			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
-			var end = begin + $scope.itemsPerPage;
-			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
-		};
-
-		$scope.pageChanged = function () {
-			$scope.figureOutItemsToDisplay();
 		};
 	}
 ]);

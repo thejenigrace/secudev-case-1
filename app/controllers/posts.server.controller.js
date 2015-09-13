@@ -4,12 +4,9 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	mongoosePaginate = require('mongoose-paginate'),
 	errorHandler = require('./errors.server.controller'),
 	Post = mongoose.model('Post'),
 	_ = require('lodash');
-
-//mongoose.Promise = require('bluebird');
 
 /**
  * Create a Post
@@ -116,70 +113,5 @@ exports.hasAuthorization = function(req, res, next) {
 	next();
 };
 
-
-exports.getCount = function(req, res) {
-	Post.count({}, function(err, count) {
-		console.log('count is' + count);
-		if(err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		}
-		else {
-			res.jsonp({'count': count});
-		}
-	});
-};
-
-//exports.paginate = function(req, res) {
-//	Post.plugin(mongoosePaginate);
-//
-//	var page = 1;
-//
-//	if(!req.params.pageNo)
-//		page = 1;
-//	else
-//		page = req.params.pageNo;
-//
-//	var per_page = 10;
-//
-//	Post.paginate({}, {
-//			page: page,
-//			limit: per_page,
-//			populate: 'user',
-//			sortBy: 'created'
-//		})
-//		.spread(function(questions, pageCount, itemCount) {
-//			res.jsonp({count: itemCount});
-//		})
-//		.catch(function(err) {
-//			//return next(err);
-//		});
-//
-//};
-
-exports.limitedList = function(req, res) {
-	var page;
-
-	if(!req.params.pageNo)
-		page = 1;
-	else
-		page = req.params.pageNo;
-
-	var per_page = 10;
-
-	Post.find({ $query: {}, $orderBy: {updated: -1} })
-		.skip((page - 1) * per_page)
-		.limit(per_page)
-		.populate('user', 'displayName firstName username created')
-		.exec(function (err, posts) {
-			if(err)
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			else
-				res.json(posts);
-		});
-};
 
 
