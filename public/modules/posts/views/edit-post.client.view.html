@@ -1,23 +1,31 @@
-<section data-ng-controller="PostsUpdateController" data-ng-init="findOne()">
-    <div class="page-header">
-        <h1>Edit Post</h1>
-    </div>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update()" novalidate>
+<section data-ng-controller="PostsUpdateController as postsUpdateCtrl" >
+	<div class="modal-header">
+		<h3 class="modal-title">Edit Post</h3>
+	</div>
+    <div class="modal-body">
+        <form name="editPostForm" class="form-horizontal" data-ng-submit="update()" novalidate>
             <fieldset>
-                <div class="form-group">
-                    <label class="control-label" for="name">Name</label>
-                    <div class="controls">
-                        <input type="text" data-ng-model="post.name" id="name" class="form-control" placeholder="Name" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-default">
-                </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
+				<div class="form-group">
+					<div data-ng-show="error" class="text-center text-danger">
+						<div class="alert alert-danger" role="alert">
+							<strong data-ng-bind="error"></strong>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="controls">
+						<textarea name="content" data-ng-model="post.message" id="message" class="form-control"
+								  cols="30" rows="6">
+						</textarea>
+					</div>
 				</div>
             </fieldset>
         </form>
     </div>
+	<div class="modal-footer">
+		<button class="btn btn-success" type="button"
+				ng-click="postsUpdateCtrl.update(post); ok()"> Save & Close
+		</button>
+		<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+	</div>
 </section>

@@ -1,5 +1,4 @@
 <section>
-
 	<!--<div class="alert alert-warning text-center" data-ng-hide="!users.$resolved || users.length">-->
 
 		<div class="col-md-10 col-md-offset-1 list-group form-bg">
@@ -12,27 +11,47 @@
 							ng-change="pageChanged()">
 				</pagination>
 			</div>
-			<a data-ng-repeat="post in pagedItems" class="list-group-item">
+			<a data-ng-repeat="post in pagedItems" class="list-group-item" ng-href="/#!/posts">
 				<div class="row">
-					<div class="col-sm-2 text-center">
-						<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>
-						<h5 class="text-danger" data-ng-bind="post.user.username"></h5>
-						<small class="list-group-item-text">
-							Joined:
-							<span data-ng-bind="post.user.created | date:'mediumDate'"></span>
-						</small>
+					<div class="col-xs-12 col-sm-2 text-center">
+						<!--<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>-->
+						<!--<h5 class="text-danger" data-ng-bind="post.user.username"></h5>-->
+						<!--<small class="list-group-item-text">-->
+							<!--Joined:-->
+							<!--<span data-ng-bind="post.user.created | date:'mediumDate'"></span>-->
+						<!--</small>-->
+
+						<table align="center">
+							<tbody>
+								<tr>
+									<td>
+										<a ng-href="/#!/user-profile">
+											<h5 class="text-primary" data-ng-bind="post.user.firstName"></h5>
+										</a>
+										<a ng-href="/#!/user-profile">
+											<h4 class="text-danger" data-ng-bind="post.user.username"></h4>
+										</a>
+										<h6 class="list-group-item-text">
+											Joined:
+											<span data-ng-bind="post.user.created | date:'mediumDate'"></span>
+										</h6>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="post-divider-vertical"></div>
-					<div class="col-sm-9">
+					<div class="col-xs-12 col-sm-9">
 						<div class="row">
-							<div class="col-md-3">
+							<div class="col-md-4">
 								<small class="list-group-item-text">
 									Posted on
-									<span data-ng-bind="post.created | date:'mediumDate'"></span>
+									<span data-ng-bind="post.created | date:'MM/dd/yyyy \'at\' h:mma'"></span>
 								</small>
 							</div>
-							<div class="col-md-9 col-md-push-8">
-								<button type="button" class="btn btn-sm btn-warning">
+							<div class="col-md-7 col-md-push-7" data-ng-show="isAuthorize(post.user._id)">
+								<button type="button" class="btn btn-sm btn-warning"
+										ng-click="postsCtrl.modalUpdate('lg', post)">
 									<i class="glyphicon glyphicon-edit"></i>
 								</button>
 								<button type="button" class="btn btn-sm btn-danger"
@@ -45,7 +64,7 @@
 						<br>
 						<small class="list-group-item-text">
 							Updated on
-							<span data-ng-bind="post.updated | date:'mediumDate'"></span>
+							<span data-ng-bind="post.updated | date:'MM/dd/yyyy \'at\' h:mma'"></span>
 						</small>
 					</div>
 				</div>
