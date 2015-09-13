@@ -35,12 +35,6 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		}
 
 
-		// $scope.calculateAge = function calculateAge(birthday) { // birthday is a date
-    	// 	var ageDifMs = Date.now() - birthday.getTime();
-    	// 	var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    	// 	return Math.abs(ageDate.getUTCFullYear() - 1970)}
-		// };
-
 		$scope.signup = function() {
 			console.log('Client-side Gender = ' + $scope.credentials.gender);
 			$http.post('/auth/signup', $scope.credentials).success(function(response) {

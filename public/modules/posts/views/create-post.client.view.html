@@ -10,14 +10,7 @@
 						<strong data-ng-bind="error"></strong>
 					</div>
 				</div>
-				<!--<div class="form-group" ng-class="{ 'has-error': postForm.title.$dirty && postForm.title.$invalid }">-->
-					<!--<label class="control-label" for="title">Title</label>-->
-					<!--<div class="controls">-->
-						<!--<input name="title" type="text" data-ng-model="title" id="title" class="form-control" placeholder="Title" required>-->
-					<!--</div>-->
-				<!--</div>-->
 				<div class="form-group">
-					<!--<label class="control-label" for="message">Message</label>-->
 					<div class="controls">
 						<textarea name="content" data-ng-model="message" id="message" class="form-control"
 								  cols="30" rows="6" placeholder="Message">
@@ -33,5 +26,7 @@
 		</form>
 	</div>
 
+	<!--Calling the /modules/posts/views/list-posts.client.view.html -->
 	<post-list></post-list>
+
 </section>

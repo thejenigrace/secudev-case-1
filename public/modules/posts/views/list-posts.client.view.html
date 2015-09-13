@@ -1,44 +1,64 @@
-<section data-ng-controller="PostsController as postsCtrl">
-	<!--<div class="page-header">-->
-		<!--<h1>Posts</h1>-->
-	<!--</div>-->
+<section>
+	<pagination boundary-links="true"
+				direction-links="false"
+				max-size="5"
+				items-per-page="itemsPerPage"
+				total-items="filterLength"
+				ng-model="currentPage"
+				ng-change="pageChanged()">
+	</pagination>
+
 	<!--<div class="text-center">-->
-		<!--<pagination boundary-links="true"-->
-					<!--max-size="10"-->
-					<!--items-per-page="itemsPerPage"-->
-					<!--total-items="filterLength"-->
+		<!--<pagination class="text-center"-->
+					<!--ng-change="pageChanged()"-->
+					<!--total-items="totalItems"-->
 					<!--ng-model="currentPage"-->
-					<!--ng-change="pageChanged()">-->
+					<!--max-size="maxSize"-->
+					<!--boundary-links="true"-->
+					<!--direction-links="false">-->
 		<!--</pagination>-->
 	<!--</div>-->
-	<!--<div class="alert alert-warning text-center" data-ng-hide="!postsCtrl.posts.$resolved || postsCtrl.posts.length">-->
-	<div class="col-md-10 col-md-offset-1 list-group form-bg">
-		<a data-ng-repeat="post in postsCtrl.posts" data-ng-href="#!/posts/{{post._id}}" class="list-group-item">
-			<div class="row">
-				<div class="col-sm-2 text-center">
-					<h6 class="text-primary" data-ng-bind="postsCtrl.user.firstName"></h6>
-					<h5 class="text-danger" data-ng-bind="postsCtrl.user.username"></h5>
-					<small class="list-group-item-text">
-						Joined:
-						<span data-ng-bind="postsCtrl.user.created | date:'mediumDate'"></span>
-					</small>
-				</div>
-				<div class="post-divider-vertical"></div>
-				<div class="col-sm-9">
-					<small class="list-group-item-text">
-						Posted on
-						<span data-ng-bind="post.created | date:'mediumDate'"></span>
-					</small>
-					<!--<h4 class="list-group-item-heading" data-ng-bind="post.message"></h4>-->
-					<h4 class="list-group-item-text" data-ng-bind="post.message"></h4>
-					<br>
-					<small class="list-group-item-text">
-						Updated on
-						<span data-ng-bind="post.updated | date:'mediumDate'"></span>
-					</small>
-				</div>
-			</div>
 
-		</a>
-	</div>
+	<!--<div class="alert alert-warning text-center" data-ng-hide="!postsCtrl.posts.$resolved || postsCtrl.posts.length">-->
+
+	<!--<div class="col-md-10 col-md-offset-1 list-group form-bg">-->
+		<!--<a data-ng-repeat="post in posts" class="list-group-item">-->
+			<!--<div class="row">-->
+				<!--<div class="col-sm-2 text-center">-->
+					<!--<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>-->
+					<!--<h5 class="text-danger" data-ng-bind="post.user.username"></h5>-->
+					<!--<small class="list-group-item-text">-->
+						<!--Joined:-->
+						<!--<span data-ng-bind="post.user.created | date:'mediumDate'"></span>-->
+					<!--</small>-->
+				<!--</div>-->
+				<!--<div class="post-divider-vertical"></div>-->
+				<!--<div class="col-sm-9">-->
+					<!--<div class="row">-->
+						<!--<div class="col-md-3">-->
+							<!--<small class="list-group-item-text">-->
+								<!--Posted on-->
+								<!--<span data-ng-bind="post.created | date:'mediumDate'"></span>-->
+							<!--</small>-->
+						<!--</div>-->
+						<!--<div class="col-md-9 col-md-push-8">-->
+							<!--<button type="button" class="btn btn-sm btn-warning">-->
+								<!--<i class="glyphicon glyphicon-edit"></i>-->
+							<!--</button>-->
+							<!--<button type="button" class="btn btn-sm btn-danger"-->
+									<!--ng-click="postsCtrl.remove(post)">-->
+								<!--<i class="glyphicon glyphicon-trash"></i>-->
+							<!--</button>-->
+						<!--</div>-->
+					<!--</div>-->
+					<!--<h4 class="list-group-item-text" data-ng-bind="post.message"></h4>-->
+					<!--<br>-->
+					<!--<small class="list-group-item-text">-->
+						<!--Updated on-->
+						<!--<span data-ng-bind="post.updated | date:'mediumDate'"></span>-->
+					<!--</small>-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</a>-->
+	<!--</div>-->
 </section>

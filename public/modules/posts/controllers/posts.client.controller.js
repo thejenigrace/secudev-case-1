@@ -3,18 +3,49 @@
 // Posts controller
 var postsApp = angular.module('posts');
 
-postsApp.controller('PostsController', ['$scope', '$stateParams', '$location',
+postsApp.controller('PostsController', ['$scope',
+	'$http', '$stateParams', '$location', '$filter',
 	'Authentication', 'Posts', 'Notify',
-	function($scope, $stateParams, $location, Authentication, Posts, Notify) {
+	function($scope, $http, $stateParams, $location, $filter,
+			 Authentication, Posts, Notify) {
 		$scope.authentication = Authentication;
 
-		// Current User
-		this.user = Authentication.user;
+		//// Find a list of Posts
+		//this.posts = Posts.query();
 
-		// Find a list of Posts
-		this.posts = Posts.query();
+		//$scope.currentPage = 1;
+		//$scope.maxSize = 5;]
 
-		//// Find existing Post
+		//$scope.totalItems = function() {
+		//	var count;
+		//	$http.get('/posts/count').success(
+		//		function(response) {
+		//			count = response.count;
+		//		}
+		//	);
+		//	return count;
+		//};
+
+		//console.log('total items = ' + $scope.totalItems());
+
+		//$scope.setPage = function(pageNo) {
+		//	$scope.currentPage = pageNo;
+		//};
+        //
+		//$scope.pageChanged = function() {
+		//	$scope.loadMessages();
+		//};
+        //
+		//$scope.loadMessages = function() {
+		//	$http.get('/posts/page/' + $scope.currentPage).success(
+		//		function(response) {
+		//			this.posts = response;
+		//		}
+		//	);
+		//};
+
+
+		// Find existing Post
 		//$scope.findOne = function() {
 		//	$scope.post = Posts.get({
 		//		postId: $stateParams.postId
@@ -42,43 +73,45 @@ postsApp.controller('PostsController', ['$scope', '$stateParams', '$location',
 			});
 		};
 
-		// Remove existing Post
-		$scope.remove = function(post) {
-			if ( post ) {
-				post.$remove(function (response) {
+		// Remove existing Customer
+		this.remove = function(post) {
+			if (post) {
+				post.$remove(function(response) {
 					Notify.sendMessage('Remove Post', {'id': response._id});
 				});
 
 				for (var i in $scope.posts) {
-					if ($scope.posts [i] === post) {
-						$scope.posts.splice(i, 1);
+					if (this.posts [i] === post) {
+						this.posts.splice(i, 1);
 					}
 				}
 			} else {
 				$scope.post.$remove(function() {
-					$location.path('posts');
+
 				});
 			}
 		};
 
-		//$scope.buildPager = function () {
-		//	$scope.pagedItems = [];
-		//	$scope.itemsPerPage = 10;
-		//	$scope.currentPage = 1;
-		//	$scope.figureOutItemsToDisplay();
-		//};
-        //
-		//$scope.figureOutItemsToDisplay = function () {
-		//	$scope.filteredItems = $filter('filter')(this.posts, {$: $scope.search});
-		//	$scope.filterLength = $scope.filteredItems.length;
-		//	var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
-		//	var end = begin + $scope.itemsPerPage;
-		//	$scope.pagedItems = $scope.filteredItems.slice(begin, end);
-		//};
-        //
-		//$scope.pageChanged = function () {
-		//	$scope.figureOutItemsToDisplay();
-		//};
+
+
+		$scope.buildPager = function () {
+			$scope.pagedItems = [];
+			$scope.itemsPerPage = 10;
+			$scope.currentPage = 1;
+			$scope.figureOutItemsToDisplay();
+		};
+
+		$scope.figureOutItemsToDisplay = function () {
+			$scope.filteredItems = $filter('filter')(this.posts, {$: $scope.search});
+			$scope.filterLength = $scope.filteredItems.length;
+			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+			var end = begin + $scope.itemsPerPage;
+			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
+		};
+
+		$scope.pageChanged = function () {
+			$scope.figureOutItemsToDisplay();
+		};
 	}
 ]);
 
