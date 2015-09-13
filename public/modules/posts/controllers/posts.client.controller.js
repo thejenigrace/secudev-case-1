@@ -100,9 +100,16 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 
 		// Create new Post
 		$scope.create = function() {
+
+			try {
+				var fixMessage = $scope.message;
+			} catch(e) {
+
+			}
+
 			// Create new Post object
 			var post = new Posts ({
-				message: this.message
+				message: fixMessage
 			});
 
 			// Redirect after save
