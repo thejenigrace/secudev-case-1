@@ -5,9 +5,9 @@ var postsApp = angular.module('posts');
 
 postsApp.controller('PostsController', ['$scope',
 	'$http', '$stateParams', '$location', '$filter',
-	'Authentication', 'Posts', 'Notify',
+	'Authentication', 'Posts',
 	function($scope, $http, $stateParams, $location, $filter,
-			 Authentication, Posts, Notify) {
+			 Authentication, Posts) {
 
 		$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
@@ -82,8 +82,8 @@ postsApp.controller('PostsController', ['$scope',
 				});
 
 				for (var i in $scope.posts) {
-					if (this.posts [i] === post) {
-						this.posts.splice(i, 1);
+					if ($scope.posts [i] === post) {
+						$scope.posts.splice(i, 1);
 					}
 				}
 			} else {

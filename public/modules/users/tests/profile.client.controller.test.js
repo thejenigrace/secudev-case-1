@@ -1,10 +1,10 @@
 'use strict';
 
 (function() {
-	// Global message boards Controller Spec
-	describe('Global message boards Controller Tests', function() {
+	// Profile Controller Spec
+	describe('Profile Controller Tests', function() {
 		// Initialize global variables
-		var GlobalMessageBoardsController,
+		var ProfileController,
 			scope,
 			$httpBackend,
 			$stateParams,
@@ -44,8 +44,8 @@
 			$httpBackend = _$httpBackend_;
 			$location = _$location_;
 
-			// Initialize the Global message boards controller.
-			GlobalMessageBoardsController = $controller('GlobalMessageBoardsController', {
+			// Initialize the Profile controller.
+			ProfileController = $controller('ProfileController', {
 				$scope: scope
 			});
 		}));
