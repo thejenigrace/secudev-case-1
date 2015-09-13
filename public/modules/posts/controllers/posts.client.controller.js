@@ -100,31 +100,28 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 
 		// Create new Post
 		$scope.create = function() {
-
 			try {
-				var fixMessage = $scope.message;
+				// Create new Post object
+				var post = new Posts ({
+					message: $scope.message
+				});
+
+				// Redirect after save
+				post.$save(function(response) {
+
+					//Notify.sendMessage('New Post', {'id': response._id});
+					$scope.retrievePosts();
+
+					//$location.path('posts/' + response._id);
+
+					// Clear form fields
+					$scope.message = '';
+				}, function(errorResponse) {
+					$scope.error = errorResponse.data.message;
+				});
 			} catch(e) {
 
 			}
-
-			// Create new Post object
-			var post = new Posts ({
-				message: fixMessage
-			});
-
-			// Redirect after save
-			post.$save(function(response) {
-
-				//Notify.sendMessage('New Post', {'id': response._id});
-				$scope.retrievePosts();
-
-				//$location.path('posts/' + response._id);
-
-				// Clear form fields
-				$scope.message = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
 		};
 
 		// Remove existing Customer
@@ -146,32 +143,6 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 				});
 			}
 		};
-	}
-]);
-
-postsApp.controller('PostsCreateController', ['$scope', '$stateParams', '$location',
-	'Authentication', 'Posts', 'Notify',
-	function($scope, $stateParams, $location, Authentication, Posts, Notify) {
-		//// Create new Post
-		//$scope.create = function() {
-		//	// Create new Post object
-		//	var post = new Posts ({
-		//		message: this.message
-		//	});
-        //
-		//	// Redirect after save
-		//	post.$save(function(response) {
-        //
-		//		Notify.sendMessage('New Post', {'id': response._id});
-        //
-		//		//$location.path('posts/' + response._id);
-        //
-		//		// Clear form fields
-		//		$scope.message = '';
-		//	}, function(errorResponse) {
-		//		$scope.error = errorResponse.data.message;
-		//	});
-		//};
 	}
 ]);
 
