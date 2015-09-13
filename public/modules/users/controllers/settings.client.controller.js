@@ -63,7 +63,7 @@ angular.module('users').controller('SettingsController', ['$scope',
 				}
 
 				// And redirect to the index page
-				$location.path('/user-profile');
+				$location.path('/posts');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});

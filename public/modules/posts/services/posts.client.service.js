@@ -23,7 +23,7 @@ postsApp.factory('Notify', ['$rootScope',
 			data = data || {};
 			$rootScope.$emit(message, data);
 
-			console.log('Message Sent!');
+			console.log('message sent');
 		};
 
 		// List Posts to know if there is a new post

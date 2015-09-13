@@ -2,40 +2,40 @@
 
 // Admins controller
 angular.module('admin')
-	//.controller('AdminUsersListController', ['$scope', '$filter', '$state', 'Admin',
-	//	function($scope, $filter, $state, Admin) {
-	//		// Find a list of Users
-	//		$scope.find = function() {
-	//			Admin.query({type: 'users'}, function (data) {
-	//				$scope.users = data;
-	//				$scope.buildPager();
-	//			});
-    //
-	//		};
-    //
-	//		$scope.find();
-    //
-	//		$scope.buildPager = function () {
-	//			$scope.pagedItems = [];
-	//			$scope.itemsPerPage = 2;
-	//			$scope.currentPage = 1;
-	//			$scope.figureOutItemsToDisplay();
-	//		};
-    //
-	//		$scope.figureOutItemsToDisplay = function () {
-	//			$scope.filteredItems = $filter('filter')($scope.users, { $: $scope.search});
-	//			$scope.filterLength = $scope.filteredItems.length;
-	//			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
-	//			var end = begin + $scope.itemsPerPage;
-	//			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
-	//		};
-    //
-	//		$scope.pageChanged = function() {
-	//			$scope.figureOutItemsToDisplay();
-	//		};
-    //
-	//	}
-	//])
+	.controller('AdminUsersListController', ['$scope', '$filter', '$state', 'Admin',
+		function($scope, $filter, $state, Admin) {
+			// Find a list of Users
+			$scope.find = function() {
+				Admin.query({type: 'users'}, function (data) {
+					$scope.users = data;
+					$scope.buildPager();
+				});
+
+			};
+
+			$scope.find();
+
+			$scope.buildPager = function () {
+				$scope.pagedItems = [];
+				$scope.itemsPerPage = 2;
+				$scope.currentPage = 1;
+				$scope.figureOutItemsToDisplay();
+			};
+
+			$scope.figureOutItemsToDisplay = function () {
+				$scope.filteredItems = $filter('filter')($scope.users, { $: $scope.search});
+				$scope.filterLength = $scope.filteredItems.length;
+				var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+				var end = begin + $scope.itemsPerPage;
+				$scope.pagedItems = $scope.filteredItems.slice(begin, end);
+			};
+
+			$scope.pageChanged = function() {
+				$scope.figureOutItemsToDisplay();
+			};
+
+		}
+	])
 	//.controller('AdminUsersViewController', ['$scope', '$state', 'Admin',
 	//	function($scope, $state, Admin) {
 	//		if (!$scope.user) {

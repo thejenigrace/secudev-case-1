@@ -10,11 +10,11 @@ angular.module('admin').config(['$stateProvider',
 			templateUrl: 'modules/admin/views/users/main-users.client.view.html',
 			controller: 'AdminUsersController'
 		}).
-		// state('admin-users.list', {
-		// 	url: '/list',
-		// 	templateUrl: 'modules/admin/views/users/list-users.client.view.html',
-		// 	controller: 'AdminUsersListController'
-		// }).
+		//state('admin-users.list', {
+		//	url: '/list',
+		//	templateUrl: 'modules/admin/views/users/list-users.client.view.html',
+		//	controller: 'AdminUsersListController'
+		//}).
 		// state('admin-users.edit', {
 		// 	url: '/edit',
 		// 	templateUrl: 'modules/admin/views/users/edit-user.client.view.html',

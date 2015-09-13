@@ -10,9 +10,39 @@ postsApp.controller('PostsController', ['$scope',
 			 Authentication, Posts, Notify) {
 
 		$scope.authentication = Authentication;
+		$scope.user = Authentication.user;
 
-		//// Find a list of Posts
-		this.posts = Posts.query();
+		// Find a list of Posts
+		//this.posts = Posts.query();
+
+		// Get Posts
+		$scope.retrievePosts = function() {
+			Posts.query({}, function (data) {
+				$scope.posts = data;
+				$scope.buildPager();
+			});
+		};
+
+		$scope.retrievePosts();
+
+		$scope.buildPager = function () {
+			$scope.pagedItems = [];
+			$scope.itemsPerPage = 10;
+			$scope.currentPage = 1;
+			$scope.figureOutItemsToDisplay();
+		};
+
+		$scope.figureOutItemsToDisplay = function () {
+			$scope.filteredItems = $filter('filter')($scope.posts, { $: $scope.search});
+			$scope.filterLength = $scope.filteredItems.length;
+			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+			var end = begin + $scope.itemsPerPage;
+			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
+		};
+
+		$scope.pageChanged = function() {
+			$scope.figureOutItemsToDisplay();
+		};
 
 		//Find existing Post
 		$scope.findOne = function() {
@@ -31,7 +61,8 @@ postsApp.controller('PostsController', ['$scope',
 			// Redirect after save
 			post.$save(function(response) {
 
-				Notify.sendMessage('New Post', {'id': response._id});
+				//Notify.sendMessage('New Post', {'id': response._id});
+				$scope.retrievePosts();
 
 				//$location.path('posts/' + response._id);
 
@@ -46,7 +77,8 @@ postsApp.controller('PostsController', ['$scope',
 		this.remove = function(post) {
 			if (post) {
 				post.$remove(function(response) {
-					Notify.sendMessage('Remove Post', {'id': response._id});
+					//Notify.sendMessage('Remove Post', {'id': response._id});
+					$scope.retrievePosts();
 				});
 
 				for (var i in $scope.posts) {
@@ -111,18 +143,19 @@ postsApp.directive('postList', [ 'Posts', 'Notify',
 		return {
 			restrict: 'E',
 			transclude: true,
-			templateUrl: 'modules/posts/views/list-posts.client.view.html',
-			link: function (scope, element, attrs) {
-				// When a new post is added, update the post list
-				Notify.getMessage('New Post', function(event, data){
-					scope.postsCtrl.posts = Posts.query();
-				});
-
-				// When a post is deleted, update the post list
-				Notify.getMessage('Remove Post', function (event, data) {
-					scope.postsCtrl.posts = Posts.query();
-				});
-			}
+			templateUrl: 'modules/posts/views/list-posts.client.view.html'
+			//link: function (scope, element, attrs) {
+			//	// When a new post is added, update the post list
+			//	Notify.getMessage('New Post', function(event, data){
+			//		//scope.setPosts(Posts.query());
+			//		scope.posts = Posts.query();
+			//	});
+            //
+			//	// When a post is deleted, update the post list
+			//	Notify.getMessage('Remove Post', function (event, data) {
+			//		//scope.PostCtrl.posts = Posts.query();
+			//	});
+			//}
 		};
 	}
 ]);
