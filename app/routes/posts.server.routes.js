@@ -6,7 +6,7 @@ module.exports = function(app) {
 
 	// Posts Routes
 	app.route('/posts')
-		.get(posts.list)
+		.get(users.requiresLogin, posts.list)
 		.post(users.requiresLogin, posts.create);
 
 	app.route('/posts/:postId')

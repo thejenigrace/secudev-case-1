@@ -42,7 +42,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				$scope.authentication.user = response;
 
 				// And redirect to the index page
-				$location.path('/posts');
+				$location.path('/board/posts');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});
@@ -54,7 +54,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				$scope.authentication.user = response;
 
 				// And redirect to the index page
-				$location.path('/posts');
+				$location.path('/board/posts');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});

@@ -11,7 +11,7 @@
 							ng-change="pageChanged()">
 				</pagination>
 			</div>
-			<a data-ng-repeat="post in pagedItems" class="list-group-item" ng-href="/#!/posts">
+			<a data-ng-repeat="post in pagedItems" class="list-group-item" ng-href="/#!/board/posts">
 				<div class="row">
 					<div class="col-xs-12 col-sm-2 text-center">
 						<!--<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>-->
@@ -25,6 +25,7 @@
 							<tbody>
 								<tr>
 									<td>
+										<!--ui-sref="viewUserProfile({ profileUserId: post.user._id })"-->
 										<a ng-href="/#!/user-profile">
 											<h5 class="text-primary" data-ng-bind="post.user.firstName"></h5>
 										</a>
@@ -49,7 +50,8 @@
 									<span data-ng-bind="post.created | date:'MM/dd/yyyy \'at\' h:mma'"></span>
 								</small>
 							</div>
-							<div class="col-md-7 col-md-push-7" data-ng-show="isAuthorize(post.user._id)">
+							<div class="col-xs-push-9 col-sm-3 col-sm-push-6 col-md-4 col-md-push-7"
+								 data-ng-show="isAuthorize(post.user._id)">
 								<button type="button" class="btn btn-sm btn-warning"
 										ng-click="postsCtrl.modalUpdate('lg', post)">
 									<i class="glyphicon glyphicon-edit"></i>

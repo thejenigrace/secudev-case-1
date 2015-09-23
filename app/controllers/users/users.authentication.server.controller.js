@@ -7,6 +7,7 @@ var _ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
+	sanitizeHTML = require('sanitize-html'),
 	User = mongoose.model('User');
 
 /**
@@ -23,6 +24,8 @@ exports.signup = function(req, res) {
 	// Add missing user fields
 	user.provider = 'local';
 	user.displayName = user.firstName + ' ' + user.lastName;
+
+	var clean = sanitizeHTML(user.aboutMe);
 
 	// Then save the user
 	user.save(function(err) {

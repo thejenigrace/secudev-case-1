@@ -26,7 +26,9 @@ module.exports = function(app) {
 	app.route('/auth/signout').get(users.signout);
 
 	//Update user profile
-	app.route('/users/editProfile').post(users.update);
+	app.route('/users/profile/update').post(users.update);
+
+	//app.route('/users/all').get(users.read);
 
 	// Setting the facebook oauth routes
 	app.route('/auth/facebook').get(passport.authenticate('facebook', {

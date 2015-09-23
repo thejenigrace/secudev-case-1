@@ -4,12 +4,31 @@
 var postsApp = angular.module('posts');
 
 postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
-	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts',
+	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Users',
 	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
-			 Authentication, Posts) {
+			 Authentication, Posts, Users) {
 
-		$scope.authentication = Authentication;
+		//$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
+
+		// If user is not signed in then redirect back home
+		if (!$scope.user) $location.path('/');
+
+		var profileUserId;
+		$scope.setProfileUserId = function(userId) {
+			profileUserId = userId;
+
+			//$location.path('/user/profile/' + profileUserId);
+		};
+
+		$scope.findProfile = function() {
+			console.log(profileUserId);
+			$scope.profile = Users.get({
+				_id: $stateParams.profileUserId
+			});
+
+			//console.log($scope.profile.firstName);
+		};
 
 		// Find a list of Posts
 		//this.posts = Posts.query();
@@ -103,7 +122,8 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 			try {
 				// Create new Post object
 				var post = new Posts ({
-					message: $scope.message
+					message: $scope.message,
+					displayName: $scope.user.displayName
 				});
 
 				// Redirect after save
@@ -113,6 +133,7 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 					$scope.retrievePosts();
 
 					//$location.path('posts/' + response._id);
+					console.log(response.clean);
 
 					// Clear form fields
 					$scope.message = '';
@@ -162,6 +183,28 @@ postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
 ]);
 
 
+postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
+	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Userss',
+	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
+			 Authentication, Posts, Userss) {
+
+		$scope.findProfile = function() {
+			//console.log(profileUserId);
+			console.log($stateParams.profileUserId);
+			//$scope.user = Userss.get({
+			//	userId: $stateParams.profileUserId
+			//});
+
+			//$http.get('/users/all').success(function(response){
+			//	$scope.user = response;
+			//});
+
+			console.log($scope.user.firstName);
+		};
+	}
+]);
+
+
 // Angular Directive
 postsApp.directive('postList', [ 'Posts', 'Notify',
 	function(Posts, Notify) {
@@ -169,18 +212,6 @@ postsApp.directive('postList', [ 'Posts', 'Notify',
 			restrict: 'E',
 			transclude: true,
 			templateUrl: 'modules/posts/views/list-posts.client.view.html'
-			//link: function (scope, element, attrs) {
-			//	// When a new post is added, update the post list
-			//	Notify.getMessage('New Post', function(event, data){
-			//		//scope.setPosts(Posts.query());
-			//		scope.posts = Posts.query();
-			//	});
-            //
-			//	// When a post is deleted, update the post list
-			//	Notify.getMessage('Remove Post', function (event, data) {
-			//		//scope.PostCtrl.posts = Posts.query();
-			//	});
-			//}
 		};
 	}
 ]);

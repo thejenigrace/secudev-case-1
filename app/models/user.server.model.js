@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+	validators = require('mongoose-validators'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto');
 
@@ -136,7 +137,8 @@ var UserSchema = new Schema({
 	},
 	aboutMe: {
 		type: String,
-		required: 'Please fill-up about me section'
+		required: 'Please fill-up about me section',
+		match: [/^([a-zA-Z0-9]+)*[a-zA-Z0-9]+$/, 'About Me: Alphanumeric only']
 	},
 	username: {
 		type: String,

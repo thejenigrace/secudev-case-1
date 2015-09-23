@@ -10,6 +10,10 @@ var mongoose = require('mongoose'),
  * Post Schema
  */
 var PostSchema = new Schema({
+	displayName: {
+		type: String,
+		trim: true
+	},
 	message: {
 		type: String,
 		default: '',

@@ -3,8 +3,8 @@
 var UsersApp = angular.module('users');
 
 UsersApp.controller('ProfileUserController', ['$scope',
-	'$stateParams', '$location', 'Authentication',
-	function($scope, $stateParams, $location, Authentication) {
+	'$stateParams', '$location', 'Authentication', 'Users',
+	function($scope, $stateParams, $location, Authentication, Users) {
 
 		$scope.user = Authentication.user;
 
@@ -59,7 +59,7 @@ UsersApp.controller('ProfileEditController', ['$scope',
 
 		$scope.editProfile = function(isValid) {
 			var username = $scope.user.username;
-			$http.post('/users/editProfile', $scope.user).success(function(response) {
+			$http.post('/users/profile/update', $scope.user).success(function(response) {
 				// If successful we assign the response to the global user model
 				if (isValid) {
 					$scope.success = $scope.error = null;
@@ -77,7 +77,7 @@ UsersApp.controller('ProfileEditController', ['$scope',
 				}
 
 				// And redirect to the index page
-				$location.path('/posts');
+				$location.path('/user-profile');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});
