@@ -1,6 +1,4 @@
 <section>
-	<!--<div class="alert alert-warning text-center" data-ng-hide="!users.$resolved || users.length">-->
-
 		<div class="col-md-10 col-md-offset-1 list-group form-bg">
 			<div class="text-center">
 				<pagination boundary-links="true"
@@ -11,7 +9,13 @@
 							ng-change="pageChanged()">
 				</pagination>
 			</div>
-			<a data-ng-repeat="post in pagedItems" class="list-group-item" ng-href="/#!/board/posts">
+
+			<div>
+				<input type="text" class="form-control" ng-model="search.message" placeholder="Search...">
+			</div>
+			<br>
+
+			<a data-ng-repeat="post in pagedItems | filter:search:strict" class="list-group-item" ng-href="/#!/board/posts">
 				<div class="row">
 					<div class="col-xs-12 col-sm-2 text-center">
 						<!--<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>-->
