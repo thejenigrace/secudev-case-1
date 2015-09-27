@@ -5,10 +5,30 @@ var postsApp = angular.module('posts');
 
 postsApp.factory('Posts', ['$resource',
 	function($resource) {
-		return $resource('posts/:postId', { postId: '@_id'
-		}, {
+		return $resource('posts/:postId', {postId: '@_id'}, {
 			update: {
 				method: 'PUT'
+			}
+		});
+	}
+]);
+
+postsApp.factory('AllPost', ['$resource',
+	function($resource) {
+		return $resource('api/posts', {}, {
+			paged: {
+				method: 'POST'
+			}
+		});
+	}
+]);
+
+
+postsApp.factory('Post', ['$resource',
+	function($resource) {
+		return $resource('posts/search', {}, {
+			search: {
+				method: 'POST'
 			}
 		});
 	}

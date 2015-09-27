@@ -9,6 +9,130 @@ var mongoose = require('mongoose'),
 	Post = mongoose.model('Post'),
 	_ = require('lodash');
 
+//mongoose.Promise = require('bluebird');
+
+/**
+ * Paginate All Posts
+ */
+exports.pagedList = function(req, res) {
+	var currentPage;
+	var itemsPerPage = 10;
+
+	if(!req.body.currentPage)
+		currentPage = 1;
+	else
+		currentPage = req.body.currentPage;
+
+	if(!req.body.keyword) {
+		Post.paginate({}, {
+			page: currentPage,
+			limit: itemsPerPage,
+			populate: [
+				{
+					path: 'user',
+					select: 'username displayName firstName created'
+				}
+			],
+			sortBy: {
+				created: -1
+			}
+		})
+			.spread(function (posts, pageCount, itemCount) {
+				//console.log(posts);
+
+				res.jsonp({'posts': posts});
+			})
+			.catch(function (err) {
+
+			});
+	} else {
+		var keyword = req.body.keyword;
+		Post.paginate({message: new RegExp(keyword, 'i')}, {
+			page: currentPage,
+			limit: itemsPerPage,
+			populate: [
+				{
+					path: 'user',
+					select: 'username displayName firstName created'
+				}
+			],
+			sortBy: {
+				created: -1
+			}
+		})
+			.spread(function(posts, pageCount, itemCount) {
+				//console.log(posts);
+
+				res.jsonp({'posts': posts});
+			})
+			.catch(function(err) {
+
+			});
+	}
+
+	//Post.find({ $query: {}, $orderby: {created: -1} })
+	//	.skip((currentPage - 1) * itemsPerPage)
+	//	.limit(itemsPerPage)
+	//	.exec(function (err, posts) {
+	//		if(err)
+	//			return res.status(400).send({
+	//				message: errorHandler.getErrorMessage(err)
+	//			});
+	//		else
+	//			console.log(posts);
+	//	});
+};
+
+/**
+ * Search a Post
+ */
+exports.search = function(req, res) {
+	var keyword = req.body.keyword;
+	console.log('keyword: ' + keyword);
+	//Post.search(keyword, {message: 1}, {
+	//	limit: 10
+	//}, function(err, data) {
+	//	// array of finded results
+	//	console.log(data.results);
+	//	// array of all matching objects
+	//	console.log(data.totalCount);
+	//});
+
+	//Post.count({}, function(err, count) {
+	//	if(err) {
+	//		console.log(err);
+	//	} else {
+	//		console.log('Posts Count: ' + count);
+	//		//res.jsonp(count);
+	//	}
+	//});
+
+	Post.paginate({message: new RegExp(keyword, 'i')}, {
+		limit: 10
+	})
+		.spread(function(results, pageCount, itemCount) {
+			console.log(results);
+		})
+		.catch(function(err) {
+
+		});
+};
+
+/**
+ * Count number of All Post
+ */
+exports.count = function(req, res) {
+	Post.count({}, function(err, count) {
+		if(err) {
+			console.log(err);
+		} else {
+			console.log('Posts Count: ' + count);
+
+			res.jsonp({'count': count});
+		}
+	});
+};
+
 /**
  * Create a Post
  */

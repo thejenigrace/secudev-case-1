@@ -3,10 +3,11 @@
 // Posts controller
 var postsApp = angular.module('posts');
 
-postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
-	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Users',
-	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
-			 Authentication, Posts, Users) {
+postsApp.controller('PostsController', ['$scope',
+	'$http', '$stateParams', '$location', '$filter', '$modal', '$log',
+	'Authentication', 'Posts', 'Users', 'Post', 'AllPost',
+	function ($scope, $http, $stateParams, $location, $filter, $modal, $log,
+			  Authentication, Posts, Users, Post, AllPost) {
 
 		//$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
@@ -14,14 +15,30 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
+		//$scope.search = function() {
+		//	//$scope.postsCount = Post.$get;
+		//
+		//	//console.log('Post Count: ' + $scope.postsCount);
+		//
+		//	var searchPost = new Post ({
+		//		keyword: 'Haha'
+		//	});
+		//
+		//	searchPost.$search(function (response) {
+		//
+		//	}, function (err) {
+		//		console.log(err);
+		//	});
+		//};
+
 		var profileUserId;
-		$scope.setProfileUserId = function(userId) {
+		$scope.setProfileUserId = function (userId) {
 			profileUserId = userId;
 
 			//$location.path('/user/profile/' + profileUserId);
 		};
 
-		$scope.findProfile = function() {
+		$scope.findProfile = function () {
 			console.log(profileUserId);
 			$scope.profile = Users.get({
 				_id: $stateParams.profileUserId
@@ -30,52 +47,56 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 			//console.log($scope.profile.firstName);
 		};
 
-		// Find a list of Posts
-		//this.posts = Posts.query();
 
-		// Get All Posts
-		$scope.retrievePosts = function() {
-			Posts.query({}, function (data) {
-				$scope.posts = data;
-				$scope.buildPager();
+		$scope.buildPager = function() {
+			$scope.currentPage = 1;
+			$scope.itemsPerPage = 10;
+			$scope.maxSize = 5;
+
+			$http.get('/api/posts/count').success(function (response) {
+				$scope.totalItems = response.count;
+				//console.log('Total Items = ' + $scope.totalItems);
 			});
 		};
 
+		$scope.retrievePosts = function () {
+			var allPost = new AllPost({
+				currentPage: $scope.currentPage,
+				keyword: 'Hahaha'
+			});
+
+			allPost.$paged(function (response) {
+				$scope.pagedPosts = response.posts;
+				//$scope.buildPager();
+			}, function (err) {
+				//console.log(err);
+			});
+		};
+
+		// Initial Load of Board Posts
+		$scope.buildPager();
 		$scope.retrievePosts();
 
-		$scope.buildPager = function () {
-			$scope.pagedItems = [];
-			$scope.itemsPerPage = 10;
-			$scope.currentPage = 1;
-			$scope.figureOutItemsToDisplay();
+		$scope.pageChanged = function () {
+			$log.log('Page changed to: ' + $scope.currentPage);
+			$scope.retrievePosts();
 		};
 
-		$scope.figureOutItemsToDisplay = function () {
-			$scope.filteredItems = $filter('filter')($scope.posts, { $: $scope.search});
-			$scope.filterLength = $scope.filteredItems.length;
-			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
-			var end = begin + $scope.itemsPerPage;
-			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
-		};
-
-		$scope.pageChanged = function() {
-			$scope.figureOutItemsToDisplay();
-		};
 
 		//Find existing Post
-		$scope.findOne = function() {
+		$scope.findOne = function () {
 			$scope.post = Posts.get({
 				postId: $stateParams.postId
 			});
 		};
 
-		$scope.isAuthorize = function(postUserId) {
+		$scope.isAuthorize = function (postUserId) {
 			//console.log($scope.user.roles.indexOf('admin'));
 			//console.log("postUserId = " + postUserId);
 			//console.log("user._id = " + $scope.user._id);
-			if($scope.user.roles.indexOf('admin') === 0)
+			if ($scope.user.roles.indexOf('admin') === 0)
 				return true;
-			else if(postUserId === $scope.user._id)
+			else if (postUserId === $scope.user._id)
 				return true;
 			else
 				return false;
@@ -118,18 +139,20 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 		};
 
 		// Create new Post
-		$scope.create = function() {
+		$scope.create = function () {
 			try {
 				// Create new Post object
-				var post = new Posts ({
+				var post = new Posts({
 					message: $scope.message,
 					displayName: $scope.user.displayName
 				});
 
 				// Redirect after save
-				post.$save(function(response) {
+				post.$save(function (response) {
 
 					//Notify.sendMessage('New Post', {'id': response._id});
+
+					// Reload the board posts
 					$scope.retrievePosts();
 
 					//$location.path('posts/' + response._id);
@@ -137,19 +160,21 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 
 					// Clear form fields
 					$scope.message = '';
-				}, function(errorResponse) {
+				}, function (errorResponse) {
 					$scope.error = errorResponse.data.message;
 				});
-			} catch(e) {
+			} catch (e) {
 
 			}
 		};
 
 		// Remove existing Customer
-		this.remove = function(post) {
+		this.remove = function (post) {
 			if (post) {
-				post.$remove(function(response) {
+				post.$remove(function (response) {
 					//Notify.sendMessage('Remove Post', {'id': response._id});
+
+					// Reload the board posts
 					$scope.retrievePosts();
 				});
 
@@ -159,7 +184,7 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 					}
 				}
 			} else {
-				$scope.post.$remove(function() {
+				$scope.post.$remove(function () {
 
 				});
 			}
@@ -168,14 +193,14 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 ]);
 
 postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
-	function($scope, Posts) {
+	function ($scope, Posts) {
 		// Update existing Post
-		this.update = function(updatedPost) {
+		this.update = function (updatedPost) {
 			var post = updatedPost;
 
-			post.$update(function() {
+			post.$update(function () {
 				//$location.path('posts/' + post._id);
-			}, function(errorResponse) {
+			}, function (errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
@@ -185,10 +210,10 @@ postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
 
 postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
 	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Userss',
-	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
-			 Authentication, Posts, Userss) {
+	function ($scope, $http, $stateParams, $location, $filter, $modal, $log,
+			  Authentication, Posts, Userss) {
 
-		$scope.findProfile = function() {
+		$scope.findProfile = function () {
 			//console.log(profileUserId);
 			console.log($stateParams.profileUserId);
 			//$scope.user = Userss.get({
@@ -206,8 +231,8 @@ postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
 
 
 // Angular Directive
-postsApp.directive('postList', [ 'Posts', 'Notify',
-	function(Posts, Notify) {
+postsApp.directive('postList', ['Posts', 'Notify',
+	function (Posts, Notify) {
 		return {
 			restrict: 'E',
 			transclude: true,

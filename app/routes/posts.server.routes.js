@@ -14,6 +14,15 @@ module.exports = function(app) {
 		.put(users.requiresLogin, posts.hasAuthorization, posts.update)
 		.delete(users.requiresLogin, posts.hasAuthorization, posts.delete);
 
+	app.route('/api/posts/count')
+		.get(posts.count);
+
+	app.route('/api/posts')
+		.post(users.requiresLogin, posts.pagedList);
+
+	app.route('/posts/search')
+		.post(users.requiresLogin, posts.search);
+
 	// Finish by binding the Post middleware
 	app.param('postId', posts.postByID);
 };
