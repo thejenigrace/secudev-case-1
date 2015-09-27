@@ -2,6 +2,19 @@
 	<!--<div class="alert alert-warning text-center" data-ng-hide="!users.$resolved || users.length">-->
 
 		<div class="col-md-10 col-md-offset-1 list-group form-bg">
+			<div class="form-group">
+				<input type="text" class="form-control" data-ng-model="searchKeyword" placeholder="Search..." data-ng-change="retrievePosts()">
+			</div>
+
+			<div class="form-group">
+				<input type="text" class="form-control" data-ng-model="searchUser" placeholder="User" data-ng-change="retrievePosts()">
+			</div>
+
+			<div class="form-group">
+				<!--<label for="birthdate">Birthdate</label>-->
+				<input class="form-control" data-ng-model="credentials.birthdate" id="birthdate" name="birthdate" type="date" required>
+			</div>
+
 			<div class="text-center">
 				<pagination boundary-links="false"
 							direction-links="true"
@@ -12,6 +25,7 @@
 							ng-change="pageChanged()">
 				</pagination>
 			</div>
+
 			<a data-ng-repeat="post in pagedPosts" class="list-group-item" ng-href="/#!/board/posts">
 				<div class="row">
 					<div class="col-xs-12 col-sm-2 text-center">

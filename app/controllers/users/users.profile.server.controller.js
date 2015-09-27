@@ -54,3 +54,23 @@ exports.update = function(req, res) {
 exports.me = function(req, res) {
 	res.json(req.user || null);
 };
+
+/**
+ * Find User By Username
+ * (Use for Posts)
+ */
+exports.userIdByUsername = function(req, res) {
+	console.log(req.body.username);
+	User.find({username: req.body.username})
+		.select({_id: 1})
+		.exec(function(err, user){
+			if(err)
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			else {
+				console.log('user server controller: ' + user[0]);
+				res.json(user[0]);
+			}
+		});
+};

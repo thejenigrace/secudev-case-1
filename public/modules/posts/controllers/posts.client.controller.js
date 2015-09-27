@@ -15,21 +15,34 @@ postsApp.controller('PostsController', ['$scope',
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
-		//$scope.search = function() {
-		//	//$scope.postsCount = Post.$get;
-		//
-		//	//console.log('Post Count: ' + $scope.postsCount);
-		//
-		//	var searchPost = new Post ({
-		//		keyword: 'Haha'
-		//	});
-		//
-		//	searchPost.$search(function (response) {
-		//
-		//	}, function (err) {
-		//		console.log(err);
-		//	});
-		//};
+		$scope.search = function() {
+			//$scope.postsCount = Post.$get;
+
+			//console.log('Post Count: ' + $scope.postsCount);
+			var keyword = 'jason';
+
+			//var searchPost = new Post ({
+			//	keyword: 'jason'
+			//	//keyword: '55fec1ebf16fb378d0c6e9cf'
+			//});
+
+			//var id = 0;
+			$http.post('/api/posts/search/user', {username: keyword}).success(function(response) {
+				var index = 0;
+
+				var searchPost = new Post ({
+					keyword: response._id
+
+				});
+
+				searchPost.$search(function (response) {
+
+				}, function (err) {
+					console.log(err);
+				});
+			});
+
+		};
 
 		var profileUserId;
 		$scope.setProfileUserId = function (userId) {
@@ -62,7 +75,7 @@ postsApp.controller('PostsController', ['$scope',
 		$scope.retrievePosts = function () {
 			var allPost = new AllPost({
 				currentPage: $scope.currentPage,
-				keyword: 'Hahaha'
+				keyword: $scope.searchKeyword
 			});
 
 			allPost.$paged(function (response) {
@@ -70,6 +83,22 @@ postsApp.controller('PostsController', ['$scope',
 				//$scope.buildPager();
 			}, function (err) {
 				//console.log(err);
+			});
+
+
+			$http.post('/api/posts/search/user', {username: $scope.searchUser}).success(function(response) {
+				var allPost = new AllPost({
+					currentPage: $scope.currentPage,
+					keyword: $scope.searchKeyword,
+					userId: response._id
+				});
+
+				allPost.$paged(function (response) {
+					$scope.pagedPosts = response.posts;
+					//$scope.buildPager();
+				}, function (err) {
+					//console.log(err);
+				});
 			});
 		};
 

@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	sanitizeHTML = require('sanitize-html'),
 	Post = mongoose.model('Post'),
+	User = mongoose.model('User'),
 	_ = require('lodash');
 
 //mongoose.Promise = require('bluebird');
@@ -23,7 +24,7 @@ exports.pagedList = function(req, res) {
 	else
 		currentPage = req.body.currentPage;
 
-	if(!req.body.keyword) {
+	if(!req.body.keyword && !req.body.userId) {
 		Post.paginate({}, {
 			page: currentPage,
 			limit: itemsPerPage,
@@ -45,7 +46,7 @@ exports.pagedList = function(req, res) {
 			.catch(function (err) {
 
 			});
-	} else {
+	} else if(req.body.keyword || !req.body.userId) {
 		var keyword = req.body.keyword;
 		Post.paginate({message: new RegExp(keyword, 'i')}, {
 			page: currentPage,
@@ -62,6 +63,29 @@ exports.pagedList = function(req, res) {
 		})
 			.spread(function(posts, pageCount, itemCount) {
 				//console.log(posts);
+
+				res.jsonp({'posts': posts});
+			})
+			.catch(function(err) {
+
+			});
+	} else if(req.body.userId) {
+
+		Post.paginate({user: req.body.userId}, {
+			page: currentPage,
+			limit: itemsPerPage,
+			populate: [
+				{
+					path: 'user',
+					select: 'username displayName firstName created'
+				}
+			],
+			sortBy: {
+				created: -1
+			}
+		})
+			.spread(function(posts, pageCount, itemCount) {
+				//console.log(results);
 
 				res.jsonp({'posts': posts});
 			})
@@ -87,8 +111,9 @@ exports.pagedList = function(req, res) {
  * Search a Post
  */
 exports.search = function(req, res) {
-	var keyword = req.body.keyword;
-	console.log('keyword: ' + keyword);
+	//var keyword = req.body.keyword;
+	//console.log('keyword: ' + keyword);
+
 	//Post.search(keyword, {message: 1}, {
 	//	limit: 10
 	//}, function(err, data) {
@@ -107,8 +132,35 @@ exports.search = function(req, res) {
 	//	}
 	//});
 
-	Post.paginate({message: new RegExp(keyword, 'i')}, {
-		limit: 10
+	//User.find({username: 'jason'})
+	//	.select({_id: 1})
+	//	.exec(function(err, users){
+	//		if(err)
+	//			return res.status(400).send({
+	//				message: errorHandler.getErrorMessage(err)
+	//			});
+	//		else {
+	//			console.log(users);
+    //
+	//			id = users;
+	//		}
+	//	});
+
+	var keyword = JSON.stringify(req.body.keyword).replace(/\"/g, '');
+
+	console.log('keyword: ' + keyword);
+
+	Post.paginate({user: keyword}, {
+		limit: 10,
+		populate: [
+			{
+				path: 'user',
+				select: 'username displayName firstName created'
+			}
+		],
+		sortBy: {
+			created: -1
+		}
 	})
 		.spread(function(results, pageCount, itemCount) {
 			console.log(results);
@@ -124,7 +176,9 @@ exports.search = function(req, res) {
 exports.count = function(req, res) {
 	Post.count({}, function(err, count) {
 		if(err) {
-			console.log(err);
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
 		} else {
 			console.log('Posts Count: ' + count);
 
