@@ -3,11 +3,11 @@
 // Posts controller
 var postsApp = angular.module('posts');
 
-postsApp.controller('PostsController', ['$scope',
-	'$http', '$stateParams', '$location', '$filter', '$modal', '$log',
-	'Authentication', 'Posts', 'Users', 'Post', 'AllPost',
-	function ($scope, $http, $stateParams, $location, $filter, $modal, $log,
-			  Authentication, Posts, Users, Post, AllPost) {
+postsApp.controller('PostsController', ['$scope', '$rootScope',
+	'$http', '$stateParams', '$location', '$filter', '$modal', '$log', '$q',
+	'Authentication', 'Posts', 'Users', 'Post', 'AllPost', 'FindUserId',
+	function ($scope, $rootScope, $http, $stateParams, $location, $filter, $modal, $log, $q,
+			  Authentication, Posts, Users, Post, AllPost, FindUserId) {
 
 		//$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
@@ -15,33 +15,72 @@ postsApp.controller('PostsController', ['$scope',
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
-		$scope.search = function() {
-			//$scope.postsCount = Post.$get;
+		$scope.searchCriteria = [];
 
-			//console.log('Post Count: ' + $scope.postsCount);
-			var keyword = 'jason';
+		$scope.addSearchCriterion = function() {
+			var itemNo = $scope.searchCriteria.length;
+			$scope.searchCriteria.push({'id': itemNo});
+			console.log('add id:' + itemNo);
+		};
 
-			//var searchPost = new Post ({
-			//	keyword: 'jason'
-			//	//keyword: '55fec1ebf16fb378d0c6e9cf'
-			//});
+		$scope.removeSearchCriterion = function(id) {
+			console.log('remove id: ' + id);
+			//var lastItem = $scope.searchCriteria.length - 1;
+			$scope.searchCriteria.splice(id, 1);
+		};
 
-			//var id = 0;
-			$http.post('/api/posts/search/user', {username: keyword}).success(function(response) {
-				var index = 0;
+		$scope.removeAllSearchCriterion = function() {
+			$scope.searchCriteria = [];
+		};
 
-				var searchPost = new Post ({
-					keyword: response._id
 
-				});
+		$scope.type = [];
+		$scope.data = [];
+		$scope.concat = [];
 
-				searchPost.$search(function (response) {
+		$scope.searchClear = function() {
+			$scope.type = [];
+			$scope.data = [];
+			$scope.concat = [];
+		};
 
-				}, function (err) {
-					console.log(err);
-				});
+		$scope.search = function () {
+			console.log('---SEARCH---');
+			console.log('keyword: ' + $scope.searchKeyword);
+
+			var arrAnd = [];
+			var arrOr = [];
+
+			for(var i = 0; i < $scope.searchCriteria.length; i++) {
+				if($scope.concat[i] === 'and') {
+					console.log('and: ' + '{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+					arrAnd.push('{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+				} else if($scope.concat[i] === 'or') {
+					console.log('or: ' + '{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+					arrOr.push('{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+				}
+
+				if($scope.type[i] === 'between') {
+					console.log('start = ' + $scope.data[i].start);
+					console.log('end = ' + $scope.data[i].end);
+				}
+			}
+
+			var searchThis = new Post({
+				currentPage: $scope.currentPage,
+				keyword: $scope.searchKeyword,
+				type: $scope.type,
+				data: $scope.data,
+				concat: $scope.concat
 			});
 
+			searchThis.$search(function(response) {
+				$scope.pagedPosts = response.posts;
+			}, function(err) {
+
+			});
+
+			$scope.searchClear();
 		};
 
 		var profileUserId;
@@ -61,7 +100,7 @@ postsApp.controller('PostsController', ['$scope',
 		};
 
 
-		$scope.buildPager = function() {
+		$scope.buildPager = function () {
 			$scope.currentPage = 1;
 			$scope.itemsPerPage = 10;
 			$scope.maxSize = 5;
@@ -86,20 +125,20 @@ postsApp.controller('PostsController', ['$scope',
 			});
 
 
-			$http.post('/api/posts/search/user', {username: $scope.searchUser}).success(function(response) {
-				var allPost = new AllPost({
-					currentPage: $scope.currentPage,
-					keyword: $scope.searchKeyword,
-					userId: response._id
-				});
-
-				allPost.$paged(function (response) {
-					$scope.pagedPosts = response.posts;
-					//$scope.buildPager();
-				}, function (err) {
-					//console.log(err);
-				});
-			});
+			//$http.post('/api/posts/search/user', {username: $scope.searchUser}).success(function (response) {
+			//	var allPost = new AllPost({
+			//		currentPage: $scope.currentPage,
+			//		keyword: $scope.searchKeyword,
+			//		userId: response._id
+			//	});
+			//
+			//	allPost.$paged(function (response) {
+			//		$scope.pagedPosts = response.posts;
+			//		//$scope.buildPager();
+			//	}, function (err) {
+			//		//console.log(err);
+			//	});
+			//});
 		};
 
 		// Initial Load of Board Posts
@@ -167,7 +206,7 @@ postsApp.controller('PostsController', ['$scope',
 			});
 		};
 
-		// Create new Post
+// Create new Post
 		$scope.create = function () {
 			try {
 				// Create new Post object
@@ -219,7 +258,8 @@ postsApp.controller('PostsController', ['$scope',
 			}
 		};
 	}
-]);
+])
+;
 
 postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
 	function ($scope, Posts) {

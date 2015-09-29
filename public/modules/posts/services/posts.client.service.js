@@ -34,6 +34,17 @@ postsApp.factory('Post', ['$resource',
 	}
 ]);
 
+postsApp.factory('FindUserId', ['$resource',
+	function($resource) {
+		return $resource('/api/posts/search/user', {}, {
+			find: {
+				method: 'POST'
+			}
+		});
+	}
+]);
+
+
 postsApp.factory('Notify', ['$rootScope',
 	function ($rootScope) {
 		var notify = {};

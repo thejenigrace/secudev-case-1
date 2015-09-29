@@ -10,22 +10,258 @@ var mongoose = require('mongoose'),
 	User = mongoose.model('User'),
 	_ = require('lodash');
 
-//mongoose.Promise = require('bluebird');
+//var Promise = require('bluebird');
+//
+//Promise.promisifyAll(mongoose);
 
 /**
  * Paginate All Posts
  */
-exports.pagedList = function(req, res) {
+exports.pagedList = function (req, res) {
 	var currentPage;
 	var itemsPerPage = 10;
 
-	if(!req.body.currentPage)
+	if (!req.body.currentPage)
 		currentPage = 1;
 	else
 		currentPage = req.body.currentPage;
 
-	if(!req.body.keyword && !req.body.userId) {
-		Post.paginate({}, {
+	Post.paginate({}, {
+		page: currentPage,
+		limit: itemsPerPage,
+		populate: [
+			{
+				path: 'user',
+				select: 'username displayName firstName created'
+			}
+		],
+		sortBy: {
+			created: -1
+		}
+	})
+		.spread(function(posts, pageCount, itemCount) {
+			//console.log(posts);
+
+			res.jsonp({'posts': posts});
+		})
+		.catch(function (err) {
+
+		});
+};
+
+/**
+ * Search a Post
+ */
+exports.search = function (req, res) {
+	var currentPage;
+	var itemsPerPage = 10;
+
+	if (!req.body.currentPage)
+		currentPage = 1;
+	else
+		currentPage = req.body.currentPage;
+
+	var keyword = req.body.keyword;
+	var type = req.body.type;
+	var data = req.body.data;
+	var concat = req.body.concat;
+
+	var finaleQuery = {
+		$and: [],
+		$or: []
+	};
+
+	var userExecQuery = function (arrUser, arrUserDataIndex) {
+		console.log(arrUser);
+		User.find({username: {$in: arrUser}})
+			.select({_id: 1})
+			.exec(function (err, users) {
+				if (err)
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});
+				else {
+					console.log(users);
+
+
+					for (var j = 0; j < arrUserDataIndex.length; j++) {
+						if (concat[arrUserDataIndex[j]] === 'and')
+							finaleQuery.$and.push({user: users[j]._id});
+						else if (concat[arrUserDataIndex[j]] === 'or')
+							finaleQuery.$or.push({user: users[j]._id});
+					}
+
+					var date;
+					var end;
+
+					for (var i = 0; i < type.length; i++) {
+						// KEYWORD
+						if (i === 0 && concat[i] === 'and')
+							finaleQuery.$and.push({message: new RegExp(keyword, 'i')});
+						else if (i === 0 && concat[i] === 'or')
+							finaleQuery.$or.push({message: new RegExp(keyword, 'i')});
+
+						// ADVANCED SEARCH
+						if (concat[i] === 'and') {
+							if (type[i] === 'gte') {
+								date = new Date(data[i]);
+								console.log('DATE: ' + date.toLocaleString());
+								finaleQuery.$and.push({created: {$gte: date}});
+							} else if (type[i] === 'lte') {
+								date = new Date(data[i]);
+								date.setHours(date.getHours() + 24);
+								console.log('DATE: ' + date.toLocaleString());
+								finaleQuery.$and.push({created: {$lt: date}});
+							} else if (type[i] === 'eq') {
+								date = new Date(data[i]);
+								end = new Date(data[i]);
+								end.setHours(date.getHours() + 24);
+								console.log('DATE: ' + date.toLocaleString());
+								console.log('END: ' + end.toLocaleString());
+								finaleQuery.$and.push({created: {$gte: date, $lt: end}});
+							} else if (type[i] === 'between') {
+								date = new Date(data[i].start);
+								end = new Date(data[i].end);
+								end.setHours(end.getHours() + 24);
+								console.log('DATE: ' + date.toLocaleString());
+								console.log('END: ' + end.toLocaleString());
+								finaleQuery.$and.push({created: {$gte: date, $lt: end}});
+							}
+						} else if (concat[i] === 'or') {
+							if (type[i] === 'gte') {
+								date = new Date(data[i]);
+								console.log('DATE: ' + date.toLocaleString());
+								finaleQuery.$or.push({created: {$gte: date}});
+							} else if (type[i] === 'lte') {
+								date = new Date(data[i]);
+								date.setHours(date.getHours() + 24);
+								console.log('DATE: ' + date.toLocaleString());
+								finaleQuery.$or.push({created: {$lt: date}});
+							} else if (type[i] === 'eq') {
+								date = new Date(data[i]);
+								end = new Date(data[i]);
+								end.setHours(date.getHours() + 24);
+								console.log('DATE: ' + date.toLocaleString());
+								console.log('END: ' + end.toLocaleString());
+								finaleQuery.$or.push({created: {$gte: date, $lt: end}});
+							} else if (type[i] === 'between') {
+								date = new Date(data[i].start);
+								end = new Date(data[i].end);
+								end.setHours(date.getHours() + 24);
+								console.log('DATE: ' + date.toLocaleString());
+								console.log('END: ' + end.toLocaleString());
+								finaleQuery.$or.push({created: {$gte: date, $lt: end}});
+							}
+						}
+					}
+
+					if (finaleQuery.$and.length === 0)
+						delete  finaleQuery.$and;
+
+					if (finaleQuery.$or.length === 0)
+						delete finaleQuery.$or;
+
+					console.log('finaleQuery = ' + JSON.stringify(finaleQuery));
+
+					Post.paginate(finaleQuery, {
+						page: currentPage,
+						limit: itemsPerPage,
+						populate: [
+							{
+								path: 'user',
+								select: 'username displayName firstName created'
+							}
+						],
+						sortBy: {
+							created: -1
+						}
+					})
+						.spread(function (posts, pageCount, itemCount) {
+							console.log(posts);
+
+							res.jsonp({'posts': posts});
+						})
+						.catch(function (err) {
+
+						});
+				}
+			});
+	};
+
+	var normalExecQuery = function () {
+		var date;
+		var end;
+
+		for (var i = 0; i < type.length; i++) {
+			// KEYWORD
+			if (i === 0 && concat[i] === 'and')
+				finaleQuery.$and.push({message: new RegExp(keyword, 'i')});
+			else if (i === 0 && concat[i] === 'or')
+				finaleQuery.$or.push({message: new RegExp(keyword, 'i')});
+
+			// ADVANCED SEARCH
+			if (concat[i] === 'and') {
+				if (type[i] === 'gte') {
+					date = new Date(data[i]);
+					console.log('DATE: ' + date.toLocaleString());
+					finaleQuery.$and.push({created: {$gte: date}});
+				} else if (type[i] === 'lte') {
+					date = new Date(data[i]);
+					date.setHours(date.getHours() + 24);
+					console.log('DATE: ' + date.toLocaleString());
+					finaleQuery.$and.push({created: {$lt: date}});
+				} else if (type[i] === 'eq') {
+					date = new Date(data[i]);
+					end = new Date(data[i]);
+					end.setHours(date.getHours() + 24);
+					console.log('DATE: ' + date.toLocaleString());
+					console.log('END: ' + end.toLocaleString());
+					finaleQuery.$and.push({created: {$gte: date, $lt: end}});
+				} else if (type[i] === 'between') {
+					date = new Date(data[i].start);
+					end = new Date(data[i].end);
+					end.setHours(end.getHours() + 24);
+					console.log('DATE: ' + date.toLocaleString());
+					console.log('END: ' + end.toLocaleString());
+					finaleQuery.$and.push({created: {$gte: date, $lt: end}});
+				}
+			} else if (concat[i] === 'or') {
+				if (type[i] === 'gte') {
+					date = new Date(data[i]);
+					console.log('DATE: ' + date.toLocaleString());
+					finaleQuery.$or.push({created: {$gte: date}});
+				} else if (type[i] === 'lte') {
+					date = new Date(data[i]);
+					date.setHours(date.getHours() + 24);
+					console.log('DATE: ' + date.toLocaleString());
+					finaleQuery.$or.push({created: {$lt: date}});
+				} else if (type[i] === 'eq') {
+					date = new Date(data[i]);
+					end = new Date(data[i]);
+					end.setHours(date.getHours() + 24);
+					console.log('DATE: ' + date.toLocaleString());
+					console.log('END: ' + end.toLocaleString());
+					finaleQuery.$or.push({created: {$gte: date, $lt: end}});
+				} else if (type[i] === 'between') {
+					date = new Date(data[i].start);
+					end = new Date(data[i].end);
+					end.setHours(date.getHours() + 24);
+					console.log('DATE: ' + date.toLocaleString());
+					console.log('END: ' + end.toLocaleString());
+					finaleQuery.$or.push({created: {$gte: date, $lt: end}});
+				}
+			}
+		}
+
+		if (finaleQuery.$and.length === 0)
+			delete  finaleQuery.$and;
+
+		if (finaleQuery.$or.length === 0)
+			delete finaleQuery.$or;
+
+		console.log('finaleQuery = ' + JSON.stringify(finaleQuery));
+
+		Post.paginate(finaleQuery, {
 			page: currentPage,
 			limit: itemsPerPage,
 			populate: [
@@ -39,15 +275,17 @@ exports.pagedList = function(req, res) {
 			}
 		})
 			.spread(function (posts, pageCount, itemCount) {
-				//console.log(posts);
+				console.log(posts);
 
 				res.jsonp({'posts': posts});
 			})
 			.catch(function (err) {
 
 			});
-	} else if(req.body.keyword || !req.body.userId) {
-		var keyword = req.body.keyword;
+
+	};
+
+	var basicExecQuery = function () {
 		Post.paginate({message: new RegExp(keyword, 'i')}, {
 			page: currentPage,
 			limit: itemsPerPage,
@@ -61,121 +299,165 @@ exports.pagedList = function(req, res) {
 				created: -1
 			}
 		})
-			.spread(function(posts, pageCount, itemCount) {
-				//console.log(posts);
+			.spread(function (posts, pageCount, itemCount) {
+				console.log(posts);
 
 				res.jsonp({'posts': posts});
 			})
-			.catch(function(err) {
+			.catch(function (err) {
 
 			});
-	} else if(req.body.userId) {
+	};
 
-		Post.paginate({user: req.body.userId}, {
-			page: currentPage,
-			limit: itemsPerPage,
-			populate: [
-				{
-					path: 'user',
-					select: 'username displayName firstName created'
-				}
-			],
-			sortBy: {
-				created: -1
-			}
-		})
-			.spread(function(posts, pageCount, itemCount) {
-				//console.log(results);
+	var countTypeUser = function () {
+		var count = 0;
 
-				res.jsonp({'posts': posts});
-			})
-			.catch(function(err) {
+		for (var i = 0; i < type.length; i++) {
+			if (type[i] === 'user')
+				count++;
+		}
 
-			});
+		return count;
+	};
+
+	var findTypeUserDataIndex = function () {
+		var arrIndex = [];
+		for (var i = 0; i < type.length; i++) {
+			if (type[i] === 'user')
+				arrIndex.push(i);
+		}
+		return arrIndex;
+	};
+
+	var findTypeUserData = function () {
+		var arrData = [];
+		console.log('length: ' + type.length);
+		for (var i = 0; i < type.length; i++) {
+			if (type[i] === 'user')
+				arrData.push(data[i]);
+		}
+		return arrData;
+	};
+
+	if (countTypeUser() > 0 && type.length > 0) {
+		userExecQuery(findTypeUserData(), findTypeUserDataIndex());
+	} else if (countTypeUser() === 0 && type.length > 0) {
+		normalExecQuery();
+	} else if (countTypeUser() === 0 && type.length === 0) {
+		basicExecQuery();
 	}
 
-	//Post.find({ $query: {}, $orderby: {created: -1} })
-	//	.skip((currentPage - 1) * itemsPerPage)
-	//	.limit(itemsPerPage)
-	//	.exec(function (err, posts) {
-	//		if(err)
-	//			return res.status(400).send({
-	//				message: errorHandler.getErrorMessage(err)
-	//			});
-	//		else
-	//			console.log(posts);
-	//	});
-};
 
-/**
- * Search a Post
- */
-exports.search = function(req, res) {
-	//var keyword = req.body.keyword;
-	//console.log('keyword: ' + keyword);
+	//console.log('$and = ' + finaleQuery.$and);
 
-	//Post.search(keyword, {message: 1}, {
-	//	limit: 10
-	//}, function(err, data) {
-	//	// array of finded results
-	//	console.log(data.results);
-	//	// array of all matching objects
-	//	console.log(data.totalCount);
-	//});
 
-	//Post.count({}, function(err, count) {
-	//	if(err) {
-	//		console.log(err);
-	//	} else {
-	//		console.log('Posts Count: ' + count);
-	//		//res.jsonp(count);
+	//console.log(req.body.users);
+
+	//function retrieveId(user, callback) {
+	//	console.log('lol');
+	//	User.find({username: data[i]})
+	//		.select({_id: 1})
+	//		.exec(function(err, user){
+	//			if(err)
+	//				callback(err, null);
+	//			else {
+	//				console.log('post server (userId): ' + user[0]._id);
+	//				//data[i] = user[0]._id;
+	//				callback(null, user[0]._id);
+	//			}
+	//		});
+	//}
+
+	//for (var i = 0; i < type.length; i++) {
+	//	if (type[i] === 'user') {
+	//		console.log('data = ' + data[i]);
+	//		//retrieveId(data[i], function(err, id) {
+	//		//	if(err)
+	//		//		console.log(err);
+	//		//	else
+	//		//		data[i] = id;
+	//		//});
+	//
 	//	}
-	//});
+	//}
 
-	//User.find({username: 'jason'})
-	//	.select({_id: 1})
-	//	.exec(function(err, users){
-	//		if(err)
-	//			return res.status(400).send({
-	//				message: errorHandler.getErrorMessage(err)
-	//			});
-	//		else {
-	//			console.log(users);
-    //
-	//			id = users;
+	//console.log('data[0] = ' + data[0]);
+
+	//Post.paginate({}, {
+	//	limit: 10,
+	//	populate: [
+	//		{
+	//			path: 'user',
+	//			select: 'username displayName firstName created'
 	//		}
+	//	],
+	//	sortBy: {
+	//		created: -1
+	//	}
+	//})
+	//	.spread(function(results, pageCount, itemCount) {
+	//		console.log(results);
+	//	})
+	//	.catch(function(err) {
+	//
 	//	});
 
-	var keyword = JSON.stringify(req.body.keyword).replace(/\"/g, '');
 
-	console.log('keyword: ' + keyword);
-
-	Post.paginate({user: keyword}, {
-		limit: 10,
-		populate: [
-			{
-				path: 'user',
-				select: 'username displayName firstName created'
-			}
-		],
-		sortBy: {
-			created: -1
-		}
-	})
-		.spread(function(results, pageCount, itemCount) {
-			console.log(results);
-		})
-		.catch(function(err) {
-
-		});
+//	var mainQuery = {
+//		message: {},
+//		$and: [],
+//		$or: []
+//	};
+//
+//	mainQuery.message = new RegExp(req.body.keyword, 'i');
+//
+//
+//	if (req.body.and) {
+//		for (var i = 0; i < req.body.and.length; i++) {
+//			console.log('for loop: ' + req.body.and[i]);
+//			mainQuery.$and.push(req.body.and[i]);
+//		}
+//	} else {
+//		mainQuery.splice('$and', 1);
+//	}
+//
+//	if (req.body.or) {
+//		for (var i = 0; i < req.body.or.length; i++) {
+//			console.log('for loop: ' + req.body.or[i]);
+//			mainQuery.$and.push(req.body.or[i]);
+//		}
+//	} else {
+//		mainQuery.splice('$or', 1);
+//	}
+//
+//	console.log('query = ' + JSON.stringify(mainQuery));
+//
+//	Post.paginate(mainQuery, {
+//		limit: 10,
+//		populate: [
+//			{
+//				path: 'user',
+//				select: 'username displayName firstName created'
+//			}
+//		],
+//		sortBy: {
+//			created: -1
+//		}
+//	})
+//		.spread(function(results, pageCount, itemCount) {
+//			console.log(results);
+//		})
+//		.catch(function(err) {
+//
+//		});
 };
 
 /**
  * Count number of All Post
  */
-exports.count = function(req, res) {
-	Post.count({}, function(err, count) {
-		if(err) {
+exports.count = function (req, res) {
+	Post.count({}, function (err, count) {
+		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
@@ -190,7 +472,7 @@ exports.count = function(req, res) {
 /**
  * Create a Post
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
 	var displayName = req.body.displayName;
 	console.log(displayName);
 	delete req.body.displayName;
@@ -200,7 +482,7 @@ exports.create = function(req, res) {
 
 	var currentUser = req.user.firstName + ' ' + req.user.lastName;
 
-	if(displayName !== currentUser) {
+	if (displayName !== currentUser) {
 		return res.status(400).send({
 			message: 'Logged in as another user. Please refresh the page.'
 		});
@@ -232,15 +514,15 @@ exports.create = function(req, res) {
 
 	var banned = ['/auth/signout', 'auth/signout'];
 
-	for(var i = 0; i < banned.length; i++) {
-		if(post.message.toLowerCase().indexOf(banned[i]) >= 0){
+	for (var i = 0; i < banned.length; i++) {
+		if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
 			return res.status(400).send({
 				message: 'Banned URL'
 			});
 		}
 	}
 
-	post.save(function(err) {
+	post.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -254,17 +536,17 @@ exports.create = function(req, res) {
 /**
  * Show the current Post
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
 	res.jsonp(req.post);
 };
 
 /**
  * Update a Post
  */
-exports.update = function(req, res) {
-	var post = req.post ;
+exports.update = function (req, res) {
+	var post = req.post;
 
-	post = _.extend(post , req.body);
+	post = _.extend(post, req.body);
 	post.updated = Date.now();
 
 
@@ -290,15 +572,15 @@ exports.update = function(req, res) {
 
 	var banned = ['/auth/signout', 'auth/signout'];
 
-	for(var i = 0; i < banned.length; i++) {
-		if(post.message.toLowerCase().indexOf(banned[i]) >= 0){
+	for (var i = 0; i < banned.length; i++) {
+		if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
 			return res.status(400).send({
 				message: 'Banned URL'
 			});
 		}
 	}
 
-	post.save(function(err) {
+	post.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -312,10 +594,10 @@ exports.update = function(req, res) {
 /**
  * Delete an Post
  */
-exports.delete = function(req, res) {
-	var post = req.post ;
+exports.delete = function (req, res) {
+	var post = req.post;
 
-	post.remove(function(err) {
+	post.remove(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -329,9 +611,9 @@ exports.delete = function(req, res) {
 /**
  * List of Posts
  */
-exports.list = function(req, res) {
+exports.list = function (req, res) {
 	Post.find().sort('-created').populate('user', 'displayName firstName username created')
-		.exec(function(err, posts) {
+		.exec(function (err, posts) {
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
@@ -346,14 +628,14 @@ exports.list = function(req, res) {
 /**
  * Post middleware
  */
-exports.postByID = function(req, res, next, id) {
+exports.postByID = function (req, res, next, id) {
 	Post.findById(id).populate('user', 'displayName firstName username created')
-		.exec(function(err, post) {
+		.exec(function (err, post) {
 			if (err)
 				return next(err);
-			if (! post)
+			if (!post)
 				return next(new Error('Failed to load Post ' + id));
-			req.post = post ;
+			req.post = post;
 			next();
 		}
 	);
@@ -362,7 +644,7 @@ exports.postByID = function(req, res, next, id) {
 /**
  * Post authorization middleware
  */
-exports.hasAuthorization = function(req, res, next) {
+exports.hasAuthorization = function (req, res, next) {
 	if (req.post.user.id !== req.user.id && req.user.roles.indexOf('user') === 0) {
 		return res.status(403).send('User is not authorized');
 	}

@@ -60,7 +60,7 @@ exports.me = function(req, res) {
  * (Use for Posts)
  */
 exports.userIdByUsername = function(req, res) {
-	console.log(req.body.username);
+	console.log('user req = ' + req.body.username);
 	User.find({username: req.body.username})
 		.select({_id: 1})
 		.exec(function(err, user){
@@ -71,6 +71,20 @@ exports.userIdByUsername = function(req, res) {
 			else {
 				console.log('user server controller: ' + user[0]);
 				res.json(user[0]);
+			}
+		});
+};
+
+exports.all = function(req, res) {
+
+	User.find({})
+		.exec(function(err, users){
+			if(err)
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			else {
+				res.json(users);
 			}
 		});
 };
