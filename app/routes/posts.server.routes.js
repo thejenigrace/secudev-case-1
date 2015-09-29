@@ -23,9 +23,6 @@ module.exports = function(app) {
 	app.route('/posts/search')
 		.post(users.requiresLogin, posts.search);
 
-	app.route('/api/posts/search/user')
-		.post(users.userIdByUsername);
-
 	// Finish by binding the Post middleware
 	app.param('postId', posts.postByID);
 };

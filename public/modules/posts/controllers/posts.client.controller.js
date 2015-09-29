@@ -119,26 +119,9 @@ postsApp.controller('PostsController', ['$scope', '$rootScope',
 
 			allPost.$paged(function (response) {
 				$scope.pagedPosts = response.posts;
-				//$scope.buildPager();
 			}, function (err) {
 				//console.log(err);
 			});
-
-
-			//$http.post('/api/posts/search/user', {username: $scope.searchUser}).success(function (response) {
-			//	var allPost = new AllPost({
-			//		currentPage: $scope.currentPage,
-			//		keyword: $scope.searchKeyword,
-			//		userId: response._id
-			//	});
-			//
-			//	allPost.$paged(function (response) {
-			//		$scope.pagedPosts = response.posts;
-			//		//$scope.buildPager();
-			//	}, function (err) {
-			//		//console.log(err);
-			//	});
-			//});
 		};
 
 		// Initial Load of Board Posts

@@ -10,10 +10,6 @@ var mongoose = require('mongoose'),
 	User = mongoose.model('User'),
 	_ = require('lodash');
 
-//var Promise = require('bluebird');
-//
-//Promise.promisifyAll(mongoose);
-
 /**
  * Paginate All Posts
  */
@@ -339,6 +335,7 @@ exports.search = function (req, res) {
 		return arrData;
 	};
 
+	// Execution
 	if (countTypeUser() > 0 && type.length > 0) {
 		userExecQuery(findTypeUserData(), findTypeUserDataIndex());
 	} else if (countTypeUser() === 0 && type.length > 0) {
@@ -346,110 +343,6 @@ exports.search = function (req, res) {
 	} else if (countTypeUser() === 0 && type.length === 0) {
 		basicExecQuery();
 	}
-
-
-	//console.log('$and = ' + finaleQuery.$and);
-
-
-	//console.log(req.body.users);
-
-	//function retrieveId(user, callback) {
-	//	console.log('lol');
-	//	User.find({username: data[i]})
-	//		.select({_id: 1})
-	//		.exec(function(err, user){
-	//			if(err)
-	//				callback(err, null);
-	//			else {
-	//				console.log('post server (userId): ' + user[0]._id);
-	//				//data[i] = user[0]._id;
-	//				callback(null, user[0]._id);
-	//			}
-	//		});
-	//}
-
-	//for (var i = 0; i < type.length; i++) {
-	//	if (type[i] === 'user') {
-	//		console.log('data = ' + data[i]);
-	//		//retrieveId(data[i], function(err, id) {
-	//		//	if(err)
-	//		//		console.log(err);
-	//		//	else
-	//		//		data[i] = id;
-	//		//});
-	//
-	//	}
-	//}
-
-	//console.log('data[0] = ' + data[0]);
-
-	//Post.paginate({}, {
-	//	limit: 10,
-	//	populate: [
-	//		{
-	//			path: 'user',
-	//			select: 'username displayName firstName created'
-	//		}
-	//	],
-	//	sortBy: {
-	//		created: -1
-	//	}
-	//})
-	//	.spread(function(results, pageCount, itemCount) {
-	//		console.log(results);
-	//	})
-	//	.catch(function(err) {
-	//
-	//	});
-
-
-//	var mainQuery = {
-//		message: {},
-//		$and: [],
-//		$or: []
-//	};
-//
-//	mainQuery.message = new RegExp(req.body.keyword, 'i');
-//
-//
-//	if (req.body.and) {
-//		for (var i = 0; i < req.body.and.length; i++) {
-//			console.log('for loop: ' + req.body.and[i]);
-//			mainQuery.$and.push(req.body.and[i]);
-//		}
-//	} else {
-//		mainQuery.splice('$and', 1);
-//	}
-//
-//	if (req.body.or) {
-//		for (var i = 0; i < req.body.or.length; i++) {
-//			console.log('for loop: ' + req.body.or[i]);
-//			mainQuery.$and.push(req.body.or[i]);
-//		}
-//	} else {
-//		mainQuery.splice('$or', 1);
-//	}
-//
-//	console.log('query = ' + JSON.stringify(mainQuery));
-//
-//	Post.paginate(mainQuery, {
-//		limit: 10,
-//		populate: [
-//			{
-//				path: 'user',
-//				select: 'username displayName firstName created'
-//			}
-//		],
-//		sortBy: {
-//			created: -1
-//		}
-//	})
-//		.spread(function(results, pageCount, itemCount) {
-//			console.log(results);
-//		})
-//		.catch(function(err) {
-//
-//		});
 };
 
 /**
