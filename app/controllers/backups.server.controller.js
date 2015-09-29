@@ -62,23 +62,24 @@ exports.create = function(req, res) {
  * Show the current Backup
  */
 exports.read = function(req, res) {
-	var file = req.backup.name + '.csv';
-	var file_url = __dirname + '\\' + file;
-	console.log('FILE URL: ' + file_url);
-	var stream = fs.createReadStream(file);
-	var csv = require('fast-csv');
-	var csvStream = csv()
-		.on('data', function(data){
-			console.log(data);
-		})
-		.on('end', function(){
-			console.log('done');
-		});
+	//var file = req.backup.name + '.csv';
+	//var file_url = __dirname + '\\' + file;
+	//console.log('FILE URL: ' + file_url);
+	//var stream = fs.createReadStream(file);
+	//var csv = require('fast-csv');
+	//var csvStream = csv()
+	//	.on('data', function(data){
+	//		console.log(data);
+	//	})
+	//	.on('end', function(){
+	//		console.log('done');
+	//	});
+    //
+	//stream.pipe(csvStream);
 
-	stream.pipe(csvStream);
+	//res.download(file_url); // Set disposition and send it.
 
-	res.download(file_url); // Set disposition and send it.
-	//res.jsonp(req.backup);
+	res.jsonp(req.backup);
 };
 
 /**
