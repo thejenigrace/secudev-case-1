@@ -4,7 +4,6 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	searchPlugin = require('mongoose-search-plugin'),
 	mongoosePaginate = require('mongoose-paginate'),
 	Schema = mongoose.Schema;
 
@@ -35,10 +34,6 @@ var PostSchema = new Schema({
 		ref: 'User'
 	}
 });
-
-//PostSchema.plugin(searchPlugin, {
-//	fields: ['message', 'created', 'user']
-//});
 
 PostSchema.plugin(mongoosePaginate, {});
 

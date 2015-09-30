@@ -9,6 +9,9 @@ module.exports = function(app) {
 		.get(users.requiresLogin, users.isAdmin, backups.list)
 		.post(users.requiresLogin, users.isAdmin, backups.create);
 
+	app.route('/backups/download/:fileName')
+		.get(users.requiresLogin, users.isAdmin, backups.download);
+
 	app.route('/backups/:backupId')
 		.get(users.requiresLogin, users.isAdmin, backups.read)
 		.put(users.requiresLogin, users.isAdmin, backups.hasAuthorization, backups.update)
@@ -19,5 +22,5 @@ module.exports = function(app) {
 
 	// Finish by binding the Backup middleware
 	app.param('backupId', backups.backupByID);
-	app.param('backupName', backups.backupByName);
+	//app.param('backupName', backups.backupByName);
 };

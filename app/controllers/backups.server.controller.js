@@ -16,8 +16,8 @@ var mongoose = require('mongoose'),
  * Download a Backup
  */
 exports.download = function(req, res){
-	var file = req + '.csv';
-	res.download(file); // Set disposition and send it.
+	var filename = req.params.fileName + '.csv';
+	res.download(filename); // Set disposition and send it.
 };
 
 /**
@@ -137,15 +137,6 @@ exports.list = function(req, res) {
  * Backup middleware
  */
 exports.backupByID = function(req, res, next, id) {
-	Backup.findById(id).populate('user', 'displayName').exec(function(err, backup) {
-		if (err) return next(err);
-		if (! backup) return next(new Error('Failed to load Backup ' + id));
-		req.backup = backup ;
-		next();
-	});
-};
-
-exports.backupByName = function(req, res, next, id) {
 	Backup.findById(id).populate('user', 'displayName').exec(function(err, backup) {
 		if (err) return next(err);
 		if (! backup) return next(new Error('Failed to load Backup ' + id));

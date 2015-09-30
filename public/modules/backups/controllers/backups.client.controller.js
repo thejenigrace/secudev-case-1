@@ -17,8 +17,14 @@ angular.module('backups').controller('BackupsController', ['$scope', '$http', '$
 		$scope.download = function(backupName){
 			alert(backupName);
 
-			$http.post('backups/' + backupName, backupName).success(function(response) {
-				console.log('YES');
+			$http.get('backups/download/' + backupName).success(function(response) {
+				//console.log('YES');
+				var element = angular.element('<a/>');
+				element.attr({
+					href: 'data:application/csv,' + encodeURIComponent(response),
+					target: '_blank',
+					download: backupName
+				})[0].click();
 			}).error(function(response) {
 				$scope.error = response.message;
 			});
