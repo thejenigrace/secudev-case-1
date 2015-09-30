@@ -9,7 +9,6 @@ var mongoose = require('mongoose'),
 	_ = require('lodash');
 
 
-
 /**
  * Update a User
  */
