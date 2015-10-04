@@ -14,6 +14,75 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
+		$scope.searchCriteria = [];
+
+		$scope.addSearchCriterion = function() {
+			var itemNo = $scope.searchCriteria.length;
+			$scope.searchCriteria.push({'id': itemNo});
+			console.log('add id:' + itemNo);
+		};
+
+		$scope.removeSearchCriterion = function(id) {
+			console.log('remove id: ' + id);
+			//var lastItem = $scope.searchCriteria.length - 1;
+			$scope.searchCriteria.splice(id, 1);
+		};
+
+		$scope.removeAllSearchCriterion = function() {
+			$scope.searchCriteria = [];
+		};
+
+
+		$scope.type = [];
+		$scope.data = [];
+		$scope.concat = [];
+
+		$scope.searchClear = function() {
+			$scope.type = [];
+			$scope.data = [];
+			$scope.concat = [];
+		};
+
+		$scope.search = function () {
+			console.log('---SEARCH---');
+			console.log('keyword: ' + $scope.searchKeyword);
+
+			var arrAnd = [];
+			var arrOr = [];
+
+			for(var i = 0; i < $scope.searchCriteria.length; i++) {
+				if($scope.concat[i] === 'and') {
+					console.log('and: ' + '{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+					arrAnd.push('{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+				} else if($scope.concat[i] === 'or') {
+					console.log('or: ' + '{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+					arrOr.push('{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
+				}
+
+				if($scope.type[i] === 'between') {
+					console.log('start = ' + $scope.data[i].start);
+					console.log('end = ' + $scope.data[i].end);
+				}
+			}
+
+			var searchThis = {
+				currentPage: $scope.currentPage,
+				keyword: $scope.searchKeyword,
+				type: $scope.type,
+				data: $scope.data,
+				concat: $scope.concat
+			};
+
+			console.log(searchThis)
+
+			$http.post('/api/posts/search', searchThis).success(function(response) {
+				$scope.pagedPosts = response;
+			}, function(err){
+
+			});
+
+		};
+
 		var profileUserId;
 		$scope.setProfileUserId = function(userId) {
 			profileUserId = userId;
@@ -30,37 +99,78 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 			//console.log($scope.profile.firstName);
 		};
 
+		$scope.buildPager = function () {
+			$scope.currentPage = 1;
+			$scope.itemsPerPage = 10;
+			$scope.maxSize = 5;
+
+			$http.get('/api/posts/count').success(function (response) {
+				$scope.totalItems = response;
+			}, function(err) {
+
+			});
+		};
+
+		$scope.retrievePosts = function () {
+			//var allPost = new Posts({
+			//	currentPage: $scope.currentPage
+			//});
+            //
+			//allPost.$paged(function (response) {
+			//	$scope.pagedPosts = response.posts;
+			//}, function (err) {
+			//	//console.log(err);
+			//});
+
+			$http.get('/api/posts/page/'  + $scope.currentPage).success(function(response) {
+				$scope.pagedPosts = response;
+			}, function(err){
+
+			});
+		};
+
+		// Initial Load of Board Posts
+		$scope.buildPager();
+		$scope.retrievePosts();
+
+		$scope.pageChanged = function () {
+			$log.log('Page changed to: ' + $scope.currentPage);
+			$scope.retrievePosts();
+		};
+
+		//--------------------------------------------------------------
+
 		// Find a list of Posts
 		//this.posts = Posts.query();
 
 		// Get All Posts
-		$scope.retrievePosts = function() {
-			Posts.query({}, function (data) {
-				$scope.posts = data;
-				$scope.buildPager();
-			});
-		};
-
-		$scope.retrievePosts();
-
-		$scope.buildPager = function () {
-			$scope.pagedItems = [];
-			$scope.itemsPerPage = 10;
-			$scope.currentPage = 1;
-			$scope.figureOutItemsToDisplay();
-		};
-
-		$scope.figureOutItemsToDisplay = function () {
-			$scope.filteredItems = $filter('filter')($scope.posts, { $: $scope.search});
-			$scope.filterLength = $scope.filteredItems.length;
-			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
-			var end = begin + $scope.itemsPerPage;
-			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
-		};
-
-		$scope.pageChanged = function() {
-			$scope.figureOutItemsToDisplay();
-		};
+		//$scope.retrievePosts = function() {
+		//	Posts.query({}, function (data) {
+		//		$scope.posts = data;
+		//		$scope.buildPager();
+		//	});
+		//};
+        //
+		//$scope.retrievePosts();
+        //
+		//$scope.buildPager = function () {
+		//	$scope.pagedItems = [];
+		//	$scope.itemsPerPage = 10;
+		//	$scope.currentPage = 1;
+		//	$scope.figureOutItemsToDisplay();
+		//};
+        //
+		//$scope.figureOutItemsToDisplay = function () {
+		//	$scope.filteredItems = $filter('filter')($scope.posts, { $: $scope.search});
+		//	$scope.filterLength = $scope.filteredItems.length;
+		//	var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+		//	var end = begin + $scope.itemsPerPage;
+		//	$scope.pagedItems = $scope.filteredItems.slice(begin, end);
+		//};
+        //
+		//$scope.pageChanged = function() {
+		//	$scope.figureOutItemsToDisplay();
+		//};
 
 		//Find existing Post
 		$scope.findOne = function() {
@@ -148,36 +258,44 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 		// Remove existing Customer
 		this.remove = function(post) {
 			if (post) {
-				post.$remove(function(response) {
-					//Notify.sendMessage('Remove Post', {'id': response._id});
+				//post.$remove(function(response) {
+				//	//Notify.sendMessage('Remove Post', {'id': response._id});
+				//	$scope.retrievePosts();
+				//});
+
+				$http.delete('/posts/' + post._id).success(function(response) {
 					$scope.retrievePosts();
 				});
 
-				for (var i in $scope.posts) {
-					if ($scope.posts [i] === post) {
-						$scope.posts.splice(i, 1);
-					}
-				}
+				//for (var i in $scope.posts) {
+				//	if ($scope.posts [i] === post) {
+				//		$scope.posts.splice(i, 1);
+				//	}
+				//}
 			} else {
-				$scope.post.$remove(function() {
-
-				});
+				//$scope.post.$remove(function() {
+                //
+				//});
 			}
 		};
 	}
 ]);
 
-postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
-	function($scope, Posts) {
+postsApp.controller('PostsUpdateController', ['$scope', '$http', 'Posts',
+	function($scope, $http, Posts) {
 		// Update existing Post
 		this.update = function(updatedPost) {
 			var post = updatedPost;
 
-			post.$update(function() {
-				//$location.path('posts/' + post._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+			//post.$update(function() {
+			//	//$location.path('posts/' + post._id);
+			//}, function(errorResponse) {
+			//	$scope.error = errorResponse.data.message;
+			//});
+
+			$http.put('/posts/' + post._id, post).success(function(response) {
+
+			})
 		};
 	}
 ]);

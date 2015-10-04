@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+	mongoosePaginate = require('mongoose-paginate'),
 	Schema = mongoose.Schema;
 
 /**
@@ -33,5 +34,7 @@ var PostSchema = new Schema({
 		ref: 'User'
 	}
 });
+
+PostSchema.plugin(mongoosePaginate, {});
 
 mongoose.model('Post', PostSchema);

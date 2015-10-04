@@ -2,6 +2,50 @@
 	<!--<div class="alert alert-warning text-center" data-ng-hide="!users.$resolved || users.length">-->
 
 		<div class="col-md-10 col-md-offset-1 list-group form-bg">
+			<div class="form-group">
+				<input type="text" class="form-control" data-ng-model="searchKeyword" placeholder="Search">
+			</div>
+
+			<div class="form-group">
+				<button class="btn btn-primary" type="button" ng-click="addSearchCriterion()" ng-disabled="showDone === true">
+					<i class="glyphicon glyphicon-plus"></i>
+				</button>
+			</div>
+			<div class="form-group" data-ng-repeat="criterion in searchCriteria">
+				<select data-ng-model="type[criterion.id]">
+					<option value="">---Choose Search Criterion---</option>
+					<option value="user">USER</option>
+					<option value="gte">&gt;= DATE</option>
+					<option value="lte">&lt;= DATE</option>
+					<option value="eq">== DATE</option>
+					<option value="between">BETWEEN 2 DATES</option>
+				</select>
+				<input type="text" data-ng-model="data[criterion.id]" ng-show="type[criterion.id] === 'user'"
+					   placeholder="User">
+				<input type="date" data-ng-model="data[criterion.id]" ng-show="type[criterion.id] === 'gte'
+						|| type[criterion.id] === 'lte' || type[criterion.id] === 'eq'">
+				<input type="date" data-ng-model="data[criterion.id]['start']"] ng-show="type[criterion.id] === 'between'">
+				<label ng-show="type[criterion.id] === 'between'">TO</label>
+				<input type="date" data-ng-model="data[criterion.id]['end']" ng-show="type[criterion.id] === 'between'">
+				<select data-ng-model="concat[criterion.id]" ng-show="type[criterion.id]">
+					<option value="">---Choose Search Concat---</option>
+					<option value="and">AND</option>
+					<option value="or">OR</option>
+				</select>
+				<button class="btn btn-danger" ng-click="removeSearchCriterion(criterion.id)">
+					<i class="glyphicon glyphicon-minus"></i>
+				</button>
+			</div>
+
+			<div class="form-group">
+				<button class="btn btn-success" type="button" ng-click="search(); showDone=true">
+					Search
+				</button>
+				<button class="btn btn-danger" type="button" ng-click="retrievePosts(); removeAllSearchCriterion(); searchClear(); showDone=false" ng-show="showDone === true">
+					Done Search
+				</button>
+			</div>
+
 			<div class="text-center">
 				<pagination boundary-links="true"
 							max-size="8"
@@ -11,7 +55,7 @@
 							ng-change="pageChanged()">
 				</pagination>
 			</div>
-			<a data-ng-repeat="post in pagedItems" class="list-group-item" ng-href="/#!/board/posts">
+			<a data-ng-repeat="post in pagedPosts" class="list-group-item" ng-href="/#!/board/posts">
 				<div class="row">
 					<div class="col-xs-12 col-sm-2 text-center">
 						<!--<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>-->
