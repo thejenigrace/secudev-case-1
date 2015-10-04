@@ -3,11 +3,10 @@
 // Posts controller
 var postsApp = angular.module('posts');
 
-postsApp.controller('PostsController', ['$scope', '$rootScope',
-	'$http', '$stateParams', '$location', '$filter', '$modal', '$log', '$q',
-	'Authentication', 'Posts', 'Users', 'Post', 'AllPost', 'FindUserId',
-	function ($scope, $rootScope, $http, $stateParams, $location, $filter, $modal, $log, $q,
-			  Authentication, Posts, Users, Post, AllPost, FindUserId) {
+postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
+	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Users',
+	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
+			 Authentication, Posts, Users) {
 
 		//$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
@@ -15,82 +14,14 @@ postsApp.controller('PostsController', ['$scope', '$rootScope',
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
-		$scope.searchCriteria = [];
-
-		$scope.addSearchCriterion = function() {
-			var itemNo = $scope.searchCriteria.length;
-			$scope.searchCriteria.push({'id': itemNo});
-			console.log('add id:' + itemNo);
-		};
-
-		$scope.removeSearchCriterion = function(id) {
-			console.log('remove id: ' + id);
-			//var lastItem = $scope.searchCriteria.length - 1;
-			$scope.searchCriteria.splice(id, 1);
-		};
-
-		$scope.removeAllSearchCriterion = function() {
-			$scope.searchCriteria = [];
-		};
-
-
-		$scope.type = [];
-		$scope.data = [];
-		$scope.concat = [];
-
-		$scope.searchClear = function() {
-			$scope.type = [];
-			$scope.data = [];
-			$scope.concat = [];
-		};
-
-		$scope.search = function () {
-			console.log('---SEARCH---');
-			console.log('keyword: ' + $scope.searchKeyword);
-
-			var arrAnd = [];
-			var arrOr = [];
-
-			for(var i = 0; i < $scope.searchCriteria.length; i++) {
-				if($scope.concat[i] === 'and') {
-					console.log('and: ' + '{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
-					arrAnd.push('{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
-				} else if($scope.concat[i] === 'or') {
-					console.log('or: ' + '{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
-					arrOr.push('{' + $scope.type[i] + ': ' + $scope.data[i] + '}');
-				}
-
-				if($scope.type[i] === 'between') {
-					console.log('start = ' + $scope.data[i].start);
-					console.log('end = ' + $scope.data[i].end);
-				}
-			}
-
-			var searchThis = new Post({
-				currentPage: $scope.currentPage,
-				keyword: $scope.searchKeyword,
-				type: $scope.type,
-				data: $scope.data,
-				concat: $scope.concat
-			});
-
-			searchThis.$search(function(response) {
-				$scope.pagedPosts = response.posts;
-			}, function(err) {
-
-			});
-
-			$scope.searchClear();
-		};
-
 		var profileUserId;
-		$scope.setProfileUserId = function (userId) {
+		$scope.setProfileUserId = function(userId) {
 			profileUserId = userId;
 
 			//$location.path('/user/profile/' + profileUserId);
 		};
 
-		$scope.findProfile = function () {
+		$scope.findProfile = function() {
 			console.log(profileUserId);
 			$scope.profile = Users.get({
 				_id: $stateParams.profileUserId
@@ -99,55 +30,52 @@ postsApp.controller('PostsController', ['$scope', '$rootScope',
 			//console.log($scope.profile.firstName);
 		};
 
+		// Find a list of Posts
+		//this.posts = Posts.query();
 
-		$scope.buildPager = function () {
-			$scope.currentPage = 1;
-			$scope.itemsPerPage = 10;
-			$scope.maxSize = 5;
-
-			$http.get('/api/posts/count').success(function (response) {
-				$scope.totalItems = response.count;
-				//console.log('Total Items = ' + $scope.totalItems);
+		// Get All Posts
+		$scope.retrievePosts = function() {
+			Posts.query({}, function (data) {
+				$scope.posts = data;
+				$scope.buildPager();
 			});
 		};
 
-		$scope.retrievePosts = function () {
-			var allPost = new AllPost({
-				currentPage: $scope.currentPage,
-				keyword: $scope.searchKeyword
-			});
-
-			allPost.$paged(function (response) {
-				$scope.pagedPosts = response.posts;
-			}, function (err) {
-				//console.log(err);
-			});
-		};
-
-		// Initial Load of Board Posts
-		$scope.buildPager();
 		$scope.retrievePosts();
 
-		$scope.pageChanged = function () {
-			$log.log('Page changed to: ' + $scope.currentPage);
-			$scope.retrievePosts();
+		$scope.buildPager = function () {
+			$scope.pagedItems = [];
+			$scope.itemsPerPage = 10;
+			$scope.currentPage = 1;
+			$scope.figureOutItemsToDisplay();
 		};
 
+		$scope.figureOutItemsToDisplay = function () {
+			$scope.filteredItems = $filter('filter')($scope.posts, { $: $scope.search});
+			$scope.filterLength = $scope.filteredItems.length;
+			var begin = (($scope.currentPage - 1) * $scope.itemsPerPage);
+			var end = begin + $scope.itemsPerPage;
+			$scope.pagedItems = $scope.filteredItems.slice(begin, end);
+		};
+
+		$scope.pageChanged = function() {
+			$scope.figureOutItemsToDisplay();
+		};
 
 		//Find existing Post
-		$scope.findOne = function () {
+		$scope.findOne = function() {
 			$scope.post = Posts.get({
 				postId: $stateParams.postId
 			});
 		};
 
-		$scope.isAuthorize = function (postUserId) {
+		$scope.isAuthorize = function(postUserId) {
 			//console.log($scope.user.roles.indexOf('admin'));
 			//console.log("postUserId = " + postUserId);
 			//console.log("user._id = " + $scope.user._id);
-			if ($scope.user.roles.indexOf('admin') === 0)
+			if($scope.user.roles.indexOf('admin') === 0)
 				return true;
-			else if (postUserId === $scope.user._id)
+			else if(postUserId === $scope.user._id)
 				return true;
 			else
 				return false;
@@ -189,21 +117,19 @@ postsApp.controller('PostsController', ['$scope', '$rootScope',
 			});
 		};
 
-// Create new Post
-		$scope.create = function () {
+		// Create new Post
+		$scope.create = function() {
 			try {
 				// Create new Post object
-				var post = new Posts({
+				var post = new Posts ({
 					message: $scope.message,
 					displayName: $scope.user.displayName
 				});
 
 				// Redirect after save
-				post.$save(function (response) {
+				post.$save(function(response) {
 
 					//Notify.sendMessage('New Post', {'id': response._id});
-
-					// Reload the board posts
 					$scope.retrievePosts();
 
 					//$location.path('posts/' + response._id);
@@ -211,21 +137,19 @@ postsApp.controller('PostsController', ['$scope', '$rootScope',
 
 					// Clear form fields
 					$scope.message = '';
-				}, function (errorResponse) {
+				}, function(errorResponse) {
 					$scope.error = errorResponse.data.message;
 				});
-			} catch (e) {
+			} catch(e) {
 
 			}
 		};
 
 		// Remove existing Customer
-		this.remove = function (post) {
+		this.remove = function(post) {
 			if (post) {
-				post.$remove(function (response) {
+				post.$remove(function(response) {
 					//Notify.sendMessage('Remove Post', {'id': response._id});
-
-					// Reload the board posts
 					$scope.retrievePosts();
 				});
 
@@ -235,24 +159,23 @@ postsApp.controller('PostsController', ['$scope', '$rootScope',
 					}
 				}
 			} else {
-				$scope.post.$remove(function () {
+				$scope.post.$remove(function() {
 
 				});
 			}
 		};
 	}
-])
-;
+]);
 
 postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
-	function ($scope, Posts) {
+	function($scope, Posts) {
 		// Update existing Post
-		this.update = function (updatedPost) {
+		this.update = function(updatedPost) {
 			var post = updatedPost;
 
-			post.$update(function () {
+			post.$update(function() {
 				//$location.path('posts/' + post._id);
-			}, function (errorResponse) {
+			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
@@ -262,10 +185,10 @@ postsApp.controller('PostsUpdateController', ['$scope', 'Posts',
 
 postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
 	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Userss',
-	function ($scope, $http, $stateParams, $location, $filter, $modal, $log,
-			  Authentication, Posts, Userss) {
+	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
+			 Authentication, Posts, Userss) {
 
-		$scope.findProfile = function () {
+		$scope.findProfile = function() {
 			//console.log(profileUserId);
 			console.log($stateParams.profileUserId);
 			//$scope.user = Userss.get({
@@ -283,8 +206,8 @@ postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
 
 
 // Angular Directive
-postsApp.directive('postList', ['Posts', 'Notify',
-	function (Posts, Notify) {
+postsApp.directive('postList', [ 'Posts', 'Notify',
+	function(Posts, Notify) {
 		return {
 			restrict: 'E',
 			transclude: true,
