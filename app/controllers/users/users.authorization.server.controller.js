@@ -33,6 +33,15 @@ exports.requiresLogin = function(req, res, next) {
 };
 
 /**
+ * Require to be admin
+ */
+exports.isAdmin = function(req, res, next) {
+	if (req.user.roles.indexOf('admin') === -1) {
+		return res.status(403).send('User is not authorized');
+	}
+	next();
+};
+/**
  * User authorizations routing middleware
  */
 exports.hasAuthorization = function(roles) {

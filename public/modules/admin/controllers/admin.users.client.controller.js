@@ -33,7 +33,7 @@ angular.module('admin')
 	//		$scope.pageChanged = function() {
 	//			$scope.figureOutItemsToDisplay();
 	//		};
-    //
+	//
 	//	}
 	//])
 	//.controller('AdminUsersViewController', ['$scope', '$state', 'Admin',

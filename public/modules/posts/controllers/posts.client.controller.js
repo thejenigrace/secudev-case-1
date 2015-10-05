@@ -73,7 +73,7 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 				concat: $scope.concat
 			};
 
-			console.log(searchThis)
+			console.log(searchThis);
 
 			$http.post('/api/posts/search', searchThis).success(function(response) {
 				$scope.pagedPosts = response;
@@ -273,9 +273,9 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 				//	}
 				//}
 			} else {
-				//$scope.post.$remove(function() {
-                //
-				//});
+				$scope.post.$remove(function() {
+
+				});
 			}
 		};
 	}
@@ -295,7 +295,7 @@ postsApp.controller('PostsUpdateController', ['$scope', '$http', 'Posts',
 
 			$http.put('/posts/' + post._id, post).success(function(response) {
 
-			})
+			});
 		};
 	}
 ]);

@@ -1,0 +1,32 @@
+<section data-ng-controller="BackupsController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Backups</h1>
+    </div>
+    <div class="list-group">
+        <div data-ng-repeat="backup in backups"  class="list-group-item">
+			<div class = 'row'>
+				<div class = 'col-md-1'>
+					<button type = 'button' class = 'btn btn-lg btn-success' data-ng-click="download(backup.name)">
+						<span class = 'glyphicon glyphicon-download-alt' aria-hidden="true"></span>
+					</button>
+				</div>
+				<a data-ng-href="#!/backups/{{backup._id}}">
+				<div class = 'col-md-11'>
+
+					<small class="list-group-item-text">
+						Posted on
+						<span data-ng-bind="backup.created | date:'medium'"></span>
+						by
+						<span data-ng-bind="backup.user.displayName"></span>
+					</small>
+					<h4 class="list-group-item-heading" data-ng-bind="backup.name"></h4>
+
+				</div>
+				</a>
+			</div>
+        </div>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!backups.$resolved || backups.length">
+    	No Backups yet, why don't you <a href="/#!/backups/create">create one</a>?
+    </div>
+</section>
