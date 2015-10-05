@@ -53,15 +53,15 @@ exports.create = function (req, res) {
 		}
 	});
 
-	var banned = ['/auth/signout', 'auth/signout'];
-
-	for (var i = 0; i < banned.length; i++) {
-		if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
-			return res.status(400).send({
-				message: 'Banned URL'
-			});
-		}
-	}
+	//var banned = ['/auth/signout', 'auth/signout'];
+    //
+	//for (var i = 0; i < banned.length; i++) {
+	//	if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
+	//		return res.status(400).send({
+	//			message: 'Banned URL'
+	//		});
+	//	}
+	//}
 
 	post.save(function (err) {
 		if (err) {
