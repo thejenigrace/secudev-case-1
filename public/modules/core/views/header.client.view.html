@@ -6,8 +6,8 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</button>
-		<a href="/#!/" class="navbar-brand" data-ng-hide="authentication.user">SECUDEV</a>
-		<a href="/#!/board/posts" class="navbar-brand" data-ng-show="authentication.user">POSTS</a>
+		<a href="/#!/" class="navbar-brand" data-ng-hide="authentication.user">BONJOUR</a>
+		<a href="/#!/board/posts" class="navbar-brand" data-ng-show="authentication.user">BONJOUR</a>
 	</div>
 	<nav class="collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
 		<ul class="nav navbar-nav" data-ng-if="menu.shouldRender(authentication.user);">
@@ -56,7 +56,7 @@
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="/auth/signout">Logout</a>
+						<a ng-click="logout()">Logout</a>
 					</li>
 				</ul>
 			</li>

@@ -2,7 +2,7 @@
 
 module.exports = {
 	app: {
-		title: 'SECUDEV',
+		title: 'BONJOUR',
 		description: 'Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js',
 		keywords: 'mongodb, express, angularjs, node.js, mongoose, passport'
 	},
@@ -55,7 +55,9 @@ module.exports = {
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+				'public/lib/ckeditor/ckeditor.js',
+				'public/lib/ng-ckeditor/ngckeditor.js'
 			]
 		},
 		css: [

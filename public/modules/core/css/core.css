@@ -23,10 +23,36 @@ body {
 	background-color: #EEEEEE
 }
 
+.jumbotron {
+	padding-top: 15%;
+	padding-bottom: 15%;
+	background-color: #FFFFFF;
+}
+
+.container {
+	width: 100%;
+}
+
 .form-bg {
 	background-color: #FFFFFF;
 	border: 15px solid;
 	border-radius: 15px;
 	border-color: #FFFFFF;
-	margin-top: 50px;
+	margin-top: 5%;
 }
+
+.form-post-bg {
+	background-color: #FFFFFF;
+	border: 15px solid;
+	border-radius: 15px;
+	border-color: #FFFFFF;
+	margin-top: 1%;
+}
+
+.profile-container {
+	padding-bottom: 1%;
+}
+
+
+
+

@@ -8,25 +8,6 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	crypto = require('crypto');
 
-//var calculateAge = function calculateAge(birthday) { // birthday is a date
-//	try {
-//		//var bday;
-//		//if (birthday.isString()) {
-//		//	bday = Date.parse(birthdate);
-//		//	console.log('bday is string');
-//		//} else if (birthday.isDate()) {
-//		//	bday = birthday;
-//		//	console.log('bday is date');
-//		//}
-//		var ageDifMs = Date.now() - birthdate.getTime();
-//		var ageDate = new Date(ageDifMs); // miliseconds from epoch
-//		return Math.abs(ageDate.getUTCFullYear() - 1970);
-//	} catch (e) {
-//		console.log('Something went wrong!');
-//		return 0;
-//	}
-//};
-
 var calculateAge = function calculateAge(birthdate) {
 	try {
 		var date = new Date();
@@ -58,15 +39,30 @@ var validateLocalStrategyPassword = function (password) {
 	return (this.provider !== 'local' || (password && password.length > 6));
 };
 
+/**
+ * A Validation function for local strategy birthdate
+ * @param birthdate
+ * @returns {boolean}
+ */
 var validateLocalStrategyBirthdate = function (birthdate) {
 	return (this.provider !== 'local' || (calculateAge(birthdate) >= 18));
 };
 
+/**
+ * A Validation function for local strategy gender
+ * @param gender
+ * @returns {boolean}
+ */
 var validateLocalStrategyGender = function (gender) {
 	console.log('Gender = ' + gender);
 	return (this.provider !== 'local' || (gender === 'Male' || gender === 'Female'));
 };
 
+/**
+ * A Validation function for local strategy salutation
+ * @param salutation
+ * @returns {boolean}
+ */
 var validateLocalStrategySalutation = function(salutation) {
 	var sal = [
 		['Mr', 'Sir', 'Senior', 'Count'],
@@ -79,13 +75,6 @@ var validateLocalStrategySalutation = function(salutation) {
 	);
 };
 
-//var validateLocalStrategySalutation = function(salutation) {
-//	return (this.provider !== 'local' ||
-//	( getGender === 'Male' && (salutation === 'Mr'|| salutation === 'Sir' || salutation === 'Senior' || salutation === 'Count')
-//	) || ( getGender === 'Female' && (salutation === 'Miss'|| salutation === 'Ms' || salutation === 'Mrs' || salutation === 'Madame' ||
-//	salutation === 'Majesty'|| salutation === 'Seniora')));
-//};
-
 var isDateOrEmpty = function(birthdate) {
 	if (birthdate === null)
 		return true;
@@ -94,8 +83,8 @@ var isDateOrEmpty = function(birthdate) {
 };
 
 var birthdateValidation = [
-	{validator: validateLocalStrategyBirthdate, msg: 'Must be 18 years old or above'},
-	{validator: isDateOrEmpty, msg: 'Birthdate must be Date type'}
+	{validator: validateLocalStrategyBirthdate, msg: 'Birthdate: must be 18 years old or above'},
+	{validator: isDateOrEmpty, msg: 'Birthdate: must be Date type'}
 ];
 
 
@@ -107,13 +96,13 @@ var UserSchema = new Schema({
 		type: String,
 		trim: true,
 		validate: [validateLocalStrategyProperty, 'Please fill in your first name'],
-		match: [/^([a-zA-Z]+\s)*[a-zA-Z]+$/, 'First Name: No special characters or numbers']
+		match: [/^([a-zA-Z]+\s)*[a-zA-Z]+$/, 'First Name: no special characters or numbers']
 	},
 	lastName: {
 		type: String,
 		trim: true,
 		validate: [validateLocalStrategyProperty, 'Please fill in your last name'],
-		match: [/^([a-zA-Z]+\s)*[a-zA-Z]+$/, 'Last Name: No special characters or numbers']
+		match: [/^([a-zA-Z]+\s)*[a-zA-Z]+$/, 'Last Name: no special characters or numbers']
 	},
 	displayName: {
 		type: String,
@@ -121,36 +110,35 @@ var UserSchema = new Schema({
 	},
 	gender: {
 		type: String,
-		validate: [validateLocalStrategyGender, 'Gender must only be male or female'],
+		validate: [validateLocalStrategyGender, 'Gender: must only be male or female'],
 		required: 'Please indicate your gender'
 	},
 	salutation: {
 		type: String,
-		validate: [validateLocalStrategySalutation, 'Invalid salutation'],
+		validate: [validateLocalStrategySalutation, 'Salutation: invalid'],
 		required: 'Please indicate your salutation'
 	},
 	birthdate: {
 		type: Date,
-		//validate: [validateLocalStrategyBirthdate, 'Must be 18 years old or above'],
 		validate: birthdateValidation,
 		required: 'Please indicate your birthdate'
 	},
 	aboutMe: {
 		type: String,
 		required: 'Please fill-up about me section',
-		match: [/^([a-zA-Z0-9]+)*[a-zA-Z0-9]+$/, 'About Me: Alphanumeric only']
+		match: [/^([a-zA-Z0-9\s]+)*[a-zA-Z0-9\s]+$/, 'About Me: alphanumeric and spaces only']
 	},
 	username: {
 		type: String,
-		unique: 'testing error message',
+		unique: 'Username already exists',
 		required: 'Please fill in a username',
 		trim: true,
-		match: [/^([a-zA-Z0-9\_]+)*[a-zA-Z0-9\_]+$/, 'Username: Alphanumeric and underscore characters only']
+		match: [/^([a-zA-Z0-9\_]+)*[a-zA-Z0-9\_]+$/, 'Username: alphanumeric and underscore characters only']
 	},
 	password: {
 		type: String,
 		validate: [validateLocalStrategyPassword, 'Password should be longer'],
-		match: [/^\S+$/, 'Password: No spaces allowed']
+		match: [/^\S+$/, 'Password: no spaces allowed']
 	},
 	salt: {
 		type: String

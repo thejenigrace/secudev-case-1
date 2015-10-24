@@ -32,41 +32,35 @@ exports.create = function (req, res) {
 	var post = new Post(req.body);
 	post.user = req.user;
 
+	console.log(post.message);
+
 	//var message = post.message;
 	post.message = sanitizeHTML(post.message, {
-		allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+		allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol',
 			'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div',
 			'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img'],
 		allowedAttributes: {
-			a: ['href', 'name', 'target'],
+			//a: ['href', 'name', 'target'],
 			// We don't currently allow img itself by default, but this
 			// would make sense if we did
-			img: ['src']
+			img: ['src', 'style']
 		},
 		// Lots of these won't come up by default because we don't allow them
 		selfClosing: ['img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta'],
 		// URL schemes we permit
 		allowedSchemes: [],
 		allowedSchemesByTag: {
-			a: ['http', 'https'],
-			img: ['data']
+			//a: ['http', 'https']
+			img: ['http', 'https']
 		}
 	});
 
-	//var banned = ['/auth/signout', 'auth/signout'];
-    //
-	//for (var i = 0; i < banned.length; i++) {
-	//	if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
-	//		return res.status(400).send({
-	//			message: 'Banned URL'
-	//		});
-	//	}
-	//}
+	console.log(post.message);
 
 	post.save(function (err) {
 		if (err) {
 			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
+				message: 'Encountered error in saving procedure.'
 			});
 		} else {
 			res.jsonp(post);
@@ -90,36 +84,35 @@ exports.update = function (req, res) {
 	post = _.extend(post, req.body);
 	post.updated = Date.now();
 
-
 	post.message = sanitizeHTML(post.message, {
-		allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+		allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol',
 			'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div',
 			'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'img'],
 		allowedAttributes: {
-			a: ['href', 'name', 'target'],
+			//a: ['href', 'name', 'target'],
 			// We don't currently allow img itself by default, but this
 			// would make sense if we did
-			img: ['src']
+			img: ['src', 'style']
 		},
 		// Lots of these won't come up by default because we don't allow them
 		selfClosing: ['img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta'],
 		// URL schemes we permit
 		allowedSchemes: [],
 		allowedSchemesByTag: {
-			a: ['http', 'https'],
-			img: ['data']
+			//a: ['http', 'https']
+			img: ['http', 'https']
 		}
 	});
 
-	var banned = ['/auth/signout', 'auth/signout'];
-
-	for (var i = 0; i < banned.length; i++) {
-		if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
-			return res.status(400).send({
-				message: 'Banned URL'
-			});
-		}
-	}
+	//var banned = ['/auth/signout', 'auth/signout'];
+    //
+	//for (var i = 0; i < banned.length; i++) {
+	//	if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
+	//		return res.status(400).send({
+	//			message: 'Banned URL'
+	//		});
+	//	}
+	//}
 
 	post.save(function (err) {
 		if (err) {

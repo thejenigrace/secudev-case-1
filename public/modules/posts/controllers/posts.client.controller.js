@@ -3,9 +3,9 @@
 // Posts controller
 var postsApp = angular.module('posts');
 
-postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
+postsApp.controller('PostsController', ['$scope', '$http', '$stateParams', '$sce',
 	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Users',
-	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
+	function($scope, $http, $stateParams, $sce, $location, $filter, $modal, $log,
 			 Authentication, Posts, Users) {
 
 		//$scope.authentication = Authentication;
@@ -13,6 +13,11 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
+
+		$scope.editorOptions = {
+			language: 'ru',
+			uiColor: '#000000'
+		};
 
 		$scope.searchCriteria = [];
 
@@ -228,9 +233,11 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams',
 		};
 
 		// Create new Post
-		$scope.create = function() {
+		this.create = function() {
 			try {
 				// Create new Post object
+				console.log($scope.message);
+				var userMessage = $sce.trustAsHtml($scope.message);
 				var post = new Posts ({
 					message: $scope.message,
 					displayName: $scope.user.displayName
@@ -324,7 +331,7 @@ postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
 
 
 // Angular Directive
-postsApp.directive('postList', [ 'Posts', 'Notify',
+postsApp.directive('listPosts', [ 'Posts', 'Notify',
 	function(Posts, Notify) {
 		return {
 			restrict: 'E',
@@ -333,3 +340,26 @@ postsApp.directive('postList', [ 'Posts', 'Notify',
 		};
 	}
 ]);
+
+postsApp.directive('ckEditor', [function () {
+	return {
+		require: '?ngModel',
+		link: function ($scope, elm, attr, ngModel) {
+
+			var ck = CKEDITOR.replace(elm[0],  {
+				filebrowserBrowseUrl : '/browser/browse.php?type=Images',
+				filebrowserUploadUrl : '/uploader/upload.php?type=Files'
+			});
+
+			ck.on('pasteState', function () {
+				$scope.$apply(function () {
+					ngModel.$setViewValue(ck.getData());
+				});
+			});
+
+			ngModel.$render = function (value) {
+				ck.setData(ngModel.$modelValue);
+			};
+		}
+	};
+}]);

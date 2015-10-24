@@ -7,7 +7,6 @@ var _ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
-	sanitizeHTML = require('sanitize-html'),
 	User = mongoose.model('User');
 
 /**
@@ -19,13 +18,11 @@ exports.signup = function(req, res) {
 
 	// Init Variables
 	var user = new User(req.body);
-	var message = null;
+	//var message = null;
 
 	// Add missing user fields
 	user.provider = 'local';
 	user.displayName = user.firstName + ' ' + user.lastName;
-
-	var clean = sanitizeHTML(user.aboutMe);
 
 	// Then save the user
 	user.save(function(err) {
@@ -128,7 +125,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 				return done(err);
 			} else {
 				if (!user) {
-					var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
+					var possibleUsername = providerUserProfile.username;
 
 					User.findUniqueUsername(possibleUsername, null, function(availableUsername) {
 						user = new User({
@@ -136,7 +133,6 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 							lastName: providerUserProfile.lastName,
 							username: availableUsername,
 							displayName: providerUserProfile.displayName,
-							email: providerUserProfile.email,
 							provider: providerUserProfile.provider,
 							providerData: providerUserProfile.providerData
 						});

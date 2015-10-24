@@ -1,120 +1,184 @@
 <section>
 	<!--<div class="alert alert-warning text-center" data-ng-hide="!users.$resolved || users.length">-->
-
-		<div class="col-md-10 col-md-offset-1 list-group form-bg">
-			<div class="form-group">
-				<input type="text" class="form-control" data-ng-model="searchKeyword" placeholder="Search">
-			</div>
-
-			<div class="form-group">
-				<button class="btn btn-primary" type="button" ng-click="addSearchCriterion()" ng-disabled="showDone === true">
+	<div class="col-md-10 col-md-offset-1 form-bg">
+		<div class="row">
+			<div class="col-md-1">
+				<button class="btn btn-primary" type="button" ng-click="addSearchCriterion()"
+						ng-disabled="showDone === true">
 					<i class="glyphicon glyphicon-plus"></i>
 				</button>
 			</div>
-			<div class="form-group" data-ng-repeat="criterion in searchCriteria">
-				<select data-ng-model="type[criterion.id]">
-					<option value="">---Choose Search Criterion---</option>
-					<option value="user">USER</option>
-					<option value="gte">&gt;= DATE</option>
-					<option value="lte">&lt;= DATE</option>
-					<option value="eq">== DATE</option>
-					<option value="between">BETWEEN 2 DATES</option>
-				</select>
-				<input type="text" data-ng-model="data[criterion.id]" ng-show="type[criterion.id] === 'user'"
-					   placeholder="User">
-				<input type="date" data-ng-model="data[criterion.id]" ng-show="type[criterion.id] === 'gte'
-						|| type[criterion.id] === 'lte' || type[criterion.id] === 'eq'">
-				<input type="date" data-ng-model="data[criterion.id]['start']"] ng-show="type[criterion.id] === 'between'">
-				<label ng-show="type[criterion.id] === 'between'">TO</label>
-				<input type="date" data-ng-model="data[criterion.id]['end']" ng-show="type[criterion.id] === 'between'">
-				<select data-ng-model="concat[criterion.id]" ng-show="type[criterion.id]">
-					<option value="">---Choose Search Concat---</option>
-					<option value="and">AND</option>
-					<option value="or">OR</option>
-				</select>
-				<button class="btn btn-danger" ng-click="removeSearchCriterion(criterion.id)">
-					<i class="glyphicon glyphicon-minus"></i>
-				</button>
+			<div class="col-md-8 col-md-offset-1">
+				<input type="text" class="form-control" data-ng-model="searchKeyword" placeholder="Search">
 			</div>
-
-			<div class="form-group">
+			<div class="col-md-2">
 				<button class="btn btn-success" type="button" ng-click="search(); showDone=true">
 					Search
 				</button>
-				<button class="btn btn-danger" type="button" ng-click="retrievePosts(); removeAllSearchCriterion(); searchClear(); showDone=false" ng-show="showDone === true">
-					Done Search
-				</button>
 			</div>
+		</div>
 
-			<div class="text-center">
-				<pagination boundary-links="true"
-							max-size="8"
-							items-per-page="itemsPerPage"
-							total-items="filterLength"
-							ng-model="currentPage"
-							ng-change="pageChanged()">
-				</pagination>
-			</div>
-			<a data-ng-repeat="post in pagedPosts" class="list-group-item" ng-href="/#!/board/posts">
+		<div class="form-group" data-ng-repeat="criterion in searchCriteria">
+			<select data-ng-model="type[criterion.id]">
+				<option value="">---Choose Search Criterion---</option>
+				<option value="user">USER</option>
+				<option value="gte">&gt;= DATE</option>
+				<option value="lte">&lt;= DATE</option>
+				<option value="eq">== DATE</option>
+				<option value="between">BETWEEN 2 DATES</option>
+			</select>
+			<input type="text" data-ng-model="data[criterion.id]" ng-show="type[criterion.id] === 'user'"
+				   placeholder="User">
+			<input type="date" data-ng-model="data[criterion.id]" ng-show="type[criterion.id] === 'gte'
+						|| type[criterion.id] === 'lte' || type[criterion.id] === 'eq'">
+			<input type="date" data-ng-model="data[criterion.id]['start']" ] ng-show="type[criterion.id] === 'between'">
+			<label ng-show="type[criterion.id] === 'between'">TO</label>
+			<input type="date" data-ng-model="data[criterion.id]['end']" ng-show="type[criterion.id] === 'between'">
+			<select data-ng-model="concat[criterion.id]" ng-show="type[criterion.id]">
+				<option value="">---Choose Search Concat---</option>
+				<option value="and">AND</option>
+				<option value="or">OR</option>
+			</select>
+			<button class="btn btn-danger" ng-click="removeSearchCriterion(criterion.id)">
+				<i class="glyphicon glyphicon-minus"></i>
+			</button>
+		</div>
+
+		<div class="form-group">
+			<button class="btn btn-danger" type="button"
+					ng-click="retrievePosts(); removeAllSearchCriterion(); searchClear(); showDone=false"
+					ng-show="showDone === true">
+				Done Search
+			</button>
+		</div>
+
+		<div class="text-center">
+			<pagination boundary-links="true"
+						max-size="8"
+						items-per-page="itemsPerPage"
+						total-items="filterLength"
+						ng-model="currentPage"
+						ng-change="pageChanged()">
+			</pagination>
+		</div>
+		<!--<div class="list-group">-->
+			<a data-ng-repeat="post in pagedPosts" class="container-fluid" ng-href="/#!/board/posts">
+				<div class="post-divider-top-horizontal"></div>
+
 				<div class="row">
-					<div class="col-xs-12 col-sm-2 text-center">
-						<!--<h6 class="text-primary" data-ng-bind="post.user.displayName"></h6>-->
-						<!--<h5 class="text-danger" data-ng-bind="post.user.username"></h5>-->
-						<!--<small class="list-group-item-text">-->
-							<!--Joined:-->
-							<!--<span data-ng-bind="post.user.created | date:'mediumDate'"></span>-->
-						<!--</small>-->
-
+					<div class="col-md-2 text-center">
 						<table align="center">
 							<tbody>
-								<tr>
-									<td>
-										<!--ui-sref="viewUserProfile({ profileUserId: post.user._id })"-->
-										<a ng-href="/#!/user-profile">
-											<h5 class="text-primary" data-ng-bind="post.user.firstName"></h5>
-										</a>
-										<a ng-href="/#!/user-profile">
-											<h4 class="text-danger" data-ng-bind="post.user.username"></h4>
-										</a>
-										<h6 class="list-group-item-text">
-											Joined:
-											<span data-ng-bind="post.user.created | date:'mediumDate'"></span>
-										</h6>
-									</td>
-								</tr>
+							<tr>
+								<td>
+									<a ng-href="/#!/user-profile">
+										<h5 class="text-primary" data-ng-bind="post.user.firstName"></h5>
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<a ng-href="/#!/user-profile">
+										<h4 class="text-danger" data-ng-bind="post.user.username"></h4>
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h6 class="list-group-item-text">
+										Joined:
+										<span data-ng-bind="post.user.created | date:'mediumDate'"></span>
+									</h6>
+								</td>
+							</tr>
 							</tbody>
 						</table>
 					</div>
-					<div class="post-divider-vertical"></div>
-					<div class="col-xs-12 col-sm-9">
+
+					<div class="col-md-10">
+						<!--<div class="post-divider-vertical"></div>-->
 						<div class="row">
-							<div class="col-md-4">
-								<small class="list-group-item-text">
-									Posted on
-									<span data-ng-bind="post.created | date:'MM/dd/yyyy \'at\' h:mma'"></span>
-								</small>
-							</div>
-							<div class="col-xs-push-9 col-sm-3 col-sm-push-6 col-md-4 col-md-push-7"
-								 data-ng-show="isAuthorize(post.user._id)">
+							<div class="col-md-1 col-md-offset-10" data-ng-show="isAuthorize(post.user._id)">
 								<button type="button" class="btn btn-sm btn-warning"
 										ng-click="postsCtrl.modalUpdate('lg', post)">
 									<i class="glyphicon glyphicon-edit"></i>
 								</button>
+							</div>
+							<div class="col-md-1" data-ng-show="isAuthorize(post.user._id)">
 								<button type="button" class="btn btn-sm btn-danger"
 										ng-click="postsCtrl.remove(post)">
 									<i class="glyphicon glyphicon-trash"></i>
 								</button>
 							</div>
 						</div>
-						<h4 class="list-group-item-text" data-ng-bind-html="post.message"></h4>
-						<br>
-						<small class="list-group-item-text">
-							Updated on
-							<span data-ng-bind="post.updated | date:'MM/dd/yyyy \'at\' h:mma'"></span>
-						</small>
-					</div>
-				</div>
-			</a>
-		</div>
+						<div class="row">
+							<div class="col-md-6">
+								<small class="list-group-item-text">
+									Posted on
+									<span data-ng-bind="post.created | date:'MM/dd/yyyy \'at\' h:mma'"></span>
+								</small>
+							</div>
+							<!--<div class="col-md-1 col-md-offset-2" data-ng-show="isAuthorize(post.user._id)">-->
+							<!--<button type="button" class="btn btn-sm btn-warning"-->
+							<!--ng-click="postsCtrl.modalUpdate('lg', post)">-->
+							<!--<i class="glyphicon glyphicon-edit"></i>-->
+							<!--</button>-->
+							<!--</div>-->
+							<!--<div class="col-md-1" data-ng-show="isAuthorize(post.user._id)">-->
+							<!--<button type="button" class="btn btn-sm btn-danger"-->
+							<!--ng-click="postsCtrl.remove(post)">-->
+							<!--<i class="glyphicon glyphicon-trash"></i>-->
+							<!--</button>-->
+							<!--</div>-->
+						</div>
 
+						<div class="row">
+							<div class="col-md-12">
+								<h4 class="list-group-item-text" data-ng-bind-html="post.message"></h4>
+							</div>
+						</div>
+
+						<div class="row data-padding">
+							<div class="col-md-12">
+								<small class="list-group-item-text">
+									Updated on
+									<span data-ng-bind="post.updated | date:'MM/dd/yyyy \'at\' h:mma'"></span>
+								</small>
+							</div>
+						</div>
+					</div>
+
+					<!--<div class="col-xs-12 col-sm-9">-->
+						<!--<div class="row">-->
+							<!--<div class="col-md-4">-->
+								<!--<small class="list-group-item-text">-->
+									<!--Posted on-->
+									<!--<span data-ng-bind="post.created | date:'MM/dd/yyyy \'at\' h:mma'"></span>-->
+								<!--</small>-->
+							<!--</div>-->
+							<!--<div class="col-xs-push-9 col-sm-3 col-sm-push-6 col-md-4 col-md-push-7"-->
+								 <!--data-ng-show="isAuthorize(post.user._id)">-->
+								<!--<button type="button" class="btn btn-sm btn-warning"-->
+										<!--ng-click="postsCtrl.modalUpdate('lg', post)">-->
+									<!--<i class="glyphicon glyphicon-edit"></i>-->
+								<!--</button>-->
+								<!--<button type="button" class="btn btn-sm btn-danger"-->
+										<!--ng-click="postsCtrl.remove(post)">-->
+									<!--<i class="glyphicon glyphicon-trash"></i>-->
+								<!--</button>-->
+							<!--</div>-->
+						<!--</div>-->
+						<!--<h4 class="list-group-item-text" data-ng-bind-html="post.message"></h4>-->
+						<!--<br>-->
+						<!--<small class="list-group-item-text">-->
+							<!--Updated on-->
+							<!--<span data-ng-bind="post.updated | date:'MM/dd/yyyy \'at\' h:mma'"></span>-->
+						<!--</small>-->
+					<!--</div>-->
+				</div>
+				<div class="post-divider-bottom-horizontal"></div>
+			</a>
+		<!--</div>-->
+
+	</div>
 </section>
