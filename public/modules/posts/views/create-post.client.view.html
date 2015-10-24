@@ -17,6 +17,56 @@
 				<p>Birthdate: <tag ng-bind="user.birthdate | date:'MM/dd/yyyy'"></tag></p>
 				<p>About Me: {{user.aboutMe}}</p>
 			</div>
+			<br><br>
+			<div class="form-group text-center">
+				<div class="modal-header">
+					<h3 class="modal-title"><i class="glyphicon glyphicon-shopping-cart"></i> My Cart</h3>
+					<h6 class="text-danger">Total Amount: P</h6>
+				</div>
+
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-7">
+							<table align="center">
+								<tbody>
+								<tr>
+									<td>
+										<img src="http://www.publicdomainpictures.net/download-picture.php?adresar=40000&soubor=red-apple-clipart.jpg" height="35" width="35">
+									</td>
+									<td>
+										<a>
+											<h4 class="text-primary">Apple</h4>
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h5 class="text-primary">Quantity:</h5>
+									</td>
+									<td>
+										<input class="form-control" maxlength="5" name="quantity" type="number" required>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="col-md-5">
+							<div class="row">
+								<div class="col-md-1 col-md-offset-6">
+									<button type="button" class="btn btn-sm btn-danger">
+										<i class="glyphicon glyphicon-remove"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success">Checkout</button>
+				</div>
+			</div>
 		</div>
 
 		<div class="form-post-bg col-md-7">
