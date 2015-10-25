@@ -1,0 +1,19 @@
+<section data-ng-controller="TransactionsController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Transactions</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="transaction in transactions" data-ng-href="#!/transactions/{{transaction._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="transaction.created | date:'medium'"></span>
+				by
+				<span data-ng-bind="transaction.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="transaction.name"></h4>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!transactions.$resolved || transactions.length">
+    	No Transactions yet, why don't you <a href="/#!/transactions/create">create one</a>?
+    </div>
+</section>

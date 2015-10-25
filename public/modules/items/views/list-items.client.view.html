@@ -1,0 +1,43 @@
+<section data-ng-controller="ItemsController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Items</h1>
+    </div>
+    <div class="list-group">
+        <!--<a data-ng-repeat="item in items" data-ng-href="#!/items/{{item._id}}" class="list-group-item">-->
+			<!--&lt;!&ndash;<small class="list-group-item-text">&ndash;&gt;-->
+				<!--&lt;!&ndash;Posted on&ndash;&gt;-->
+				<!--&lt;!&ndash;<span data-ng-bind="item.created | date:'medium'"></span>&ndash;&gt;-->
+				<!--&lt;!&ndash;by&ndash;&gt;-->
+				<!--&lt;!&ndash;<span data-ng-bind="item.user.displayName"></span>&ndash;&gt;-->
+			<!--</small>-->
+			<!--<h4 class="list-group-item-heading" data-ng-bind="item.name"></h4>-->
+			<!-- -->
+			<!--<button> hello </button>-->
+        <!--</a>-->
+		<div data-ng-repeat="item in items" class = "row list-group-item">
+
+			<div class = "col-sm-1">
+				<img src="/modules/items/img/{{item.name}}.png" height="32" width="32">
+			</div>
+			<div class = "col-sm-2">
+				<h3> {{item.name}}
+					<small class="list-group-item-text" data-ng-bind="item.description"></small>
+				</h3>
+			</div>
+
+			<div class = "col-sm-1">
+
+			</div>
+			<div class = "col-sm-1">
+				<h4> PHP {{item.price}} </h4>
+			</div>
+
+			<button type="button" class="col-sm-1 col-sm-offset-4 btn btn-default btn-md">
+				<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to Cart
+			</button>
+		</div>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!items.$resolved || items.length">
+    	No Items yet, why don't you <a href="/#!/items/create">create one</a>?
+    </div>
+</section>
