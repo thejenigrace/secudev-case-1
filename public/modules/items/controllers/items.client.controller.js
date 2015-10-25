@@ -9,7 +9,10 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 		$scope.create = function() {
 			// Create new Item object
 			var item = new Items ({
-				name: this.name
+				name: this.name,
+				description: this.description,
+				image: this.image,
+				price: this.price
 			});
 
 			// Redirect after save
@@ -18,6 +21,9 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 
 				// Clear form fields
 				$scope.name = '';
+				$scope.description = '';
+				$scope.image = '';
+				$scope.price = '';
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -25,7 +31,7 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 
 		// Remove existing Item
 		$scope.remove = function(item) {
-			if ( item ) { 
+			if ( item ) {
 				item.$remove();
 
 				for (var i in $scope.items) {
@@ -58,7 +64,7 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 
 		// Find existing Item
 		$scope.findOne = function() {
-			$scope.item = Items.get({ 
+			$scope.item = Items.get({
 				itemId: $stateParams.itemId
 			});
 		};
