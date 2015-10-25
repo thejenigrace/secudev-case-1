@@ -1,13 +1,9 @@
 'use strict';
 
 module.exports = {
-	port: 8443,
+	port: 443,
 	db: {
-		uri: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://localhost/mean',
-		options: {
-			user: '',
-			pass: ''
-		}
+		uri: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://localhost/mean'
 	},
 	log: {
 		// Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
@@ -27,10 +23,14 @@ module.exports = {
 			js: [
 				'public/lib/angular/angular.min.js',
 				'public/lib/angular-resource/angular-resource.min.js',
+				'public/lib/angular-cookies/angular-cookies.min.js',
 				'public/lib/angular-animate/angular-animate.min.js',
+				'public/lib/angular-touch/angular-touch.min.js',
+				'public/lib/angular-sanitize/angular-sanitize.min.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.min.js',
 				'public/lib/angular-ui-utils/ui-utils.min.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
+				'public/lib/ckeditor/ckeditor.js'
 			]
 		},
 		css: 'public/dist/application.min.css',
