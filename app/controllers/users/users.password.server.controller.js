@@ -192,6 +192,21 @@ exports.reset = function(req, res, next) {
  * Change Password
  */
 exports.changePassword = function(req, res) {
+	var displayName = req.body.displayName;
+	console.log(displayName);
+	delete req.body.displayName;
+
+	//var tempId = JSON.stringify(displayName._id).replace(/\"/g,"");
+	//var authId = JSON.stringify(req.user._id).replace(/\"/g, "");
+
+	var currentUser = req.user.firstName + ' ' + req.user.lastName;
+
+	if (displayName !== currentUser) {
+		return res.status(400).send({
+			message: 'Logged in as another user. Please refresh the page.'
+		});
+	}
+
 	// Init Variables
 	var passwordDetails = req.body;
 

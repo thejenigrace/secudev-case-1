@@ -1,7 +1,7 @@
 <section>
 	<!--<div class="alert alert-warning text-center" data-ng-hide="!users.$resolved || users.length">-->
 	<div class="col-md-10 col-md-offset-1 form-bg">
-		<div class="row">
+		<div class="row form-group">
 			<div class="col-md-1">
 				<button class="btn btn-primary" type="button" ng-click="addSearchCriterion()"
 						ng-disabled="showDone === true">
@@ -45,9 +45,9 @@
 		</div>
 
 		<div class="form-group">
-			<button class="btn btn-danger" type="button"
+			<button class="btn btn-block btn-danger" type="button"
 					ng-click="retrievePosts(); removeAllSearchCriterion(); searchClear(); showDone=false"
-					ng-show="showDone === true">
+					ng-show="showDone==true">
 				Done Search
 			</button>
 		</div>
