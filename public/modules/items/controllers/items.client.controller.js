@@ -1,13 +1,20 @@
 'use strict';
 
 // Items controller
-angular.module('items').controller('ItemsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Items',
-	function($scope, $stateParams, $location, Authentication, Items) {
+angular.module('items').controller('ItemsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Items', '$http',
+	function($scope, $stateParams, $location, Authentication, Items, $http) {
 		$scope.authentication = Authentication;
+
+		$scope.user = Authentication.user;
 
 		// Create new Item
 		$scope.create = function() {
 			// Create new Item object
+
+			$http.post('/items/upload-image', $scope.image).success( function(response) {
+
+			});
+
 			var item = new Items ({
 				name: this.name,
 				description: this.description,
@@ -68,5 +75,42 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 				itemId: $stateParams.itemId
 			});
 		};
+
+		$scope.isAdmin = function() {
+			if($scope.user.roles.indexOf('admin') === 0)
+				return true;
+			else
+				return false;
+		};
+
+		$scope.isUser = function() {
+			if($scope.user.roles.indexOf('user') === 0)
+				return true;
+			else
+				return false;
+		};
+
+		//this.remove = function(item) {
+		//	if (item) {
+		//		//post.$remove(function(response) {
+		//		//	//Notify.sendMessage('Remove Post', {'id': response._id});
+		//		//	$scope.retrievePosts();
+		//		//});
+        //
+		//		$http.delete('/posts/' + post._id).success(function(response) {
+		//			$scope.retrievePosts();
+		//		});
+        //
+		//		//for (var i in $scope.posts) {
+		//		//	if ($scope.posts [i] === post) {
+		//		//		$scope.posts.splice(i, 1);
+		//		//	}
+		//		//}
+		//	} else {
+		//		$scope.post.$remove(function() {
+        //
+		//		});
+		//	}
+		//};
 	}
 ]);

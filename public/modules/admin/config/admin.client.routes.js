@@ -25,6 +25,22 @@ angular.module('admin').config(['$stateProvider',
 		// 	templateUrl: 'modules/admin/views/users/view-user.client.view.html',
 		// 	controller: 'AdminUsersViewController'
 		// }).
+		//state('listItems', {
+		//	url: '/items',
+		//	templateUrl: 'modules/items/views/list-items.client.view.html'
+		//}).
+		state('createItem', {
+			url: '/items/create',
+			templateUrl: 'modules/items/views/create-item.client.view.html'
+		}).
+		//state('viewItem', {
+		//	url: '/items/:itemId',
+		//	templateUrl: 'modules/items/views/view-item.client.view.html'
+		//}).
+		//state('editItem', {
+		//	url: '/items/:itemId/edit',
+		//	templateUrl: 'modules/items/views/edit-item.client.view.html'
+		//}).
 		state('admin-users.create', {
 			url: '/create',
 			templateUrl: 'modules/admin/views/users/create-admin-user.client.view.html'

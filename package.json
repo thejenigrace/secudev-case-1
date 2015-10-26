@@ -40,6 +40,7 @@
     "mongoose-paginate": "~4.2.0",
     "mongoose-validators": "~0.1.0",
     "morgan": "~1.4.1",
+    "multer": "^1.1.0",
     "nestedjson2csv": "^2.0.1",
     "nodemailer": "~1.3.0",
     "passport": "~0.2.0",

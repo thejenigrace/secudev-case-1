@@ -7,5 +7,6 @@ angular.module('admin').run(['Menus',
 		Menus.addMenuItem('topbar', 'Admin', 'admin', 'dropdown', '/admin', null, ['admin']);
 		//Menus.addSubMenuItem('topbar', 'admin', 'Users', 'admin/users/list');
 		Menus.addSubMenuItem('topbar', 'admin', 'User Register', 'admin/users/create');
+		Menus.addSubMenuItem('topbar', 'admin', 'New Item', 'items/create');
 	}
 ]);

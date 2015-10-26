@@ -6,8 +6,16 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Item = mongoose.model('Item'),
+	fs = require('fs'),
+	multer = require('multer'),
 	_ = require('lodash');
 
+exports.upload(req,res,function(err) {
+	if(err) {
+		return res.end("Error uploading file.");
+	}
+	res.end("File is uploaded");
+});
 /**
  * Create a Item
  */
@@ -72,7 +80,7 @@ exports.delete = function(req, res) {
 /**
  * List of Items
  */
-exports.list = function(req, res) { 
+exports.list = function(req, res) {
 	Item.find().sort('-created').populate('user', 'displayName').exec(function(err, items) {
 		if (err) {
 			return res.status(400).send({
@@ -87,7 +95,7 @@ exports.list = function(req, res) {
 /**
  * Item middleware
  */
-exports.itemByID = function(req, res, next, id) { 
+exports.itemByID = function(req, res, next, id) {
 	Item.findById(id).populate('user', 'displayName').exec(function(err, item) {
 		if (err) return next(err);
 		if (! item) return next(new Error('Failed to load Item ' + id));

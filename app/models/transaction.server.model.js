@@ -7,7 +7,6 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 var validateLocalStrategyStatus = function (gender) {
-	console.log('Gender = ' + gender);
 	return ( status === 'paid' || status === 'notpaid' || status === 'cancelled');
 };
 /**

@@ -11,9 +11,13 @@ module.exports = function(app) {
 
 	app.route('/items/:itemId')
 		.get(users.requiresLogin, items.read)
-		.put(users.requiresLogin, users.isAdmin,items.hasAuthorization, items.update)
-		.delete(users.requiresLogin, users.isAdmin, items.hasAuthorization, items.delete);
+		.put(users.requiresLogin, users.isAdmin, items.update)
+		.delete(users.requiresLogin, users.isAdmin, items.delete);
+
+	app.route('/items/upload-image')
+		.post(users.requiresLogin, users.isAdmin, items.upload);
 
 	// Finish by binding the Item middleware
 	app.param('itemId', items.itemByID);
+
 };

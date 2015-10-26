@@ -1,4 +1,4 @@
-<section data-ng-controller="ItemsController" data-ng-init="find()">
+<section data-ng-controller="ItemsController as itemsCtrl" data-ng-init="find()">
     <div class="page-header">
         <h1>Items</h1>
     </div>
@@ -24,17 +24,28 @@
 					<small class="list-group-item-text" data-ng-bind="item.description"></small>
 				</h3>
 			</div>
-
-			<div class = "col-sm-1">
-
-			</div>
 			<div class = "col-sm-1">
 				<h4> PHP {{item.price}} </h4>
 			</div>
 
-			<button type="button" class="col-sm-1 col-sm-offset-4 btn btn-default btn-md">
+			<button type="button"
+					class="col-sm-1 col-sm-offset-4 btn btn-default btn-md"
+					data-ng-show="isUser()">
 				<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to Cart
 			</button>
+
+			<div class="col-sm-1 col-sm-offset-7" >
+				<button type="button" class="btn btn-sm btn-warning"
+						ng-click="itemsCtrl.modalUpdate('lg', item)"
+						data-ng-show="isAdmin()">
+					<i class="glyphicon glyphicon-edit"></i>
+				</button>
+				<button type="button" class="btn btn-sm btn-danger"
+						ng-click="remove(item)"
+						data-ng-show="isAdmin()">
+					<i class="glyphicon glyphicon-trash"></i>
+				</button>
+			</div>
 		</div>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!items.$resolved || items.length">

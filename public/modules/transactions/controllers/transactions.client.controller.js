@@ -25,7 +25,7 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 
 		// Remove existing Transaction
 		$scope.remove = function(transaction) {
-			if ( transaction ) { 
+			if ( transaction ) {
 				transaction.$remove();
 
 				for (var i in $scope.transactions) {
@@ -58,7 +58,7 @@ angular.module('transactions').controller('TransactionsController', ['$scope', '
 
 		// Find existing Transaction
 		$scope.findOne = function() {
-			$scope.transaction = Transactions.get({ 
+			$scope.transaction = Transactions.get({
 				transactionId: $stateParams.transactionId
 			});
 		};

@@ -18,24 +18,22 @@ var ItemSchema = new Schema({
 	},
 	description: {
 		type: String,
-		default: 'an item description'
+		default: 'No item description'
 	},
 	image: {
 		type: String,
-		default: ''
+		default: '',
+		required: 'Please provide an image URL'
 	},
 	price: {
 		type: Number,
 		min: 0,
-		max: 10000
+		max: 10000,
+		required: 'Please fill Item price'
 	},
 	created: {
 		type: Date,
 		default: Date.now
-	},
-	user: {
-		type: Schema.ObjectId,
-		ref: 'User'
 	}
 });
 
