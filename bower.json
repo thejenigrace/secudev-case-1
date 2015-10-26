@@ -13,7 +13,8 @@
     "angular-ui-router": "~0.2.11",
     "angular-ui-utils": "~0.1.1",
     "bootstrap": "~3",
-	"ckeditor": "~4.5.4"
+    "ckeditor": "~4.5.4",
+    "jquery": "~2.1.4"
   },
   "resolutions": {
     "angular": "~1.2",
