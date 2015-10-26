@@ -8,6 +8,13 @@ UsersApp.controller('ProfileUserController', ['$scope',
 
 		$scope.user = Authentication.user;
 
+		var badges = $scope.user.badges;
+		console.log(badges);
+		$scope.found = badges.filter(function(badge){
+			return badge.name === 'Participant Badge';
+		});
+		console.log($scope.found);
+
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 	}
@@ -15,12 +22,14 @@ UsersApp.controller('ProfileUserController', ['$scope',
 
 
 UsersApp.controller('ProfileEditController', ['$scope',
-	'$http', '$location', 'Users', 'Authentication', '$filter',
-	function($scope, $http, $location, Users, Authentication, $filter) {
+	'$http', '$location', 'Users', 'Authentication', '$filter', '$window',
+	function($scope, $http, $location, Users, Authentication, $filter, $window) {
 		$scope.user = Authentication.user;
 
 		// If user is not signed in then redirect back home
-		if (!$scope.user) $location.path('/');
+		if (!$scope.user) {
+			$location.path('/');
+		}
 
 		var gender = [
 			'Male',
@@ -77,6 +86,7 @@ UsersApp.controller('ProfileEditController', ['$scope',
 				}
 
 				// And redirect to the index page
+				$window.location.reload();
 				$location.path('/user-profile');
 			}).error(function(response) {
 				$scope.error = response.message;

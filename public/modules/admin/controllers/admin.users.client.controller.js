@@ -153,10 +153,10 @@ angular.module('admin')
 		$scope.register = function() {
 			$http.post('/register', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model
-				$scope.authentication.user = response;
+				//$scope.authentication.user = response;
 
 				// And redirect to the index page
-				$location.path('/posts');
+				$location.path('/board/posts');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});

@@ -7,12 +7,27 @@ var _ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
-	User = mongoose.model('User');
+	User = mongoose.model('User'),
+	Badge = mongoose.model('Badge');
 
 /**
  * Signup
  */
 exports.signup = function(req, res) {
+	//var participantBadge = new Badge({
+	//	name: 'Participant Badge',
+	//	category: ['post'],
+	//	postCount: 0
+	//});
+    //
+	//participantBadge.save(function(err) {
+	//	if (err) {
+	//		return res.status(400).send({
+	//			message: errorHandler.getErrorMessage(err)
+	//		});
+	//	}
+	//});
+
 	// For security measurement we remove the roles from the req.body object
 	delete req.body.roles;
 
@@ -23,6 +38,11 @@ exports.signup = function(req, res) {
 	// Add missing user fields
 	user.provider = 'local';
 	user.displayName = user.firstName + ' ' + user.lastName;
+
+	//user.badges.push(participantBadge._id);
+	user.badges.push({name: 'Participant Badge', category: 'post', min: 3, max: 4, active: false});
+	user.badges.push({name: 'Chatter Badge', category: 'post', min: 5, max: 9, active: false});
+	user.badges.push({name: 'Socialite Badge', category: 'post', min: 10, active: false});
 
 	// Then save the user
 	user.save(function(err) {
