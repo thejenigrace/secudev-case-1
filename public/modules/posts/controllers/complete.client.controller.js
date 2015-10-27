@@ -3,15 +3,19 @@
 // Posts controller
 var postsApp = angular.module('posts');
 
-postsApp.controller('CompleteController', ['$scope', '$http', '$stateParams', '$sce', '$location',
-	'$location', '$filter', '$modal', '$log', '$window', 'Authentication', 'Posts', 'Users',
-	function($scope, $http, $stateParams, $sce, $location, $filter, $modal, $log, $window,
-			 Authentication, Posts, Users) {
+postsApp.controller('CompleteController', ['$scope', '$http', '$location', 'Authentication',
+	function($scope, $http, $location, Authentication) {
+
+		//$scope.authentication = Authentication;
+		$scope.user = Authentication.user;
+
+		// If user is not signed in then redirect back home
+		if (!$scope.user) $location.path('/');
 
 		$scope.checkoutComplete = function() {
 			var paramsss = $location.search();
 			$http.post('/checkout/complete/transaction', paramsss).success(function(response){
-
+				$location.path('/board/posts');
 			});
 		};
 	}
