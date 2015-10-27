@@ -2,11 +2,7 @@
 
 module.exports = {
 	db: {
-		uri: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/secudev-db',
-		options: {
-			user: '',
-			pass: ''
-		}
+		uri: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/secudev-db'
 	},
 	log: {
 		// Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
@@ -34,7 +30,7 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/ckeditor/ckeditor.js',
-				'public/lib/ng-ckeditor/ngckeditor.js'
+				'public/lib/angular-file-upload/dist/angular-file-upload.min.js'
 			]
 		},
 		css: 'public/dist/application.min.css',
