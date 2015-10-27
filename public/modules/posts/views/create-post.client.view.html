@@ -72,6 +72,11 @@
 		<div class="form-post-bg col-md-7">
 			<form name="postForm" class="form-horizontal" novalidate>
 				<fieldset>
+					<div data-ng-show="error" class="text-center text-danger">
+						<div class="alert alert-danger" role="alert">
+							<strong data-ng-bind="error"></strong>
+						</div>
+					</div>
 					<div class="form-group">
 						<textarea data-ng-model="message" data-ck-editor></textarea>
 						<!--<div class="controls">-->
@@ -91,11 +96,6 @@
       					<!--theme: 'snow'}">-->
 					<!--</div>-->
 
-					<!--<div data-ng-show="error" class="text-center text-danger">-->
-					<!--<div class="alert alert-danger" role="alert">-->
-					<!--<strong data-ng-bind="error"></strong>-->
-					<!--</div>-->
-					<!--</div>-->
 					<!--<div class="form-group">-->
 					<!--<div class="controls">-->
 					<!--<textarea name="content" data-ng-model="message" id="message" class="form-control"-->
@@ -104,7 +104,7 @@
 					<!--</div>-->
 					<!--</div>-->
 					<div class="form-group text-center">
-						<button type="button" class="btn-block btn-success" ng-click="postsCtrl.create()">
+						<button type="button" class="btn btn-block btn-success" ng-click="postsCtrl.create()">
 							Post
 						</button>
 					</div>

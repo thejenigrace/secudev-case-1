@@ -2,11 +2,7 @@
 
 module.exports = {
 	db: {
-		uri: 'mongodb://localhost/secudev-db',
-		options: {
-			user: '',
-			pass: ''
-		}
+		uri: 'mongodb://localhost/secudev-db'
 	},
 	log: {
 		// Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
