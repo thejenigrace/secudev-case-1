@@ -6,9 +6,69 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	sanitizeHTML = require('sanitize-html'),
+	paypal = require('paypal-rest-sdk'),
 	Post = mongoose.model('Post'),
 	User = mongoose.model('User'),
 	_ = require('lodash');
+
+
+exports.checkout = function (req, res) {
+	console.log('kjhkjhkj');
+	paypal.configure({
+		'host': 'api.sandbox.paypal.com',
+		'port': '',
+		'client_id': 'AbLENHhZiLd8PtcQezz7rdBZYxGmmISrkzZ_5t6aYu-5nJZVvre_fo9D588n2XPeQnTHu7_6uqEBl1ze',
+		'client_secret': 'EBgpl2OLekLkBlqWZwc2VSaT4NNvFoZ8EjAhU8GLV7tXFmpEGH_oUzN4i00rV-zQ7nqQqrw8y5q9o5Tl'
+	});
+
+	var totalAmount = 1;
+	var description = 'apple';
+
+	var paypalPayment = {
+		'intent': 'sale',
+		'payer': {
+			'payment_method': 'paypal'
+		},
+		'redirect_urls': {},
+		'transactions': [{
+			'amount': {
+				'currency': 'USD'
+			}
+		}]
+	};
+
+	//console.log(config);
+	paypalPayment.transactions[0].amount.total = totalAmount;
+	paypalPayment.redirect_urls.return_url = 'http://localhost:3000/#!/checkout/complete/transaction';
+	paypalPayment.redirect_urls.cancel_url = 'http://localhost:3000/#!';
+	paypalPayment.transactions[0].description = totalAmount + ' ' + description;
+	paypal.payment.create(paypalPayment, {}, function (err, resp) {
+		//if (err) {
+		//	res.render('order_detail', { message: [{desc: 'Payment API call failed', type: 'error'}]});
+		//}
+
+		if (resp) {
+			var link = resp.links;
+			for (var i = 0; i < link.length; i++) {
+				if (link[i].rel === 'approval_url') {
+					res.send(link[i].href);
+				}
+			}
+		}
+	});
+};
+
+exports.checkoutComplete = function(req, res) {
+	var payer = {
+		payer_id: req.body.PayerID
+	};
+
+	paypal.payment.execute(req.body.paymentId, payer, {}, function (err, response) {
+		if (err) return res.status(400).send({ message: 'An error occured while executing your transaction' });
+
+		res.send({ message: 'Successfully performed payment' });
+	}); // Closing of paypal.payment.execute()
+};
 
 /**
  * Create a Post
@@ -105,7 +165,7 @@ exports.update = function (req, res) {
 	});
 
 	//var banned = ['/auth/signout', 'auth/signout'];
-    //
+	//
 	//for (var i = 0; i < banned.length; i++) {
 	//	if (post.message.toLowerCase().indexOf(banned[i]) >= 0) {
 	//		return res.status(400).send({
@@ -473,68 +533,66 @@ exports.search = function (req, res) {
 
 	};
 
-		var basicExecQuery = function () {
-			Post.paginate({message: new RegExp(keyword, 'i')}, {
-				page: currentPage,
-				limit: itemsPerPage,
-				populate: [
-					{
-						path: 'user',
-						select: 'username displayName firstName created'
-					}
-				],
-				sortBy: {
-					created: -1
+	var basicExecQuery = function () {
+		Post.paginate({message: new RegExp(keyword, 'i')}, {
+			page: currentPage,
+			limit: itemsPerPage,
+			populate: [
+				{
+					path: 'user',
+					select: 'username displayName firstName created'
 				}
+			],
+			sortBy: {
+				created: -1
+			}
+		})
+			.spread(function (posts, pageCount, itemCount) {
+				console.log(posts);
+
+				res.jsonp(posts);
 			})
-				.spread(function (posts, pageCount, itemCount) {
-					console.log(posts);
+			.catch(function (err) {
 
-					res.jsonp(posts);
-				})
-				.catch(function (err) {
-
-				});
-		};
-
-		var countTypeUser = function () {
-			var count = 0;
-
-			for (var i = 0; i < type.length; i++) {
-				if (type[i] === 'user')
-					count++;
-			}
-
-			return count;
-		};
-
-		var findTypeUserDataIndex = function () {
-			var arrIndex = [];
-			for (var i = 0; i < type.length; i++) {
-				if (type[i] === 'user')
-					arrIndex.push(i);
-			}
-			return arrIndex;
-		};
-
-		var findTypeUserData = function () {
-			var arrData = [];
-			console.log('length: ' + type.length);
-			for (var i = 0; i < type.length; i++) {
-				if (type[i] === 'user')
-					arrData.push(data[i]);
-			}
-			return arrData;
-		};
-
-		// Execution
-		if (countTypeUser() > 0 && type.length > 0) {
-			userExecQuery(findTypeUserData(), findTypeUserDataIndex());
-		} else if (countTypeUser() === 0 && type.length > 0) {
-			normalExecQuery();
-		} else if (countTypeUser() === 0 && type.length === 0) {
-			basicExecQuery();
-		}
+			});
 	};
 
+	var countTypeUser = function () {
+		var count = 0;
 
+		for (var i = 0; i < type.length; i++) {
+			if (type[i] === 'user')
+				count++;
+		}
+
+		return count;
+	};
+
+	var findTypeUserDataIndex = function () {
+		var arrIndex = [];
+		for (var i = 0; i < type.length; i++) {
+			if (type[i] === 'user')
+				arrIndex.push(i);
+		}
+		return arrIndex;
+	};
+
+	var findTypeUserData = function () {
+		var arrData = [];
+		console.log('length: ' + type.length);
+		for (var i = 0; i < type.length; i++) {
+			if (type[i] === 'user')
+				arrData.push(data[i]);
+		}
+		return arrData;
+	};
+
+	// Execution
+	if (countTypeUser() > 0 && type.length > 0) {
+		userExecQuery(findTypeUserData(), findTypeUserDataIndex());
+	} else if (countTypeUser() === 0 && type.length > 0) {
+		normalExecQuery();
+	} else if (countTypeUser() === 0 && type.length === 0) {
+		basicExecQuery();
+	}
+};

@@ -7,21 +7,35 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Item = mongoose.model('Item'),
 	fs = require('fs'),
-	multer = require('multer'),
 	_ = require('lodash');
 
-exports.upload(req,res,function(err) {
-	if(err) {
-		return res.end("Error uploading file.");
+exports.upload = function(req, res) {
+	var user = req.user;
+	var message = null;
+
+	if(user.roles === 'admin') {
+		fs.writeFile('public/static/image' + req.files.file.name, req.files.file.buffer, function(err) {
+			if(err) {
+				return res.status(400).send({
+					message: 'Error occurred while uploading image'
+				});
+			} else {
+				res.send({
+					filename: req.files.file.name
+				});
+			}
+		});
+	} else {
+		res.status(400).send({
+			message: 'User is not signed in'
+		});
 	}
-	res.end("File is uploaded");
-});
+};
 /**
  * Create a Item
  */
 exports.create = function(req, res) {
 	var item = new Item(req.body);
-	item.user = req.user;
 
 	item.save(function(err) {
 		if (err) {

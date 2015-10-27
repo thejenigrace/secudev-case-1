@@ -57,7 +57,8 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/ckeditor/ckeditor.js',
-				'public/lib/ng-ckeditor/ngckeditor.js'
+				'public/lib/ng-ckeditor/ngckeditor.js',
+				'public/lib/angular-file-upload/dist/angular-file-upload.min.js'
 			]
 		},
 		css: [

@@ -9,14 +9,19 @@
                     <label class="control-label" for="name">Name</label>
                     <div class="controls">
                         <input type="text" data-ng-model="name" id="name"
-							   class="form-control" placeholder="Name" required>
+							   class="form-control" placeholder="Name" required/>
 						<input type="number" data-ng-model="price" id="price"
-							   class="form-control" placeholder="0.00" required>
+							   class="form-control" placeholder="0.00" required/>
 						<input type="text" data-ng-model="description" id="description"
-							   class="form-control" placeholder="Description" required>
-						<input type="file" data-ng-model="image" id="image"
-							   class="form-control" placeholder="Image Location" required>
+							   class="form-control" placeholder="Description" required/>
+						<span ng-hide="uploader.queue.length || isReady === false">
+							<input type="file" nv-file-select uploader="uploader"
+								   class="form-control" placeholder="Image Location" required/>
+						</span>
                     </div>
+					<div ng-show="uploader.queue.length">
+						<button class="btn btn-success" ng-click="uploadPicture()">upload</button>
+					</div>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-default">

@@ -4,8 +4,8 @@
 var postsApp = angular.module('posts');
 
 postsApp.controller('PostsController', ['$scope', '$http', '$stateParams', '$sce',
-	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Users',
-	function($scope, $http, $stateParams, $sce, $location, $filter, $modal, $log,
+	'$location', '$filter', '$modal', '$log', '$window', 'Authentication', 'Posts', 'Users',
+	function($scope, $http, $stateParams, $sce, $location, $filter, $modal, $log, $window,
 			 Authentication, Posts, Users) {
 
 		//$scope.authentication = Authentication;
@@ -14,10 +14,17 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams', '$sce
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
-		$scope.editorOptions = {
-			language: 'ru',
-			uiColor: '#000000'
+		$scope.checkoutPaypal = function() {
+			$http.get('/checkout').success(function (response) {
+				console.log(response);
+				$window.location = response;
+			});
 		};
+
+		//$scope.editorOptions = {
+		//	language: 'ru',
+		//	uiColor: '#000000'
+		//};
 
 		$scope.searchCriteria = [];
 

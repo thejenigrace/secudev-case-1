@@ -24,6 +24,10 @@ angular.module('posts').config(['$stateProvider',
 		state('viewUserProfile', {
 			url: '/user/profile/:profileUserId',
 			templateUrl: 'modules/posts/views/user-profile.client.view.html'
-		});
+		}).
+			state('completeTransaction', {
+				url: '/checkout/complete/transaction',
+				templateUrl: 'modules/posts/views/complete.client.view.html'
+			});
 	}
 ]);

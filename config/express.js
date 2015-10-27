@@ -9,6 +9,7 @@ var fs = require('fs'),
 	express = require('express'),
 	morgan = require('morgan'),
 	logger = require('./logger'),
+	multer = require('multer'),
 	bodyParser = require('body-parser'),
 	session = require('express-session'),
 	compression = require('compression'),
@@ -98,6 +99,10 @@ module.exports = function(db) {
 	// CookieParser should be above session
 	app.use(cookieParser());
 
+	app.use(multer({
+		dest: './public/static',
+		inMemory: true
+	}));
 	// Express MongoDB session storage
 	app.use(session({
 		saveUninitialized: true,

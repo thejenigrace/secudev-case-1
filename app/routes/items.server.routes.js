@@ -14,7 +14,7 @@ module.exports = function(app) {
 		.put(users.requiresLogin, users.isAdmin, items.update)
 		.delete(users.requiresLogin, users.isAdmin, items.delete);
 
-	app.route('/items/upload-image')
+	app.route('/items/upload/image')
 		.post(users.requiresLogin, users.isAdmin, items.upload);
 
 	// Finish by binding the Item middleware
