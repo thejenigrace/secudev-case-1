@@ -10,6 +10,9 @@ itemsApp.controller('ItemsCreateController', ['$scope', '$stateParams', '$locati
 
 		$scope.user = Authentication.user;
 
+		// If user is signed in then redirect back home
+		if ($scope.user.roles.indexOf('user') === 0) $location.path('/board/posts');
+
 		$scope.isImagePresent = false;
 		$scope.isProceed = false;
 
