@@ -39,8 +39,10 @@ exports.checkout = function (req, res) {
 
 	//console.log(config);
 	paypalPayment.transactions[0].amount.total = totalAmount;
-	paypalPayment.redirect_urls.return_url = 'https://104.131.37.55/#!/checkout/complete/transaction';
-	paypalPayment.redirect_urls.cancel_url = 'https://104.131.37.55/#!';
+	//paypalPayment.redirect_urls.return_url = 'https://104.131.37.55/#!/checkout/complete/transaction';
+	//paypalPayment.redirect_urls.cancel_url = 'https://104.131.37.55/#!';
+	paypalPayment.redirect_urls.return_url = 'https://localhost/#!/checkout/complete/transaction';
+	paypalPayment.redirect_urls.cancel_url = 'https://localhost/#!';
 	paypalPayment.transactions[0].description = totalAmount + ' ' + description;
 	paypal.payment.create(paypalPayment, {}, function (err, resp) {
 		//if (err) {

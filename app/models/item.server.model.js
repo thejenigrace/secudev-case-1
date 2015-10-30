@@ -16,19 +16,18 @@ var ItemSchema = new Schema({
 		required: 'Please fill Item name',
 		trim: true
 	},
-	description: {
-		type: String,
-		default: 'No item description'
-	},
-	image: {
-		type: String,
-		required: 'Please provide an image URL'
-	},
 	price: {
 		type: Number,
 		min: 0,
 		max: 10000,
 		required: 'Please fill Item price'
+	},
+	description: {
+		type: String,
+		default: 'No item description'
+	},
+	image: {
+		type: String
 	},
 	created: {
 		type: Date,

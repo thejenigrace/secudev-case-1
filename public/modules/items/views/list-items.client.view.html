@@ -56,7 +56,7 @@
 		<div data-ng-repeat="item in items" class = "row list-group-item">
 
 			<div class = "col-sm-1">
-				<img src="/modules/items/img/{{item.name}}.png" height="32" width="32">
+				<img src="/modules/items/img/image{{item.image}}" height="80" width="80" class="thumbnail">
 			</div>
 			<div class = "col-sm-2">
 				<h3> {{item.name}}
@@ -88,6 +88,6 @@
 		</div>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!items.$resolved || items.length">
-    	No Items yet, why don't you <a href="/#!/items/create">create one</a>?
+    	No Available Items
     </div>
 </section>

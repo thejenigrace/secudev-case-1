@@ -7,14 +7,57 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Item = mongoose.model('Item'),
 	fs = require('fs'),
+
 	_ = require('lodash');
 
 exports.upload = function(req, res) {
-	var user = req.user;
-	var message = null;
+	console.log('Upload Image');
+	console.log(req.files.file.name);
+	console.log(req.files.file.buffer);
 
-	if(user.roles === 'admin') {
-		fs.writeFile('public/static/image' + req.files.file.name, req.files.file.buffer, function(err) {
+	var user = req.user;
+
+	//var upload = multer(config.uploads.profileUpload).single('newItemImage');
+	//var profileUploadFileFilter = require(path.resolve('./config/lib/multer')).profileUploadFileFilter;
+    //
+	//// Filtering to upload only images
+	//upload.fileFilter = profileUploadFileFilter;
+
+	//if (user) {
+	//	upload(req, res, function (uploadError) {
+	//		if(uploadError) {
+	//			return res.status(400).send({
+	//				message: 'Error occurred while uploading profile picture'
+	//			});
+	//		} else {
+	//			user.profileImageURL = config.uploads.profileUpload.dest + req.file.filename;
+    //
+	//			user.save(function (saveError) {
+	//				if (saveError) {
+	//					return res.status(400).send({
+	//						message: errorHandler.getErrorMessage(saveError)
+	//					});
+	//				} else {
+	//					req.login(user, function (err) {
+	//						if (err) {
+	//							res.status(400).send(err);
+	//						} else {
+	//							res.json(user);
+	//						}
+	//					});
+	//				}
+	//			});
+	//		}
+	//	});
+	//} else {
+	//	res.status(400).send({
+	//		message: 'User is not signed in'
+	//	});
+	//}
+
+	if(user.roles.indexOf('admin') === 0) {
+		console.log('Start Uploading');
+		fs.writeFile('public/modules/items/img/image' + req.files.file.name, req.files.file.buffer, function(err) {
 			if(err) {
 				return res.status(400).send({
 					message: 'Error occurred while uploading image'
