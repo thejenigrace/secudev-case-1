@@ -68,10 +68,10 @@ exports.checkout = function (req, res) {
 
 			//console.log(config);
 			paypalPayment.transactions[0].amount.total = cart.total;
-			//paypalPayment.redirect_urls.return_url = 'https://104.131.37.55/#!/cart/checkout/complete/transaction';
-			//paypalPayment.redirect_urls.cancel_url = 'https://104.131.37.55/#!';
-			paypalPayment.redirect_urls.return_url = 'http://192.168.1.105:3000/#!/cart/checkout/complete/transaction';
-			paypalPayment.redirect_urls.cancel_url = 'http://192.168.1.105:3000/#!';
+			paypalPayment.redirect_urls.return_url = 'https://104.131.37.55/#!/cart/checkout/complete/transaction';
+			paypalPayment.redirect_urls.cancel_url = 'https://104.131.37.55/#!';
+			//paypalPayment.redirect_urls.return_url = 'http://192.168.1.105:3000/#!/cart/checkout/complete/transaction';
+			//paypalPayment.redirect_urls.cancel_url = 'http://192.168.1.105:3000/#!';
 			paypalPayment.transactions[0].description = itemsDescription;
 			paypal.payment.create(paypalPayment, {}, function (err, resp) {
 				//if (err) {
