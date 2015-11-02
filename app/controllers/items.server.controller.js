@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Item = mongoose.model('Item'),
+	Cart = mongoose.model('Cart'),
 	Donation = mongoose.model('Donation'),
 	fs = require('fs'),
 	_ = require('lodash');
@@ -116,6 +117,44 @@ exports.update = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			console.log('---Updated Item---');
+
+			var origId = JSON.stringify(item._id).replace(/\"/g, '');
+			console.log('OrigId = '  + origId);
+			Cart.find({active: true}).exec(function(err, carts) {
+				if (err) {
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});
+				} else {
+					console.log(carts);
+
+					for(var i = 0; i < carts.length; i++) {
+						var cart = carts[i];
+						for(var j = 0; j < cart.items.length; j++) {
+							var dupId = JSON.stringify(cart.items[j]._id).replace(/\"/g, '');
+							console.log('DupId = ' + dupId);
+							if(origId === dupId) {
+								console.log('Gonna Update Item in this Cart!');
+
+								cart.items[j].name = item.name;
+								cart.items[j].price = item.price;
+
+								cart.save(function(err) {
+									if (err) {
+										return res.status(400).send({
+											message: errorHandler.getErrorMessage(err)
+										});
+									} else {
+										console.log('---UPDATED CART ITEM---');
+									}
+								});
+							}
+						}
+					}
+				}
+			});
+
 			res.jsonp(item);
 		}
 	});
@@ -133,6 +172,42 @@ exports.delete = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			console.log('---Delete Item---');
+
+			var origId = JSON.stringify(item._id).replace(/\"/g, '');
+			console.log('OrigId = '  + origId);
+			Cart.find({active: true}).exec(function(err, carts) {
+				if (err) {
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});
+				} else {
+					console.log(carts);
+
+					for (var i = 0; i < carts.length; i++) {
+						var cart = carts[i];
+						for (var j = 0; j < cart.items.length; j++) {
+							var dupId = JSON.stringify(cart.items[j]._id).replace(/\"/g, '');
+							console.log('DupId = ' + dupId);
+							if (origId === dupId) {
+								console.log('Gonna Delete Item in this Cart!');
+
+								cart.items.splice(j, 1);
+
+								cart.save(function (err) {
+									if (err) {
+										return res.status(400).send({
+											message: errorHandler.getErrorMessage(err)
+										});
+									} else {
+										console.log('---UPDATED CART ITEM---');
+									}
+								});
+							}
+						}
+					}
+				}
+			});
 			res.jsonp(item);
 		}
 	});
