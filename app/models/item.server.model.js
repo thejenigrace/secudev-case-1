@@ -29,6 +29,10 @@ var ItemSchema = new Schema({
 	image: {
 		type: String
 	},
+	donation: {
+		type: Boolean,
+		default: false
+	},
 	created: {
 		type: Date,
 		default: Date.now

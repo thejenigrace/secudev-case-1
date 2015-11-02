@@ -23,12 +23,6 @@ module.exports = function(app) {
 	app.route('/api/posts/search')
 		.post(users.requiresLogin, posts.search);
 
-	app.route('/checkout')
-		.get(users.requiresLogin, posts.checkout);
-
-	app.route('/checkout/complete/transaction')
-		.post(users.requiresLogin, posts.checkoutComplete);
-
-	// Finish by binding the Post middleware
-	//app.param('postId', posts.postByID);
+	//Finish by binding the Post middleware
+	app.param('postId', posts.postByID);
 };

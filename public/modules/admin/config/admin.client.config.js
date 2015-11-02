@@ -8,5 +8,6 @@ angular.module('admin').run(['Menus',
 		//Menus.addSubMenuItem('topbar', 'admin', 'Users', 'admin/users/list');
 		Menus.addSubMenuItem('topbar', 'admin', 'User-Register', 'admin/users/create');
 		Menus.addSubMenuItem('topbar', 'admin', 'Store-Add Item', 'items/create');
+		Menus.addSubMenuItem('topbar', 'admin', 'Store-Transactions', 'transactions');
 	}
 ]);

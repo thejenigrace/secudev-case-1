@@ -156,11 +156,14 @@ var UserSchema = new Schema({
 		}],
 		default: ['user']
 	},
-	badges: [
-		//{name: 'Participant Badge', category: 'post', min: 3, max: 4},
-		//{name: 'Chatter Badge', category: 'post', min: 5, max: 9},
-		//{name: 'Socialite Badge', category: 'post', min: 10}
-	],
+	//badges: [
+	//	{
+	//		name: {type: String},
+	//		category: {type: String},
+	//		min: {type: Number},
+	//		active: {type: Boolean}
+	//	}
+	//],
 	updated: {
 		type: Date
 	},

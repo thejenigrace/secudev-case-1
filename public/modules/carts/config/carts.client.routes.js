@@ -20,6 +20,10 @@ angular.module('carts').config(['$stateProvider',
 		state('editCart', {
 			url: '/carts/:cartId/edit',
 			templateUrl: 'modules/carts/views/edit-cart.client.view.html'
+		}).
+		state('completeTransaction', {
+			url: '/cart/checkout/complete/transaction',
+			templateUrl: 'modules/carts/views/checkout-cart.client.view.html'
 		});
 	}
 ]);

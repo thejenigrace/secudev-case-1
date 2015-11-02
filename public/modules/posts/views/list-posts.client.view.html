@@ -71,14 +71,14 @@
 							<tbody>
 							<tr>
 								<td>
-									<a ng-href="/#!/user-profile">
+									<a data-ng-href="/#!/user/profile/{{post.user._id}}">
 										<h5 class="text-primary" data-ng-bind="post.user.firstName"></h5>
 									</a>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<a ng-href="/#!/user-profile">
+									<a ng-href="/#!/user/profile/{{post.user._id}}">
 										<h4 class="text-danger" data-ng-bind="post.user.username"></h4>
 									</a>
 								</td>

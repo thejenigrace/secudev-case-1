@@ -1,21 +1,59 @@
 <section data-ng-controller="ItemsController" data-ng-init="findOne()">
-	<div class="page-header">
-		<h1 data-ng-bind="item.name"></h1>
+	<div class="col-md-8 col-md-offset-2 form-bg">
+		<div class="page-header text-center">
+			<h2>Item</h2>
+		</div>
+		<form class="center-block">
+			<fieldset>
+				<div class="row form-group">
+					<span class="center-block">
+						<img src="/modules/items/img/image{{item.image}}" height="140" width="140" alt="Item Preview"
+							 class="img-thumbnail center-block"/>
+					</span>
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<input type="text" data-ng-model="item.name" id="name"
+							   class="form-control" placeholder="Name" ng-disabled="true"/>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<input type="number" data-ng-model="item.price" id="price"
+							   class="form-control" placeholder="0.00" ng-disabled="true"/>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<input type="text" data-ng-model="item.description" id="description"
+							   class="form-control" placeholder="Description" ng-disabled="true"/>
+					</div>
+				</div>
+			</fieldset>
+		</form>
 	</div>
-	<div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == item.user._id))">
-		<a class="btn btn-primary" href="/#!/items/{{item._id}}/edit">
-			<i class="glyphicon glyphicon-edit"></i>
-		</a>
-		<a class="btn btn-primary" data-ng-click="remove();">
-			<i class="glyphicon glyphicon-trash"></i>
-		</a>
-	</div>
-	<small>
-		<em class="text-muted">
-			Posted on
-			<span data-ng-bind="item.created | date:'mediumDate'"></span>
-			by
-			<span data-ng-bind="item.user.displayName"></span>
-		</em>
-	</small>
 </section>
+
+<!--<section data-ng-controller="ItemsController" data-ng-init="findOne()">-->
+	<!--<div class="page-header">-->
+		<!--<h1 data-ng-bind="item.name"></h1>-->
+	<!--</div>-->
+	<!--<div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == item.user._id))">-->
+		<!--<a class="btn btn-primary" href="/#!/items/{{item._id}}/edit">-->
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+		<!--</a>-->
+		<!--<a class="btn btn-primary" data-ng-click="remove();">-->
+			<!--<i class="glyphicon glyphicon-trash"></i>-->
+		<!--</a>-->
+	<!--</div>-->
+	<!--<small>-->
+		<!--<em class="text-muted">-->
+			<!--Posted on-->
+			<!--<span data-ng-bind="item.created | date:'mediumDate'"></span>-->
+			<!--by-->
+			<!--<span data-ng-bind="item.user.displayName"></span>-->
+		<!--</em>-->
+	<!--</small>-->
+<!--</section>-->
+
+

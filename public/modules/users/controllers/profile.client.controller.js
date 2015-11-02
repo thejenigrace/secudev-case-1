@@ -2,21 +2,25 @@
 
 var UsersApp = angular.module('users');
 
-UsersApp.controller('ProfileUserController', ['$scope',
+UsersApp.controller('ProfileUserController', ['$scope', '$http',
 	'$stateParams', '$location', 'Authentication', 'Users',
-	function($scope, $stateParams, $location, Authentication, Users) {
+	function($scope, $http, $stateParams, $location, Authentication, Users) {
 
 		$scope.user = Authentication.user;
 
-		var badges = $scope.user.badges;
-		console.log(badges);
-		$scope.found = badges.filter(function(badge){
-			return badge.name === 'Participant Badge';
-		});
-		console.log($scope.found);
-
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
+
+		var badges = Authentication.user.badges;
+		console.log(badges);
+		//for()
+		//console.log($scope.found);
+
+		$scope.find = function() {
+			$http.post('/users/profile/badge/compute', {id: $scope.user._id}).success(function(response) {
+				$scope.badges = response.badges;
+			});
+		};
 	}
 ]);
 

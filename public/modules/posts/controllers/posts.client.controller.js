@@ -14,18 +14,6 @@ postsApp.controller('PostsController', ['$scope', '$http', '$stateParams', '$sce
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
-		$scope.checkoutPaypal = function() {
-			$http.get('/checkout').success(function (response) {
-				console.log(response);
-				$window.location = response;
-			});
-		};
-
-		//$scope.editorOptions = {
-		//	language: 'ru',
-		//	uiColor: '#000000'
-		//};
-
 		$scope.searchCriteria = [];
 
 		$scope.addSearchCriterion = function() {
@@ -310,28 +298,6 @@ postsApp.controller('PostsUpdateController', ['$scope', '$http', 'Posts',
 			$http.put('/posts/' + post._id, post).success(function(response) {
 
 			});
-		};
-	}
-]);
-
-
-postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
-	'$location', '$filter', '$modal', '$log', 'Authentication', 'Posts', 'Userss',
-	function($scope, $http, $stateParams, $location, $filter, $modal, $log,
-			 Authentication, Posts, Userss) {
-
-		$scope.findProfile = function() {
-			//console.log(profileUserId);
-			console.log($stateParams.profileUserId);
-			//$scope.user = Userss.get({
-			//	userId: $stateParams.profileUserId
-			//});
-
-			//$http.get('/users/all').success(function(response){
-			//	$scope.user = response;
-			//});
-
-			console.log($scope.user.firstName);
 		};
 	}
 ]);

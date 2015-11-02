@@ -6,7 +6,7 @@ angular.module('items').config(['$stateProvider',
 		// Items state routing
 		$stateProvider.
 		state('listItems', {
-			url: '/items',
+			url: '/store',
 			templateUrl: 'modules/items/views/list-items.client.view.html'
 		}).
 		//state('createItem', {
@@ -14,12 +14,20 @@ angular.module('items').config(['$stateProvider',
 		//	templateUrl: 'modules/items/views/create-item.client.view.html'
 		//}).
 		state('viewItem', {
-			url: '/items/:itemId',
+			url: '/store/item/:itemId',
 			templateUrl: 'modules/items/views/view-item.client.view.html'
 		}).
 		state('editItem', {
-			url: '/items/:itemId/edit',
+			url: '/store/item/:itemId/edit',
 			templateUrl: 'modules/items/views/edit-item.client.view.html'
+		}).
+		state('continueDonation', {
+			url: '/bonjour/donation/continue',
+			templateUrl: 'modules/items/views/update-donate-item.client.view.html'
+		}).
+		state('cancelDonation', {
+			url: '/bonjour/donation/cancel',
+			templateUrl: 'modules/items/views/cancel-donate-item.client.view.html'
 		});
 	}
 ]);

@@ -17,6 +17,12 @@ module.exports = function(app) {
 	app.route('/items/upload/image')
 		.post(users.requiresLogin, users.isAdmin, items.upload);
 
+	app.route('/items/create/donation')
+		.post(users.requiresLogin, items.donateCreate);
+
+	app.route('/items/update/donation')
+		.post(users.requiresLogin, items.donateUpdate);
+
 	// Finish by binding the Item middleware
 	app.param('itemId', items.itemByID);
 

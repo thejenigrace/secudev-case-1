@@ -1,20 +1,44 @@
 <section data-ng-controller="TransactionsController" data-ng-init="find()">
-    <div class="page-header">
-        <h1>Transactions</h1>
-    </div>
-    <div class="list-group">
-        <a data-ng-repeat="transaction in transactions" data-ng-href="#!/transactions/{{transaction._id}}" class="list-group-item">
-			<small class="list-group-item-text">
-				Posted on
-				<span data-ng-bind="transaction.created | date:'medium'"></span>
-				by
-				<span data-ng-bind="transaction.user.displayName"></span>
-			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="transaction.name"></h4>
-			<h4 class="list-group-item-heading" data-ng-bind="transaction.total"></h4>
-        </a>
-    </div>
+	<br><br>
+	<div class="text-center">
+		<div class="form-group">
+			<input type="date" data-ng-model="startDate"/>
+			<label>TO</label>
+			<input type="date" data-ng-model="endDate"/>
+			<button type="button" class="btn btn-success" ng-click="filterByDateRange()">Filter</button>
+		</div>
+	</div>
+	<div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Transactions</div>
+			<!-- Table -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Username</th>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Status</th>
+						<th>Total Amount (USD)</th>
+						<th>Date/Time</th>
+					</tr>
+				</thead>
+				<tbody data-ng-show="transactions.length">
+					<tr data-ng-repeat="transaction in transactions " data-ng-click="viewTransaction(transaction._id)">
+						<td>{{transaction.user.username}}</td>
+						<td>{{transaction.user.firstName}}</td>
+						<td>{{transaction.user.lastName}}</td>
+						<td>{{transaction.status}}</td>
+						<td>{{transaction.total}}</td>
+						<td>{{transaction.created |  date:'medium'}}</td>
+						<!--<td><a data-ng-href="#!/transactions/{{transaction._id}}">Details</a></td>-->
+						<!--<td data-ng-repeat="item in transaction.cart.items">{{item.name}}</td>-->
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
     <div class="alert alert-warning text-center" data-ng-hide="!transactions.$resolved || transactions.length">
-    	No Transactions yet, why don't you <a href="/#!/transactions/create">create one</a>?
+    	NO TRANSACTIONS
     </div>
 </section>

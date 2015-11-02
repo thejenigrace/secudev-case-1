@@ -8,26 +8,16 @@ var _ = require('lodash'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
 	User = mongoose.model('User'),
-	Badge = mongoose.model('Badge');
+	Post = mongoose.model('Post'),
+	Cart = mongoose.model('Cart'),
+	Donation = mongoose.model('Donation'),
+	Transaction = mongoose.model('Transaction');
+
 
 /**
  * Signup
  */
 exports.signup = function(req, res) {
-	//var participantBadge = new Badge({
-	//	name: 'Participant Badge',
-	//	category: ['post'],
-	//	postCount: 0
-	//});
-    //
-	//participantBadge.save(function(err) {
-	//	if (err) {
-	//		return res.status(400).send({
-	//			message: errorHandler.getErrorMessage(err)
-	//		});
-	//	}
-	//});
-
 	// For security measurement we remove the roles from the req.body object
 	delete req.body.roles;
 
@@ -40,9 +30,9 @@ exports.signup = function(req, res) {
 	user.displayName = user.firstName + ' ' + user.lastName;
 
 	//user.badges.push(participantBadge._id);
-	user.badges.push({name: 'Participant Badge', category: 'post', min: 3, max: 4, active: false});
-	user.badges.push({name: 'Chatter Badge', category: 'post', min: 5, max: 9, active: false});
-	user.badges.push({name: 'Socialite Badge', category: 'post', min: 10, active: false});
+	//user.badges.push({name: 'Participant Badge', category: 'post', min: 3, active: false});
+	//user.badges.push({name: 'Chatter Badge', category: 'post', min: 5, active: false});
+	//user.badges.push({name: 'Socialite Badge', category: 'post', min: 10, active: false});
 
 	// Then save the user
 	user.save(function(err) {
@@ -59,6 +49,19 @@ exports.signup = function(req, res) {
 				if (err) {
 					res.status(400).send(err);
 				} else {
+					var cart = new Cart();
+					cart.user = user;
+					cart.save(function(err) {
+						if (err) {
+							return res.status(400).send({
+								message: errorHandler.getErrorMessage(err)
+							});
+						} else {
+							//res.jsonp(transaction);
+							console.log('---User Cart Created---');
+						}
+					});
+
 					res.json(user);
 				}
 			});

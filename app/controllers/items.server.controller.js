@@ -6,8 +6,8 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Item = mongoose.model('Item'),
+	Donation = mongoose.model('Donation'),
 	fs = require('fs'),
-
 	_ = require('lodash');
 
 exports.upload = function(req, res) {
@@ -16,44 +16,6 @@ exports.upload = function(req, res) {
 	console.log(req.files.file.buffer);
 
 	var user = req.user;
-
-	//var upload = multer(config.uploads.profileUpload).single('newItemImage');
-	//var profileUploadFileFilter = require(path.resolve('./config/lib/multer')).profileUploadFileFilter;
-    //
-	//// Filtering to upload only images
-	//upload.fileFilter = profileUploadFileFilter;
-
-	//if (user) {
-	//	upload(req, res, function (uploadError) {
-	//		if(uploadError) {
-	//			return res.status(400).send({
-	//				message: 'Error occurred while uploading profile picture'
-	//			});
-	//		} else {
-	//			user.profileImageURL = config.uploads.profileUpload.dest + req.file.filename;
-    //
-	//			user.save(function (saveError) {
-	//				if (saveError) {
-	//					return res.status(400).send({
-	//						message: errorHandler.getErrorMessage(saveError)
-	//					});
-	//				} else {
-	//					req.login(user, function (err) {
-	//						if (err) {
-	//							res.status(400).send(err);
-	//						} else {
-	//							res.json(user);
-	//						}
-	//					});
-	//				}
-	//			});
-	//		}
-	//	});
-	//} else {
-	//	res.status(400).send({
-	//		message: 'User is not signed in'
-	//	});
-	//}
 
 	if(user.roles.indexOf('admin') === 0) {
 		console.log('Start Uploading');
@@ -74,6 +36,48 @@ exports.upload = function(req, res) {
 		});
 	}
 };
+
+exports.donateCreate = function(req, res) {
+	var donation = new Donation();
+	donation.amount = req.body.amount;
+	donation.user = req.user;
+
+	donation.save(function(err) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			//res.jsonp(item);
+			console.log('---Donation Transaction Created---');
+		}
+	});
+};
+
+exports.donateUpdate = function(req, res) {
+	Donation.find({user: req.user._id, status: 'ongoing'}).exec(function(err, donations){
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			var donation = donations[0];
+			donation.status = req.body.status;
+
+			donation.save(function(err) {
+				if (err) {
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});
+				} else {
+					//res.jsonp(item);
+					console.log('---Donation Transaction Updated---');
+				}
+			});
+		}
+	});
+};
+
 /**
  * Create a Item
  */

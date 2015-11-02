@@ -1,19 +1,67 @@
 <section data-ng-controller="CartsController" data-ng-init="find()">
-    <div class="page-header">
-        <h1>Carts</h1>
-    </div>
-    <div class="list-group">
-        <a data-ng-repeat="cart in carts" data-ng-href="#!/carts/{{cart._id}}" class="list-group-item">
-			<small class="list-group-item-text">
-				Posted on
-				<span data-ng-bind="cart.created | date:'medium'"></span>
-				by
-				<span data-ng-bind="cart.user.displayName"></span>
-			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="cart.name"></h4>
-        </a>
-    </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!carts.$resolved || carts.length">
-    	No Carts yet, why don't you <a href="/#!/carts/create">create one</a>?
-    </div>
+	<div class="row">
+		<div class="jumbotron-title text-center">
+			<div class="container">
+				<h1> <i class="glyphicon glyphicon-shopping-cart"></i> My Cart </h1>
+			</div>
+		</div>
+	</div>
+	<div class="text-center">
+		<div class="row">
+			<div class="list-group col-md-8">
+				<!-- data-ng-href="#!/carts/{{cart._id}}" -->
+				<div data-ng-repeat="item in items" class="row list-group-item">
+					<div class="col-sm-1">
+						<img src="/modules/items/img/image{{item.image}}" height="100" width="100"
+							 class="thumbnail">
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<h3 class="text-center" data-ng-bind="item.name"></h3>
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<h3 class="text-center"> PHP {{item.price}} </h3>
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<div class="row">
+							<div>
+								<h5>Quantity:</h5>
+							</div>
+							<div>
+								<input class="form-control" maxlength="3" name="quantity" type="number"
+									   ng-change="notify()" data-ng-model="item.quantity" required>
+								<br>
+								<button type="button" class="btn btn-sm btn-info" ng-click="updateQuantity(item)" ng-show="go === true">
+									Update
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-1 col-sm-offset-1">
+						<button type="button" class="btn btn-sm btn-danger"
+								ng-click="remove(item)">
+							<i class="glyphicon glyphicon-remove"></i>
+						</button>
+					</div>
+				</div>
+				<div class="alert alert-warning text-center" data-ng-hide="!carts.$resolved || carts.length">
+					Empty Cart
+				</div>
+			</div>
+			<div class="col-md-3 col-md-offset-1 form-cart-bg">
+				<div class="form-group">
+					<h3>Total Amount:</h3>
+				</div>
+				<div class="form-group">
+					<h2><span class="label label-danger">PHP {{totalAmount}}</span></h2>
+				</div>
+				<br>
+				<div class="form-group">
+					<button type="button" class="btn btn-block btn-warning" ng-click="checkoutPaypal()"
+							ng-disabled="totalAmount <= 0">
+						Proceed to Checkout
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>

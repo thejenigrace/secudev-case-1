@@ -6,13 +6,34 @@ module.exports = function(app) {
 
 	// Carts Routes
 	app.route('/carts')
-		.get(carts.list)
+		.get(users.requiresLogin, carts.list)
 		.post(users.requiresLogin, carts.create);
 
 	app.route('/carts/:cartId')
 		.get(carts.read)
 		.put(users.requiresLogin, carts.hasAuthorization, carts.update)
 		.delete(users.requiresLogin, carts.hasAuthorization, carts.delete);
+
+	app.route('/cart/add/item')
+		.post(users.requiresLogin, carts.addItem);
+
+	app.route('/cart/remove/item')
+		.post(users.requiresLogin, carts.removeItem);
+
+	app.route('/cart/update/item')
+		.post(users.requiresLogin, carts.updateItem);
+
+	app.route('/cart/compute/total')
+		.get(users.requiresLogin, carts.computeTotalAmount);
+
+	app.route('/cart/checkout')
+		.get(users.requiresLogin, carts.checkout);
+
+	app.route('/cart/checkout/complete/transaction')
+		.post(carts.completeTransaction);
+
+	app.route('/cart/checkout/cancel/transaction')
+		.post(carts.cancelTransaction);
 
 	// Finish by binding the Cart middleware
 	app.param('cartId', carts.cartByID);

@@ -19,6 +19,7 @@ var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
 		console.log(chalk.red(err));
 	}
 });
+
 mongoose.connection.on('error', function(err) {
 	console.error(chalk.red('MongoDB connection error: ' + err));
 	process.exit(-1);
@@ -47,3 +48,5 @@ if (process.env.NODE_ENV === 'secure') {
 	console.log(chalk.green('HTTPs:\t\t\t\ton'));
 }
 console.log('--');
+
+

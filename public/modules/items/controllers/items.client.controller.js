@@ -2,13 +2,19 @@
 
 // Items controller
 angular.module('items').controller('ItemsController', ['$scope', '$stateParams', '$location', '$http', '$window',
-	'$timeout', 'Authentication', 'Items', 'FileUploader',
-	function($scope, $stateParams, $location, $http, $window, $timeout, Authentication, Items, FileUploader) {
+	'$timeout', 'Authentication', 'Items', 'FileUploader', 'Carts',
+	function($scope, $stateParams, $location, $http, $window, $timeout,
+			 Authentication, Items, FileUploader, Carts) {
 		$scope.authentication = Authentication;
-
 		$scope.user = Authentication.user;
 
-		$scope.isReady = true;
+		// If user is signed in then redirect back home
+		if (!$scope.authentication.user) $location.path('/');
+
+		$scope.donate = function(amount) {
+			$http.post('/items/create/donation', {amount: amount});
+		};
+
 		// Create new Item
 		$scope.create = function() {
 			// Create new Item object
@@ -51,15 +57,23 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 			}
 		};
 
+		$scope.goToEditPage = function(item) {
+			$location.path('store/item/' + item._id + '/edit');
+		};
+
 		// Update existing Item
 		$scope.update = function() {
 			var item = $scope.item;
 
 			item.$update(function() {
-				$location.path('items/' + item._id);
+				$location.path('store/item/' + item._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
+		};
+
+		$scope.viewItem = function(item) {
+			$location.path('store/item/' + item._id);
 		};
 
 		// Find a list of Items
@@ -88,28 +102,28 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 				return false;
 		};
 
-		// ENd of File Upload
-		//this.remove = function(item) {
-		//	if (item) {
-		//		//post.$remove(function(response) {
-		//		//	//Notify.sendMessage('Remove Post', {'id': response._id});
-		//		//	$scope.retrievePosts();
-		//		//});
-        //
-		//		$http.delete('/posts/' + post._id).success(function(response) {
-		//			$scope.retrievePosts();
-		//		});
-        //
-		//		//for (var i in $scope.posts) {
-		//		//	if ($scope.posts [i] === post) {
-		//		//		$scope.posts.splice(i, 1);
-		//		//	}
-		//		//}
-		//	} else {
-		//		$scope.post.$remove(function() {
-        //
-		//		});
-		//	}
-		//};
+		$scope.addToCart = function(item) {
+			//// Create new Cart object
+			//var cart = new Carts ({
+			//	cartItem: item._id,
+			//	quantity: 1,
+			//	user: $scope.user._id
+			//});
+            //
+			//// Redirect after save
+			//cart.$save(function(response) {
+			//	$location.path('/carts');
+            //
+			//	// Clear form fields
+			//	$scope.name = '';
+			//}, function(errorResponse) {
+			//	$scope.error = errorResponse.data.message;
+			//});
+			$http.post('/cart/add/item', {item: item}).success(function(response) {
+				console.log('Successfully, add item to cart.');
+			});
+			$location.path('carts');
+			$window.location.reload('carts');
+		};
 	}
 ]);

@@ -1,93 +1,104 @@
 <section data-ng-controller="ItemsController as itemsCtrl" data-ng-init="find()">
-    <div class="page-header">
-        <h1>Items</h1>
-    </div>
 	<div class="row">
-		<div class="col-md-offset-2 col-md-1">
-			<label>$5</label>
-		</div>
-		<div class="col-md-1">
-			<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="Z594LP44ZLJ44">
-				<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-			</form>
+		<div class="jumbotron-title text-center">
+			<div class="container">
+				<h1>The Store</h1>
+			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-offset-2 col-md-1">
-			<label>$10</label>
-		</div>
-		<div class="col-md-1">
-			<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="32URRBZC9YHUN">
-				<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-			</form>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-offset-2 col-md-1">
-			<label>$15</label>
-		</div>
-		<div class="col-md-1">
-			<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="744KDNFY5TAB6">
-				<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-				<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-			</form>
+		<div class="jumbotron-donation">
+			<div class="text-center">
+				<div class="row">
+					<div class="col-md-4">
+						<h3 class="text-center">$5</h3>
+						<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top"
+							  ng-click="donate(5)">
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="V57S2HP3QCLTQ">
+							<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif"
+								   border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+							<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1"
+								 height="1">
+						</form>
+					</div>
+						<div class="col-md-4">
+							<h3 class="text-center">$10</h3>
+							<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top"
+								  ng-click="donate(10)">
+								<input type="hidden" name="cmd" value="_s-xclick">
+								<input type="hidden" name="hosted_button_id" value="E29QPGCH2QT8J">
+								<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif"
+									   border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+								<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif"
+									 width="1" height="1">
+							</form>
+						</div>
+						<div class="col-md-4">
+						<h3 class="text-center">$20</h3>
+							<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top"
+								  ng-click="donate(20)">
+								<input type="hidden" name="cmd" value="_s-xclick">
+								<input type="hidden" name="hosted_button_id" value="GVEMPLVWYB75E">
+								<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_LG.gif"
+									   border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+								<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif"
+									 width="1" height="1">
+							</form>
+						</div>
+				</div>
+			</div>
 		</div>
 	</div>
     <div class="list-group">
-        <!--<a data-ng-repeat="item in items" data-ng-href="#!/items/{{item._id}}" class="list-group-item">-->
-			<!--&lt;!&ndash;<small class="list-group-item-text">&ndash;&gt;-->
-				<!--&lt;!&ndash;Posted on&ndash;&gt;-->
-				<!--&lt;!&ndash;<span data-ng-bind="item.created | date:'medium'"></span>&ndash;&gt;-->
-				<!--&lt;!&ndash;by&ndash;&gt;-->
-				<!--&lt;!&ndash;<span data-ng-bind="item.user.displayName"></span>&ndash;&gt;-->
-			<!--</small>-->
-			<!--<h4 class="list-group-item-heading" data-ng-bind="item.name"></h4>-->
-			<!-- -->
-			<!--<button> hello </button>-->
-        <!--</a>-->
-		<div data-ng-repeat="item in items" class = "row list-group-item">
-
-			<div class = "col-sm-1">
-				<img src="/modules/items/img/image{{item.image}}" height="80" width="80" class="thumbnail">
-			</div>
-			<div class = "col-sm-2">
-				<h3> {{item.name}}
-					<small class="list-group-item-text" data-ng-bind="item.description"></small>
-				</h3>
-			</div>
-			<div class = "col-sm-1">
-				<h4> PHP {{item.price}} </h4>
-			</div>
-
-			<button type="button"
-					class="col-sm-1 col-sm-offset-4 btn btn-default btn-md"
-					data-ng-show="isUser()">
-				<span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Add to Cart
-			</button>
-
-			<div class="col-sm-1 col-sm-offset-7" >
-				<button type="button" class="btn btn-sm btn-warning"
-						ng-click="itemsCtrl.modalUpdate('lg', item)"
-						data-ng-show="isAdmin()">
-					<i class="glyphicon glyphicon-edit"></i>
-				</button>
-				<button type="button" class="btn btn-sm btn-danger"
-						ng-click="remove(item)"
-						data-ng-show="isAdmin()">
-					<i class="glyphicon glyphicon-trash"></i>
-				</button>
+		<div class="col-xs-6 col-sm-3 extra-space" data-ng-repeat="item in items" data-ng-click="viewItem(item)">
+			<div class="list-group-item">
+				<div class="form-group">
+					<span>
+						<img src="/modules/items/img/image{{item.image}}"
+							 height="100" width="100" style="margin-top: 5%" class="thumbnail center-block">
+					</span>
+				</div>
+				<div class="text-center">
+					<div class="row">
+						<div class="col-xs-10 col-xs-offset-1">
+							<div class="form-group">
+								<h3> {{item.name}} </h3>
+								<h4> $ {{item.price}} </h4>
+								<h4>
+									<span class="label label-info" data-ng-bind="item.description"></span>
+								</h4>
+							</div>
+							<br>
+							<div class="form-group">
+								<button type="button" class="btn btn-default btn-md" ng-click="addToCart(item)"
+									data-ng-show="isUser()">
+									<i class="glyphicon glyphicon-shopping-cart"></i>
+									Add to Cart
+								</button>
+							</div>
+							<br>
+							<small>
+							<span class="pull-right">
+								<button type="button" class="btn btn-warning btn-sm"
+										ng-click="goToEditPage(item)"
+										data-ng-show="isAdmin()">
+									<i class="glyphicon glyphicon-edit"></i>
+								</button>
+								<button type="button" class="btn btn-danger btn-sm"
+										ng-click="remove(item)"
+										data-ng-show="isAdmin()">
+									<i class="glyphicon glyphicon-trash"></i>
+								</button>
+							</span>
+							</small>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!items.$resolved || items.length">
-    	No Available Items
+    	<h2> NO AVAILABLE ITEMS </h2>
     </div>
 </section>

@@ -5,7 +5,7 @@
             {{user.firstName}}!
         </h3>
         <div class="col-xs-12 col-md-12 text-center">
-            <div class="panel panel-success">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">Profile</h3>
                 </div>
@@ -22,6 +22,28 @@
                     <p> About Me: {{user.aboutMe}} </p>
                     <p> Username: {{user.username}} </p>
                     <!-- <p> Password: {{user.password}} </p> -->
+					<h4>
+						<span data-ng-repeat="badge in badges">
+							<span class="label label-success"
+								  ng-show="badge === 'Participant Badge' || badge === 'Chatter Badge' || badge === 'Socialite Badge'"
+								  data-ng-bind="badge"></span>
+						</span>
+						<span data-ng-repeat="badge in badges">
+							<span class="label label-primary"
+								  ng-show="badge === 'Supporter Badge' || badge === 'Contributor Badge' || badge === 'Pilar Badge'"
+								  data-ng-bind="badge"></span>
+						</span>
+						<span>
+							<span class="label label-warning" data-ng-repeat="badge in badges"
+								  ng-show="badge === 'Shopper Badge' || badge === 'Promoter Badge' || badge === 'Elite Badge'"
+								  data-ng-bind="badge"></span>
+						</span>
+						<span>
+							<span class="label label-danger" data-ng-repeat="badge in badges"
+								  ng-show="badge === 'Explorer Badge' || badge === 'Backer Badge' || badge === 'Evangelist Badge'"
+								  data-ng-bind="badge"></span>
+						</span>
+					</h4>
                 </div>
             </div>
         </div>

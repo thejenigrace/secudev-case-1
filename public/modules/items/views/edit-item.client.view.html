@@ -1,23 +1,94 @@
 <section data-ng-controller="ItemsController" data-ng-init="findOne()">
-    <div class="page-header">
-        <h1>Edit Item</h1>
-    </div>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update()" novalidate>
-            <fieldset>
-                <div class="form-group">
-                    <label class="control-label" for="name">Name</label>
-                    <div class="controls">
-                        <input type="text" data-ng-model="item.name" id="name" class="form-control" placeholder="Name" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-default">
-                </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
+	<div class="col-md-8 col-md-offset-2 form-bg">
+		<div class="page-header text-center">
+			<h2>Edit Item</h2>
+		</div>
+		<form class="center-block" novalidate>
+			<fieldset>
+				<div class="row form-group">
+					<div data-ng-show="error" class="text-center text-danger">
+						<div class="alert alert-danger" role="alert">
+							<strong data-ng-bind="error"></strong>
+						</div>
+					</div>
 				</div>
-            </fieldset>
-        </form>
-    </div>
+				<!--<div class="row form-group">-->
+					<!--<div class="col-md-6 col-md-offset-3">-->
+						<!--<span ng-hide="uploader.queue.length > 0 || isProceed === true">-->
+							<!--<input type="file" class="form-control" uploader="uploader" nv-file-select="" single/>-->
+						<!--</span>-->
+					<!--</div>-->
+				<!--</div>-->
+				<!--<div class="row form-group" ng-repeat="item in uploader.queue" ng-hide="isProceed === true">-->
+					<!--<div class="col-md-offset-5">-->
+						<!--<span ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, width:140, height: 140 }"></span>-->
+						<!--<span class="center-block">-->
+							<!--<button class="btn btn-success" ng-click="item.upload()"-->
+									<!--ng-disabled="uploader.queue.length === 0 || uploader.queue.length > 1">Upload</button>-->
+							<!--<button class="btn btn-danger" ng-click="item.remove()">Remove</button>-->
+						<!--</span>-->
+					<!--</div>-->
+					<!--&lt;!&ndash;<h3 data-ng-bind="uploader.queue.length"></h3>&ndash;&gt;-->
+				<!--</div>-->
+				<div class="row form-group">
+					<span class="center-block">
+						<img src="/modules/items/img/image{{item.image}}" height="140" width="140" alt="Item Preview"
+							 class="img-thumbnail center-block"/>
+					</span>
+					<!--<span class="center-block">-->
+						<!--<button class="btn btn-success">Upload</button>-->
+						<!--<button class="btn btn-danger">Remove</button>-->
+					<!--</span>-->
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<input type="text" data-ng-model="item.name" id="name"
+							   class="form-control" placeholder="Name" required/>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<input type="number" data-ng-model="item.price" id="price"
+							   class="form-control" placeholder="0.00" required/>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<input type="text" data-ng-model="item.description" id="description"
+							   class="form-control" placeholder="Description" required/>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<button type="button" class="btn btn-block btn-success" ng-click="update()">Save</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
 </section>
+
+
+<!--<section data-ng-controller="ItemsController" data-ng-init="findOne()">-->
+    <!--<div class="page-header">-->
+        <!--<h1>Edit Item</h1>-->
+    <!--</div>-->
+    <!--<div class="col-md-12">-->
+        <!--<form class="form-horizontal" data-ng-submit="update()" novalidate>-->
+            <!--<fieldset>-->
+                <!--<div class="form-group">-->
+                    <!--<label class="control-label" for="name">Name</label>-->
+                    <!--<div class="controls">-->
+                        <!--<input type="text" data-ng-model="item.name" id="name" class="form-control" placeholder="Name" required>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<input type="submit" value="Update" class="btn btn-default">-->
+                <!--</div>-->
+				<!--<div data-ng-show="error" class="text-danger">-->
+					<!--<strong data-ng-bind="error"></strong>-->
+				<!--</div>-->
+            <!--</fieldset>-->
+        <!--</form>-->
+    <!--</div>-->
+<!--</section>-->

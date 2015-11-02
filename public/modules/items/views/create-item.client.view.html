@@ -1,26 +1,40 @@
 <section data-ng-controller="ItemsCreateController">
-    <div class="col-md-7 col-md-offset-2 form-bg">
+    <div class="col-md-8 col-md-offset-2 form-bg">
 		<div class="page-header text-center">
 			<h2>Add Item</h2>
 		</div>
-        <!--<form class="" novalidate>-->
-            <!--<fieldset>-->
+        <form class="center-block" novalidate>
+            <fieldset>
 				<div class="row form-group">
-					<div class="col-md-6 col-md-offset-3">
-						<!-- uploader.queue.length -->
-						<span ng-hide="isProceed === true">
-							<input type="file" class="form-control"  ng-change="imageStatus()" uploader="uploader" nv-file-select/>
-						</span>
-					</div>
-					<div class="col-md-1" ng-hide="isProceed === true" ng-disabled="isImagePresent === false">
-						<button class="btn btn-success" ng-click="uploadImage()">Upload</button>
+					<div data-ng-show="error" class="text-center text-danger">
+						<div class="alert alert-danger" role="alert">
+							<strong data-ng-bind="error"></strong>
+						</div>
 					</div>
 				</div>
-				<div class="row form-group" ng-show="isProceed === true">
-					<div class="col-md-3 col-md-offset-5">
-						<img src="/modules/items/img/image{{filename}}" height="140" width="140" alt="Item Preview"
-							 class="img-thumbnail"/>
+				<div class="row form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<span ng-hide="uploader.queue.length > 0 || isProceed === true">
+							<input type="file" class="form-control" uploader="uploader" nv-file-select="" single/>
+						</span>
 					</div>
+				</div>
+				<div class="row form-group" ng-repeat="item in uploader.queue" ng-hide="isProceed === true">
+					<div class="col-md-offset-5">
+						<span ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, width:140, height: 140 }"></span>
+						<span class="center-block">
+							<button class="btn btn-success" ng-click="item.upload()"
+									ng-disabled="uploader.queue.length === 0 || uploader.queue.length > 1">Upload</button>
+							<button class="btn btn-danger" ng-click="item.remove()">Remove</button>
+						</span>
+					</div>
+					<!--<h3 data-ng-bind="uploader.queue.length"></h3>-->
+				</div>
+				<div class="row form-group" ng-show="isProceed === true">
+					<span class="center-block">
+						<img src="/modules/items/img/image{{filename}}" height="140" width="140" alt="Item Preview"
+							 class="img-thumbnail center-block"/>
+					</span>
 				</div>
 				<div class="row form-group" ng-show="isProceed === true">
 					<div class="col-md-6 col-md-offset-3">
@@ -45,10 +59,7 @@
 						<button type="button" class="btn btn-block btn-success" ng-click="create()">Add Item</button>
 					</div>
                 </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
-				</div>
-            <!--</fieldset>-->
-        <!--</form>-->
+            </fieldset>
+        </form>
     </div>
 </section>

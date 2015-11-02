@@ -26,7 +26,11 @@ module.exports = function(app) {
 	app.route('/auth/signout').post(users.signout);
 
 	//Update user profile
-	app.route('/users/profile/update').post(users.update);
+	app.route('/users/profile/update').post(users.requiresLogin, users.update);
+
+	app.route('/users/profile/badge/compute').post(users.requiresLogin, users.computeBadge);
+
+	app.route('/users/find/profile').post(users.requiresLogin, users.findUserProfile);
 
 	//app.route('/users/all').get(users.read);
 
