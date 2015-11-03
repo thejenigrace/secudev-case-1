@@ -46,7 +46,7 @@ exports.checkout = function (req, res) {
 									return res.status(400).send({
 										message: errorHandler.getErrorMessage(err)
 									});
-								} else {;
+								} else {
 									console.log('---TRANSACTION ALREADY EXIST:UPDATE TOTAL---');
 								}
 							});
