@@ -14,17 +14,15 @@ cartsApp.controller('CartCheckoutController', ['$scope', '$http', '$location', '
 
 		$scope.completeTransaction = function() {
 			var params = $location.search();
-			$http.post('/cart/checkout/complete/transaction', params).success(function (response) {
-				$location.path('/board/posts');
-				console.log('Success Paid!');
-			});
+			$http.post('/cart/checkout/complete/transaction', params);
+			$location.path('/board/posts');
+			console.log('Success Paid!');
 		};
 
 		$scope.cancelTransaction = function() {
-			$http.post('/cart/checkout/cancel/transaction', {status: 'cancelled'}).success(function (response) {
-				$location.path('/board/posts');
-				console.log('Cancel Transaction!');
-			});
+			$http.post('/cart/checkout/cancel/transaction', {status: 'cancelled'});
+			$location.path('/board/posts');
+			console.log('Cancel Transaction!');
 		};
 	}
 ]);
