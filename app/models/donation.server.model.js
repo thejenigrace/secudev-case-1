@@ -6,22 +6,22 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
-var validateLocalStrategyStatus = function (status) {
-	return ( status === 'donated' || status === 'ongoing' ||status === 'cancelled');
-};
+//var validateLocalStrategyStatus = function (status) {
+//	return ( status === 'donated' || status === 'ongoing' ||status === 'cancelled');
+//};
+
 /**
  * Donation Schema
  */
 var DonationSchema = new Schema({
-	status: {
-		type: String,
-		validate: [validateLocalStrategyStatus, 'invalid transaction status'],
-		default: 'ongoing'
-	},
+	//status: {
+	//	type: String,
+	//	validate: [validateLocalStrategyStatus, 'invalid transaction status'],
+	//	default: 'ongoing'
+	//},
 	amount: {
 		type: Number,
-		min: 0,
-		max: 20
+		min: 5
 	},
 	created: {
 		type: Date,

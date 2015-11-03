@@ -8,8 +8,46 @@ var mongoose = require('mongoose'),
 	Item = mongoose.model('Item'),
 	Cart = mongoose.model('Cart'),
 	Donation = mongoose.model('Donation'),
+	User = mongoose.model('User'),
 	fs = require('fs'),
 	_ = require('lodash');
+
+exports.paypalIpnHandler = function(req, res) {
+	console.log(req.body);
+	if(req.body.item_number === 'bonjour_donation_05' || req.body.item_number === 'bonjour_donation_10' || req.body.item_number === 'bonjour_donation_20') {
+		if(req.body.payment_status === 'Completed') {
+			console.log('Donation $' + req.body.payment_gross);
+
+			User.find({_id: req.body.custom}).exec(function(err, users) {
+				if(err) {
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});
+				} else {
+					var donation = new Donation();
+					var donationAmount = req.body.payment_gross;
+					donation.amount = donationAmount;
+					donation.user = users[0];
+
+					donation.save(function(err) {
+						if (err) {
+							return res.status(400).send({
+								message: errorHandler.getErrorMessage(err)
+							});
+						} else {
+							console.log('---Donation Transaction Completed---');
+						}
+					});
+				}
+			});
+		}
+	} else {
+		console.log(req.body);
+		res.status(200).send({
+			message: 'invalid checkout Paypal IPN'
+		});
+	}
+};
 
 exports.upload = function(req, res) {
 	console.log('Upload Image');

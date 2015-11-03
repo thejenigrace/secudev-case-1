@@ -24,13 +24,14 @@
 					</tr>
 				</thead>
 				<tbody data-ng-show="transactions.length">
-					<tr data-ng-repeat="transaction in transactions " data-ng-click="viewTransaction(transaction._id)">
+					<tr data-ng-repeat="transaction in transactions">
 						<td>{{transaction.user.username}}</td>
 						<td>{{transaction.user.firstName}}</td>
 						<td>{{transaction.user.lastName}}</td>
 						<td>{{transaction.status}}</td>
 						<td>{{transaction.total}}</td>
 						<td>{{transaction.created |  date:'medium'}}</td>
+						<td><a data-ng-click="viewTransaction(transaction._id)">Items</a></td>
 						<!--<td><a data-ng-href="#!/transactions/{{transaction._id}}">Details</a></td>-->
 						<!--<td data-ng-repeat="item in transaction.cart.items">{{item.name}}</td>-->
 					</tr>

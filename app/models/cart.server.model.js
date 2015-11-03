@@ -31,6 +31,9 @@ var CartSchema = new Schema({
 			min: 0,
 			max: 100,
 			default: 1
+		},
+		donation: {
+			type: Boolean
 		}
 	}],
 	total: {

@@ -10,7 +10,7 @@ module.exports = function(app) {
 		.post(users.requiresLogin, transactions.create);
 
 	app.route('/transactions/:transactionId')
-		.get(transactions.read)
+		.get(users.requiresLogin, transactions.read)
 		.put(users.requiresLogin, transactions.hasAuthorization, transactions.update)
 		.delete(users.requiresLogin, transactions.hasAuthorization, transactions.delete);
 

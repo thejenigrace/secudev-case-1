@@ -23,6 +23,9 @@ module.exports = function(app) {
 	app.route('/items/update/donation')
 		.post(users.requiresLogin, items.donateUpdate);
 
+	app.route('/paypal/ipn/handler')
+		.post(items.paypalIpnHandler);
+
 	// Finish by binding the Item middleware
 	app.param('itemId', items.itemByID);
 

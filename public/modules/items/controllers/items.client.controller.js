@@ -103,27 +103,11 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 		};
 
 		$scope.addToCart = function(item) {
-			//// Create new Cart object
-			//var cart = new Carts ({
-			//	cartItem: item._id,
-			//	quantity: 1,
-			//	user: $scope.user._id
-			//});
-            //
-			//// Redirect after save
-			//cart.$save(function(response) {
-			//	$location.path('/carts');
-            //
-			//	// Clear form fields
-			//	$scope.name = '';
-			//}, function(errorResponse) {
-			//	$scope.error = errorResponse.data.message;
-			//});
 			$http.post('/cart/add/item', {item: item}).success(function(response) {
 				console.log('Successfully, add item to cart.');
 			});
 			$location.path('carts');
-			$window.location.reload('carts');
+			$window.location.reload();
 		};
 	}
 ]);

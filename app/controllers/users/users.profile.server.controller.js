@@ -55,7 +55,7 @@ exports.computeBadge = function(req, res) {
 				collection.level.push('p3');
 			}
 
-			Donation.find({user: id, status: 'donated'}).exec(function (err, donations) {
+			Donation.find({user: id}).exec(function (err, donations) {
 				if (err) {
 					return res.status(400).send({
 						message: errorHandler.getErrorMessage(err)

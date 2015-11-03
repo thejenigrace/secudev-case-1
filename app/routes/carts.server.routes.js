@@ -10,7 +10,7 @@ module.exports = function(app) {
 		.post(users.requiresLogin, carts.create);
 
 	app.route('/carts/:cartId')
-		.get(carts.read)
+		.get(users.requiresLogin, carts.read)
 		.put(users.requiresLogin, carts.hasAuthorization, carts.update)
 		.delete(users.requiresLogin, carts.hasAuthorization, carts.delete);
 
@@ -30,10 +30,10 @@ module.exports = function(app) {
 		.get(users.requiresLogin, carts.checkout);
 
 	app.route('/cart/checkout/complete/transaction')
-		.post(carts.completeTransaction);
+		.post(users.requiresLogin, carts.completeTransaction);
 
 	app.route('/cart/checkout/cancel/transaction')
-		.post(carts.cancelTransaction);
+		.post(users.requiresLogin, carts.cancelTransaction);
 
 	// Finish by binding the Cart middleware
 	app.param('cartId', carts.cartByID);

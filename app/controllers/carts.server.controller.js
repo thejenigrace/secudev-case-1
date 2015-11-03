@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	paypal = require('paypal-rest-sdk'),
 	Cart = mongoose.model('Cart'),
+	Donation = mongoose.model('Donation'),
 	Item = mongoose.model('Item'),
 	Transaction = mongoose.model('Transaction'),
 	_ = require('lodash');
@@ -29,20 +30,45 @@ exports.checkout = function (req, res) {
 			console.log('---CHECKOUT---');
 			console.log(cart.total);
 
-			var transaction = new Transaction();
-			transaction.cart = cart;
-			transaction.status = 'notpaid';
-			transaction.total = cart.total;
-			transaction.user = req.user;
-
-			transaction.save(function(err) {
+			Transaction.find({user: req.user._id, status: 'notpaid'}).exec(function(err, transactions){
 				if (err) {
 					return res.status(400).send({
 						message: errorHandler.getErrorMessage(err)
 					});
 				} else {
-					//res.jsonp(transaction);
-					console.log('---TRANSACTION CREATED---');
+					if(transactions.length > 0) {
+						console.log('---TRANSACTION ALREADY EXIST---');
+						var original = transactions[0];
+						if(original.total !== cart.total) {
+							original.total = cart.total;
+							original.save(function(err) {
+								if (err) {
+									return res.status(400).send({
+										message: errorHandler.getErrorMessage(err)
+									});
+								} else {;
+									console.log('---TRANSACTION ALREADY EXIST:UPDATE TOTAL---');
+								}
+							});
+						}
+					} else {
+						var transaction = new Transaction();
+						transaction.cart = cart;
+						transaction.status = 'notpaid';
+						transaction.total = cart.total;
+						transaction.user = req.user;
+
+						transaction.save(function(err) {
+							if (err) {
+								return res.status(400).send({
+									message: errorHandler.getErrorMessage(err)
+								});
+							} else {
+								//res.jsonp(transaction);
+								console.log('---NEW TRANSACTION CREATED---');
+							}
+						});
+					}
 				}
 			});
 
@@ -129,7 +155,6 @@ exports.completeTransaction = function(req, res) {
 									message: errorHandler.getErrorMessage(err)
 								});
 							} else {
-								//res.jsonp(transaction);
 								console.log('---TRANSACTION UPDATED---');
 							}
 						});
@@ -143,6 +168,28 @@ exports.completeTransaction = function(req, res) {
 						});
 					} else {
 						var cart = carts[0];
+
+						console.log(cart);
+
+						for(var i = 0; i < cart.items.length; i++) {
+							console.log('cart.items[i].donation: ' + cart.items[i].donation);
+							if(cart.items[i].donation === true) {
+								var donation = new Donation();
+								donation.amount = cart.items[i].price * cart.items[i].quantity;
+								donation.user = req.user;
+
+								donation.save(function(err) {
+									if (err) {
+										return res.status(400).send({
+											message: errorHandler.getErrorMessage(err)
+										});
+									} else {
+										console.log('---Donation Transaction Completed---');
+									}
+								});
+							}
+						}
+
 						cart.active = false;
 						cart.save(function(err) {
 							if (err) {
@@ -150,7 +197,6 @@ exports.completeTransaction = function(req, res) {
 									message: errorHandler.getErrorMessage(err)
 								});
 							} else {
-								//res.jsonp(transaction);
 								console.log('---Change Active User Cart Created---');
 								var newCart = new Cart();
 								newCart.user = req.user;
@@ -161,7 +207,6 @@ exports.completeTransaction = function(req, res) {
 											message: errorHandler.getErrorMessage(err)
 										});
 									} else {
-										//res.jsonp(transaction);
 										console.log('---New User Cart Created---');
 									}
 								});
@@ -308,6 +353,7 @@ exports.addItem = function(req, res) {
 				name: req.body.item.name,
 				price: req.body.item.price,
 				image: req.body.item.image,
+				donation: req.body.item.donation,
 				quantity: 1
 			};
 			cart.items.push(item);
