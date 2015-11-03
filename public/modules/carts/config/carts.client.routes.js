@@ -24,6 +24,10 @@ angular.module('carts').config(['$stateProvider',
 		state('completeTransaction', {
 			url: '/cart/checkout/complete/transaction',
 			templateUrl: 'modules/carts/views/checkout-cart.client.view.html'
+		}).
+		state('cancelTransaction', {
+			url: '/cart/checkout/cancel/transaction',
+			templateUrl: 'modules/carts/views/cancel-cart.client.view.html'
 		});
 	}
 ]);
