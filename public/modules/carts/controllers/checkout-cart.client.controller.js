@@ -24,5 +24,9 @@ cartsApp.controller('CartCheckoutController', ['$scope', '$http', '$location', '
 			$location.path('/board/posts');
 			console.log('Cancel Transaction!');
 		};
+
+		$scope.idleTransaction = function() {
+			$location.path('/carts');
+		};
 	}
 ]);
