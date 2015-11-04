@@ -107,7 +107,7 @@ angular.module('items').controller('ItemsController', ['$scope', '$stateParams',
 				console.log('Successfully, add item to cart.');
 			});
 			$location.path('carts');
-			$window.location.reload();
+			//$window.location.reload();
 		};
 	}
 ]);
