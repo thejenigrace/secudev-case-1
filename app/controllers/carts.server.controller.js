@@ -76,7 +76,7 @@ exports.checkout = function (req, res) {
 
 			var itemsDescription = '';
 			for(var i = 0; i < cart.items.length; i++) {
-				itemsDescription = itemsDescription.concat('[PHP ' + cart.items[i].price + ' - ' + cart.items[i].name +  ' - ' + cart.items[i].quantity  + '] ');
+				itemsDescription = itemsDescription.concat('[USD ' + cart.items[i].price + ' - ' + cart.items[i].name +  ' - ' + cart.items[i].quantity  + '] ');
 			}
 
 			//console.log(itemsDescription);
