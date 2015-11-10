@@ -29,11 +29,14 @@ module.exports = function(app) {
 	app.route('/cart/checkout')
 		.get(users.requiresLogin, carts.checkout);
 
-	app.route('/cart/checkout/complete/transaction')
+	app.route('/api/cart/checkout/complete/transaction')
 		.post(users.requiresLogin, carts.completeTransaction);
 
-	app.route('/cart/checkout/cancel/transaction')
+	app.route('/api/cart/checkout/cancel/transaction')
 		.post(users.requiresLogin, carts.cancelTransaction);
+
+	app.route('/api/cart/transaction/webhook')
+		.post(carts.paypalWebhook);
 
 	// Finish by binding the Cart middleware
 	app.param('cartId', carts.cartByID);

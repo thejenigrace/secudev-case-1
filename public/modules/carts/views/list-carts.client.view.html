@@ -57,7 +57,7 @@
 				<br>
 				<div class="form-group">
 					<button type="button" class="btn btn-block btn-warning" ng-click="checkoutPaypal()"
-							ng-disabled="totalAmount <= 0">
+							ng-disabled="totalAmount <= 0 || proceed === true">
 						Proceed to Checkout
 					</button>
 				</div>

@@ -12,6 +12,11 @@ var mongoose = require('mongoose'),
 	Transaction = mongoose.model('Transaction'),
 	_ = require('lodash');
 
+exports.paypalWebhook = function (req, res) {
+	var params = req.body;
+	console.log(params);
+};
+
 exports.checkout = function (req, res) {
 	paypal.configure({
 		'host': 'api.sandbox.paypal.com',
@@ -20,16 +25,13 @@ exports.checkout = function (req, res) {
 		'client_secret': 'EBgpl2OLekLkBlqWZwc2VSaT4NNvFoZ8EjAhU8GLV7tXFmpEGH_oUzN4i00rV-zQ7nqQqrw8y5q9o5Tl'
 	});
 
-	Cart.find({user: req.user._id, active: true}).exec(function(err, carts) {
-		if (err) {
+	Cart.findOne({user: req.user._id, active: true}, function(err, cart) {
+		if(err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			var cart = carts[0];
 			console.log('---CHECKOUT---');
-			console.log(cart.total);
-
 			Transaction.find({user: req.user._id, status: 'notpaid'}).exec(function(err, transactions){
 				if (err) {
 					return res.status(400).send({
@@ -94,10 +96,10 @@ exports.checkout = function (req, res) {
 
 			//console.log(config);
 			paypalPayment.transactions[0].amount.total = cart.total;
-			paypalPayment.redirect_urls.return_url = 'https://104.131.37.55/#!/cart/checkout/complete/transaction';
-			paypalPayment.redirect_urls.cancel_url = 'https://104.131.37.55/#!/cart/checkout/cancel/transaction';
-			//paypalPayment.redirect_urls.return_url = 'http://192.168.1.105:3000/#!/cart/checkout/complete/transaction';
-			//paypalPayment.redirect_urls.cancel_url = 'http://192.168.1.105:3000/#!/cart/checkout/cancel/transaction';
+			paypalPayment.redirect_urls.return_url = 'https://104.131.37.55/#!/cart/checkout/complete/transaction/' + cart._id;
+			paypalPayment.redirect_urls.cancel_url = 'https://104.131.37.55/#!/cart/checkout/cancel/transaction/' + cart._id;
+			//paypalPayment.redirect_urls.return_url = 'http://localhost:3000/#!/cart/checkout/complete/transaction/' + cart._id;
+			//paypalPayment.redirect_urls.cancel_url = 'http://localhost:3000/#!/cart/checkout/cancel/transaction/' + cart._id;
 			paypalPayment.transactions[0].description = itemsDescription;
 			paypal.payment.create(paypalPayment, {}, function (err, resp) {
 				//if (err) {
@@ -111,13 +113,31 @@ exports.checkout = function (req, res) {
 							res.send(link[i].href);
 						}
 					}
+
+					Transaction.findOne({user: req.user._id, cart: cart._id, status: 'notpaid'}, function (err, transaction) {
+						if (err) {
+							return res.status(400).send({
+								message: errorHandler.getErrorMessage(err)
+							});
+						} else {
+							console.log(transaction);
+
+							transaction.paymentId = resp.id;
+							transaction.save(function(err) {
+								if (err) {
+									return res.status(400).send({
+										message: errorHandler.getErrorMessage(err)
+									});
+								} else {
+									console.log('---PAYMENTID SAVED IN TRANSACTION---');
+								}
+							});
+						}
+					});
 				}
 			});
 		}
 	});
-
-	//var totalAmount = 1;
-	//var description = 'apple';
 };
 
 exports.completeTransaction = function(req, res) {
@@ -126,49 +146,38 @@ exports.completeTransaction = function(req, res) {
 	};
 
 	// Closing of paypal.payment.execute()
-	paypal.payment.execute(req.body.paymentId, payer, {}, function (err, response) {
-		if (err) return res.status(400).send({ message: 'An error occured while executing your transaction' });
+	Transaction.findOne({paymentId: req.body.paymentId}, function (err, transaction) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			console.log(transaction);
 
-		res.send({ message: 'Successfully performed payment' });
+			paypal.payment.execute(req.body.paymentId, payer, {}, function (err, response) {
+				if (err) return res.status(400).send({ message: 'An error occured while executing your transaction' });
 
-		Cart.find({user: req.user._id, active: true}).exec(function(err, carts) {
-			if (err) {
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			} else {
-				var cart = carts[0];
+				res.send({ message: 'Successfully performed payment' });
 
-				Transaction.find({user: req.user._id, cart: cart._id, status: 'notpaid'}).exec(function (err, transactions) {
+
+				transaction.status = 'paid';
+				transaction.save(function(err) {
 					if (err) {
 						return res.status(400).send({
 							message: errorHandler.getErrorMessage(err)
 						});
 					} else {
-						var transaction = transactions[0];
-						transaction.paymentId = req.body.paymentId;
-						transaction.status = 'paid';
-
-						transaction.save(function(err) {
-							if (err) {
-								return res.status(400).send({
-									message: errorHandler.getErrorMessage(err)
-								});
-							} else {
-								console.log('---TRANSACTION UPDATED---');
-							}
-						});
+						console.log('---PAID TRANSACTION---');
 					}
 				});
 
-				Cart.find({user: req.user._id, active: true}).exec(function(err, carts) {
+
+				Cart.findOne({user: req.user._id, active: true}, function(err, cart) {
 					if (err) {
 						return res.status(400).send({
 							message: errorHandler.getErrorMessage(err)
 						});
 					} else {
-						var cart = carts[0];
-
 						console.log(cart);
 
 						for(var i = 0; i < cart.items.length; i++) {
@@ -177,14 +186,13 @@ exports.completeTransaction = function(req, res) {
 								var donation = new Donation();
 								donation.amount = cart.items[i].price * cart.items[i].quantity;
 								donation.user = req.user;
-
 								donation.save(function(err) {
 									if (err) {
 										return res.status(400).send({
 											message: errorHandler.getErrorMessage(err)
 										});
 									} else {
-										console.log('---Donation Transaction Completed---');
+										console.log('---PAID DONATION TRANSACTION---');
 									}
 								});
 							}
@@ -197,7 +205,7 @@ exports.completeTransaction = function(req, res) {
 									message: errorHandler.getErrorMessage(err)
 								});
 							} else {
-								console.log('---Change Active User Cart Created---');
+								console.log('---CHANGING ACTIVE USER CART---');
 								var newCart = new Cart();
 								newCart.user = req.user;
 
@@ -207,85 +215,77 @@ exports.completeTransaction = function(req, res) {
 											message: errorHandler.getErrorMessage(err)
 										});
 									} else {
-										console.log('---New User Cart Created---');
+										console.log('---NEW USER CART---');
 									}
 								});
 							}
 						});
 					}
 				});
-
-			}
-		});
+			});
+		}
 	});
 };
 
 exports.cancelTransaction = function(req, res) {
-	Cart.find({user: req.user._id, active: true}).exec(function(err, carts) {
+	Cart.findOne({user: req.user._id, active: true}, function(err, cart) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			var cart = carts[0];
-
-			Transaction.find({user: req.user._id, cart: cart._id, status: 'notpaid'}).exec(function (err, transactions) {
+			Transaction.findOne({user: req.user._id, cart: cart._id, status: 'notpaid'}, function (err, transaction) {
 				if (err) {
 					return res.status(400).send({
 						message: errorHandler.getErrorMessage(err)
 					});
 				} else {
-					var transaction = transactions[0];
-					transaction.paymentId = req.body.paymentId;
-					transaction.status = 'cancelled';
+					console.log(transaction);
 
-					transaction.save(function(err) {
-						if (err) {
-							return res.status(400).send({
-								message: errorHandler.getErrorMessage(err)
-							});
-						} else {
-							//res.jsonp(transaction);
-							console.log('---TRANSACTION UPDATED---');
-						}
-					});
+					if(transaction !== null) {
+						transaction.status = 'cancelled';
+						transaction.save(function(err) {
+							if (err) {
+								return res.status(400).send({
+									message: errorHandler.getErrorMessage(err)
+								});
+							} else {
+								//res.jsonp(transaction);
+								console.log('---CANCELLED TRANSACTION---');
+							}
+						});
+
+						cart.active = false;
+						cart.save(function(err) {
+							if (err) {
+								return res.status(400).send({
+									message: errorHandler.getErrorMessage(err)
+								});
+							} else {
+								//res.jsonp(transaction);
+								console.log('---CHANGING ACTIVE USER CART---');
+								var newCart = new Cart();
+								newCart.user = req.user;
+
+								newCart.save(function(err) {
+									if (err) {
+										return res.status(400).send({
+											message: errorHandler.getErrorMessage(err)
+										});
+									} else {
+										//res.jsonp(transaction);
+										console.log('---NEW USER CART---');
+									}
+								});
+							}
+						});
+					} else {
+						return res.status(400).send({
+							message: 'NO TRANSACTION'
+						});
+					}
 				}
 			});
-
-			Cart.find({user: req.user._id, active: true}).exec(function(err, carts) {
-				if (err) {
-					return res.status(400).send({
-						message: errorHandler.getErrorMessage(err)
-					});
-				} else {
-					var cart = carts[0];
-					cart.active = false;
-					cart.save(function(err) {
-						if (err) {
-							return res.status(400).send({
-								message: errorHandler.getErrorMessage(err)
-							});
-						} else {
-							//res.jsonp(transaction);
-							console.log('---Change Active User Cart Created---');
-							var newCart = new Cart();
-							newCart.user = req.user;
-
-							newCart.save(function(err) {
-								if (err) {
-									return res.status(400).send({
-										message: errorHandler.getErrorMessage(err)
-									});
-								} else {
-									//res.jsonp(transaction);
-									console.log('---New User Cart Created---');
-								}
-							});
-						}
-					});
-				}
-			});
-
 		}
 	});
 };
@@ -366,7 +366,7 @@ exports.addItem = function(req, res) {
 					});
 				} else {
 					//res.jsonp(cart);
-					 console.log('---Updated Cart---');
+					 console.log('---UPDATED CART ITEMS---');
 				}
 			});
 		}
@@ -402,7 +402,7 @@ exports.removeItem = function(req, res) {
 					});
 				} else {
 					//res.jsonp(cart);
-					console.log('---Remove Item In Cart ---');
+					console.log('---REMOVE CART ITEM---');
 				}
 			});
 		}
@@ -434,7 +434,7 @@ exports.updateItem = function(req, res) {
 					});
 				} else {
 					//res.jsonp(cart);
-					console.log('---Update Quantity Item In Cart ---');
+					console.log('---UPDATE CART ITEM QUANTITY---');
 				}
 			});
 		}
@@ -462,7 +462,7 @@ exports.computeTotalAmount = function(req, res) {
 					});
 				} else {
 					//res.jsonp(cart);
-					console.log('--- Updated Cart\'s Total Amount ---');
+					console.log('---UPDATED CART\'S TOTAL AMOUNT---');
 					res.jsonp(totalAmount);
 				}
 			});
@@ -519,7 +519,7 @@ exports.list = function(req, res) {
 			console.log(carts[0]);
 
 			if(carts[0].items.length === 0)
-				console.log('Empty Cart');
+				console.log('EMPTY CART');
 
 			res.jsonp(carts[0]);
 		}

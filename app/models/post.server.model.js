@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	mongoosePaginate = require('mongoose-paginate'),
+	mongooseToCsv = require('mongoose-to-csv'),
 	Schema = mongoose.Schema;
 
 /**
@@ -36,5 +37,15 @@ var PostSchema = new Schema({
 });
 
 PostSchema.plugin(mongoosePaginate, {});
+
+
+PostSchema.plugin(mongooseToCsv, {
+	headers: 'User Created Message',
+	constraints : {
+		'User': 'user',
+		'Created': 'created',
+		'Message': 'message'
+	}
+});
 
 mongoose.model('Post', PostSchema);

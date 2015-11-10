@@ -5,7 +5,6 @@ var postsApp = angular.module('posts');
 postsApp.controller('PostsViewController', ['$scope', '$http', '$stateParams',
 	'$location', '$filter', '$modal', '$log', 'Authentication',
 	function($scope, $http, $stateParams, $location, $filter, $modal, $log, Authentication) {
-
 		$scope.user = Authentication.user;
 
 		// If user is not signed in then redirect back home

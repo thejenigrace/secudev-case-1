@@ -21,12 +21,12 @@ angular.module('carts').config(['$stateProvider',
 			url: '/carts/:cartId/edit',
 			templateUrl: 'modules/carts/views/edit-cart.client.view.html'
 		}).
-		state('completeTransaction', {
-			url: '/cart/checkout/complete/transaction',
+		state('completeTransactionCart', {
+			url: '/cart/checkout/complete/transaction/:cartId',
 			templateUrl: 'modules/carts/views/checkout-cart.client.view.html'
 		}).
-		state('cancelTransaction', {
-			url: '/cart/checkout/cancel/transaction',
+		state('cancelTransactionCart', {
+			url: '/cart/checkout/cancel/transaction/:cartId',
 			templateUrl: 'modules/carts/views/cancel-cart.client.view.html'
 		});
 	}

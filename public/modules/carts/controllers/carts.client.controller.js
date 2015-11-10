@@ -10,8 +10,10 @@ angular.module('carts').controller('CartsController', ['$scope', '$stateParams',
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
 
+		$scope.proceed = false;
 		$scope.checkoutPaypal = function() {
 			$http.get('/cart/checkout').success(function (response) {
+				$scope.proceed = true;
 				console.log(response);
 				$window.location = response;
 			});

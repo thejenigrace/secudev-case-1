@@ -8,6 +8,8 @@ var mongoose = require('mongoose'),
 	Backup = mongoose.model('Backup'),
 	json2csvconverter = require('nestedjson2csv'),
 	fs = require('fs'),
+	path = require('path'),
+	sanitizeFilename = require('sanitize-filename'),
 	Post = mongoose.model('Post'),
 	_ = require('lodash');
 
@@ -16,8 +18,11 @@ var mongoose = require('mongoose'),
  * Download a Backup
  */
 exports.download = function(req, res){
-	var filename = req.params.fileName + '.csv';
-	res.download(filename); // Set disposition and send it.
+	var filename = 'backup-' + sanitizeFilename(req.params.filename) + '.csv';
+	var filePath = 'backups/';
+	var thisPath = path.resolve(filePath + filename);
+
+	res.download(thisPath); // Set disposition and send it.
 };
 
 /**
@@ -33,26 +38,46 @@ exports.create = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			Post.find().sort('-created').populate('user', 'displayName')
-				.exec(function(err, posts) {
-					if (err) {
-						return res.status(400).send({
-							message: errorHandler.getErrorMessage(err)
-						});
-					} else {
-						var fields = ['user.displayName', 'message', 'created'];
-						json2csvconverter({ data: posts, fields: fields }, function(err, csv) {
-							if (err) console.log(err);
-							var filename = backup.name + '.csv';
-							fs.writeFile(filename, csv, function(err) {
-								if (err) throw err;
-								console.log(filename + ' saved');
-							});
-						});
+			Post.findAndStreamCsv()
+				.pipe(fs.createWriteStream('backups/backup-' + backup.name + '.csv'));
 
-					}
-				}
-			);
+			//Post.find({})
+			//	.select('created message user')
+			//	.sort('-created')
+			//	.populate('user', 'displayName')
+			//	.exec()
+			//	.then(function(docs) {
+			//		Post.csvReadStream(docs)
+			//			.pipe(fs.createWriteStream('backups/backup-' + backup.name + '.csv'));
+			//	});
+
+			//Post.find({})
+			//	.sort('-created')
+			//	.populate('user', 'displayName')
+			//	.stream()
+			//	.pipe(Post.csvTransformStream())
+			//	.pipe(fs.createWriteStream('backups/backup-' + backup.name + '.csv'));
+
+			//Post.find().sort('-created').populate('user', 'displayName')
+			//	.exec(function(err, posts) {
+			//		if (err) {
+			//			return res.status(400).send({
+			//				message: errorHandler.getErrorMessage(err)
+			//			});
+			//		} else {
+			//			var fields = ['user.displayName', 'message', 'created'];
+			//			json2csvconverter({ data: posts, fields: fields }, function(err, csv) {
+			//				if (err) console.log(err);
+			//				var filename = backup.name + '.csv';
+			//				fs.writeFile(filename, csv, function(err) {
+			//					if (err) throw err;
+			//					console.log(filename + ' saved');
+			//				});
+			//			});
+            //
+			//		}
+			//	}
+			//);
 		}
 		res.jsonp(backup);
 	});

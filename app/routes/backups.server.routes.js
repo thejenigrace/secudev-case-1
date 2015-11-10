@@ -9,7 +9,7 @@ module.exports = function(app) {
 		.get(users.requiresLogin, users.isAdmin, backups.list)
 		.post(users.requiresLogin, users.isAdmin, backups.create);
 
-	app.route('/backups/download/:fileName')
+	app.route('/backups/download/:filename')
 		.get(users.requiresLogin, users.isAdmin, backups.download);
 
 	app.route('/backups/:backupId')
