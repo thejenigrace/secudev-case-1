@@ -149,6 +149,7 @@ UsersApp.controller('ProfileEditController', ['$scope',
 		$scope.changeUserPassword = function() {
 			$scope.success = $scope.error = null;
 
+			$scope.passwordDetails.displayName = $scope.user.displayName;
 			$http.post('/users/password', $scope.passwordDetails).success(function(response) {
 				// If successful show success message and clear form
 				$scope.success = true;
